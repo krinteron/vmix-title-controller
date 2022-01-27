@@ -1,0 +1,40 @@
+{
+  "name": "vmix-title",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint:js": "eslint --ext \".js,.vue\" .",
+    "prettier": "prettier --write .",
+    "lint": "npm run prettier && npm run lint:js"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/proxy": "^2.1.0",
+    "axios": "^0.25.0",
+    "bootstrap": "^4.6.0",
+    "bootstrap-vue": "^2.21.2",
+    "compression": "^1.7.4",
+    "core-js": "^3.15.1",
+    "dotenv": "^14.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "express": "^4.17.2",
+    "nuxt": "^2.15.7",
+    "qs": "^6.10.3",
+    "uuid": "^8.3.2",
+    "vue-property-decorator": "^8.5.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.14.7",
+    "@nuxtjs/eslint-config": "^6.0.1",
+    "@nuxtjs/eslint-module": "^3.0.2",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-nuxt": "^2.0.0",
+    "eslint-plugin-vue": "^7.12.1",
+    "prettier": "^2.3.2"
+  }
+}
