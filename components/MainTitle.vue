@@ -50,7 +50,6 @@
         </tr>
       </table>
     </div>
-    {{ acc }}
   </div>
 </template>
 
@@ -63,14 +62,9 @@ export default {
     return {
       stateMachine: '',
       titles: [],
-      acc: '',
       selectedRows: [],
       intervalID: '',
-      vmixState: {
-        activeTitles: {},
-        inputs: [],
-        overlays: { length: 4 },
-      },
+      vmixState: {},
       types: {
         tema: {
           title: 'NEWS_theme_vmix.gtzip',
@@ -91,7 +85,8 @@ export default {
       },
     };
   },
-  beforeMount() {
+  async beforeMount() {
+    await this.getVmixState();
     this.importTitles();
     this.startStateEvent();
     this.setMachine();
@@ -131,9 +126,13 @@ export default {
       });
     },
 
+    // ____________________СОХРАНЕНИЕ_ТАБЛИЦЫ___________________
+
     sendToDB() {
       this.$axios.post('/titles', { data: this.titles });
     },
+
+    // ____________________СОХРАНЕНИЕ_ЯЧЕЙКИ___________________
 
     saveTitle({ target }) {
       const id = target.id;
@@ -152,6 +151,15 @@ export default {
       this.sendToDB();
     },
 
+    // ____________________СОХРАНЕНИЕ_ПРИ_ПОТЕРЕ_ФОКУСА___________________
+
+    blur(event, type, value) {
+      const id = event.target.id;
+      const element = document.getElementById(id);
+      if (element.classList.contains('pointer')) return;
+      this.editElem(event, type, value);
+    },
+
     // ____________________ЗАПРЕТ_ВЫДЕЛЕНИЯ_ТЕКСТА___________________
     selectText(event) {
       event.preventDefault();
@@ -162,127 +170,7 @@ export default {
       }
     },
 
-    // ____________________STATUS_POLLING__________________
-    async getVmixState() {
-      await this.$axios.get('/status').then(({ data }) => {
-        const { inputs, overlays, activeTitles } = data;
-        this.vmixState = { inputs, overlays, activeTitles };
-      });
-    },
-
-    startStateEvent() {
-      this.intervalID = setInterval(this.getVmixState.bind(this), 1000);
-    },
-
-    stopStateEvent() {
-      clearInterval(this.intervalID);
-    },
-
-    // ____________________ИНИЦИАЛИЗАЦИЯ_СТЕЙТ_МАШИНЫ__________________
-
-    setMachine() {
-      const inputCount = this.vmixState.overlays.length;
-      this.stateMachine = new StateMachine(
-        inputCount,
-        this.run,
-        this.stop,
-        this.wait
-      );
-    },
-
-    // ____________________МЕТОДЫ ДЛЯ СТЕЙТ МАШИНЫ__________________
-    run(overlayInputNumber, { currentInputNumber, value }) {
-      const textValues = value.split('#');
-
-      const sendText = (index) => {
-        if (index >= textValues.length) return;
-        const options = {
-          url: '/api/',
-          method: 'post',
-          data: qs.stringify({
-            Function: 'SetText',
-            Input: currentInputNumber,
-            SelectedName: `Text${index + 1}.Text`,
-            Value: textValues[index],
-          }),
-        };
-        return this.$axios(options).then(() => {
-          sendText(index + 1);
-        });
-      };
-
-      return sendText(0).then(() => {
-        this.$axios.post(
-          '/api/',
-          qs.stringify({
-            Function: `OverlayInput${overlayInputNumber}`,
-            Input: currentInputNumber,
-          })
-        );
-      });
-    },
-
-    stop(input) {
-      return this.$axios.post(
-        '/api/',
-        qs.stringify({
-          Function: `OverlayInput${input}Out`,
-        })
-      );
-    },
-
-    wait(input) {
-      let timer = 15;
-      return new Promise((resolve) =>
-        setTimeout(
-          function run(t) {
-            const overlayBusy = t.vmixState.overlays[input - 1] !== '';
-            if (!overlayBusy) {
-              resolve();
-            }
-            if (timer-- < 0) {
-              resolve('TIME_OUT');
-            }
-            setTimeout(run, 1000, t);
-          },
-          1000,
-          this
-        )
-      );
-    },
-
-    // ____________________ОБРАБОТЧИК ТАЙТЛОВ__________________
-    sendTitle(event, type, value) {
-      if (!value) return;
-      const id = event.target.id;
-      const element = document.getElementById(id);
-      if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
-      const overlayInput = this.types[type].overlayInput; // Находим разрешенный номер overlay для тайтла
-      const state = this.stateMachine[overlayInput].state;
-      if (state === 'stopping') return;
-      const currentInput = this.vmixState.inputs.filter(
-        (input) => input.title === this.types[type].title
-      );
-      if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
-      const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
-      if (element.classList.contains('active')) {
-        element.classList.toggle('active');
-        element.classList.toggle('ending');
-        return this.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
-      }
-      element.classList.toggle('starting');
-      return this.stateMachine[overlayInput][state]({
-        currentInputNumber,
-        value,
-      });
-    },
-
-    blur(event, type, value) {
-      const id = event.target.id;
-      const element = document.getElementById(id);
-      if (element.classList.contains('pointer')) return;
-      this.editElem(event, type, value);
-    },
+    // ____________________РЕДАКТИРОВАНИЕ_ТЕКСТА___________________
 
     editElem(event) {
       event.preventDefault();
@@ -299,6 +187,9 @@ export default {
         this.startStateEvent();
       }
     },
+
+    // ____________________ДОБАВЛЕНИЕ_СТРОК___________________
+
     addRow() {
       const newRow = () => ({
         id: uuidv4(),
@@ -330,6 +221,121 @@ export default {
         ],
       });
       this.titles.unshift(newRow(), newRow());
+    },
+
+    // ____________________STATUS_POLLING__________________
+    async getVmixState() {
+      await this.$axios.get('/status').then(({ data }) => {
+        const { inputs, overlays, activeTitles } = data;
+        this.vmixState = { inputs, overlays, activeTitles };
+      });
+    },
+
+    startStateEvent() {
+      this.intervalID = setInterval(this.getVmixState.bind(this), 1000);
+    },
+
+    stopStateEvent() {
+      clearInterval(this.intervalID);
+    },
+
+    // ____________________ИНИЦИАЛИЗАЦИЯ_СТЕЙТ_МАШИНЫ__________________
+
+    setMachine() {
+      const inputCount = this.vmixState.overlays.length;
+      this.stateMachine = new StateMachine(
+        inputCount,
+        this.run,
+        this.stop,
+        this.wait
+      );
+    },
+
+    // ____________________МЕТОДЫ_СТЕЙТ_МАШИНЫ__________________
+    run(overlayInput, { currentInputNumber, value }) {
+      const textValues = value.split('#');
+
+      const sendText = (index) => {
+        if (index >= textValues.length) return;
+        const options = {
+          url: '/api/',
+          method: 'post',
+          data: qs.stringify({
+            Function: 'SetText',
+            Input: currentInputNumber,
+            SelectedName: `Text${index + 1}.Text`,
+            Value: textValues[index],
+          }),
+        };
+        return this.$axios(options).then(() => {
+          sendText(index + 1);
+        });
+      };
+
+      return sendText(0).then(() => {
+        this.$axios.post(
+          '/api/',
+          qs.stringify({
+            Function: `OverlayInput${overlayInput}`,
+            Input: currentInputNumber,
+          })
+        );
+      });
+    },
+
+    stop(overlayInput) {
+      return this.$axios.post(
+        '/api/',
+        qs.stringify({
+          Function: `OverlayInput${overlayInput}Out`,
+        })
+      );
+    },
+
+    wait(overlayInput) {
+      let timer = 15;
+      return new Promise((resolve) =>
+        setTimeout(
+          function run(t) {
+            const overlayBusy = t.vmixState.overlays[overlayInput - 1] !== '';
+            if (!overlayBusy) {
+              resolve();
+            }
+            if (timer-- < 0) {
+              resolve('TIME_OUT');
+            }
+            setTimeout(run, 1000, t);
+          },
+          1000,
+          this
+        )
+      );
+    },
+
+    // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
+    sendTitle(event, type, value) {
+      if (!value) return;
+      const id = event.target.id;
+      const element = document.getElementById(id);
+      if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
+      const overlayInput = this.types[type].overlayInput; // Находим разрешенный номер overlay для тайтла
+      const state = this.stateMachine[overlayInput].state;
+      if (state === 'stopping') return;
+      const currentInput = this.vmixState.inputs.filter(
+        (input) => input.title === this.types[type].title
+      );
+      if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
+      const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
+      if (element.classList.contains('active')) {
+        element.classList.toggle('active');
+        element.classList.toggle('ending');
+        return this.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
+      }
+      element.classList.toggle('starting');
+      return this.stateMachine[overlayInput][state]({
+        currentInputNumber,
+        value,
+      });
     },
   },
 };
@@ -502,101 +508,3 @@ ul {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
 }
 </style>
-
-//
-<table>
-//         <tr v-for="card in data" :key="card.type">
-//           <td>
-//             <input
-//               :id="getId()"
-//               readonly
-//               class="title-out pointer"
-//               type="text"
-//               :value="card.tema"
-//               @select="selectText($event)"
-//               @blur="blur($event, 'tema', card.tema)"
-//               @contextmenu="editElem($event, 'tema', card.tema)"
-//               @dblclick="sendTitle($event, 'tema', card.tema)"
-//             />
-//           </td>
-//           <td>
-//             <input
-//               :id="getId()"
-//               readonly
-//               class="title-out pointer"
-//               type="text"
-//               :value="card.fio"
-//               @select="selectText($event)"
-//               @blur="blur($event, 'fio', card.fio)"
-//               @contextmenu="editElem($event, 'fio', card.fio)"
-//               @dblclick="sendTitle($event, 'fio', card.fio)"
-//             />
-//           </td>
-//           <td>
-//             <input
-//               :id="getId()"
-//               readonly
-//               class="title-out pointer"
-//               type="text"
-//               :value="card.geo"
-//               @select="selectText($event)"
-//               @blur="blur($event, 'geo', card.geo)"
-//               @contextmenu="editElem($event, 'geo', card.geo)"
-//               @dblclick="sendTitle($event, 'geo', card.geo)"
-//             />
-//           </td>
-//           <td>
-//             <input
-//               :id="getId()"
-//               readonly
-//               class="title-out pointer"
-//               type="text"
-//               :value="card.source"
-//               @select="selectText($event)"
-//               @blur="blur($event, 'source', card.source)"
-//               @contextmenu="editElem($event, 'source', card.source)"
-//               @dblclick="sendTitle($event, 'source', card.source)"
-//             />
-//           </td>
-//         </tr>
-//       </table>
-
-// data: [ // { // tema: 'самолет', // fio: 'Иван Иванов', // geo: 'Москва', //
-source: 'Газета', // }, // { // tema: 'рукопись', // fio: 'Иван Пакетин', //
-geo: 'Рязань', // source: 'источник', // }, // { // tema: 'вагон', // fio: 'Иван
-Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // { // tema: '', // fio:
-'', // geo: '', // source: 'Газета', // }, // { // tema: '', // fio: '', // geo:
-'', // source: '', // }, // { // tema: 'вагон', // fio: 'Иван Сусанин', // geo:
-'Казань', // source: 'Медуза', // }, // { // tema: 'самолет', // fio: 'Иван
-Иванов', // geo: 'Москва', // source: 'Газета', // }, // { // tema: 'рукопись',
-// fio: 'Иван Пакетин', // geo: 'Рязань', // source: 'источник', // }, // { //
-tema: 'вагон', // fio: 'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', //
-}, // { // tema: '', // fio: '', // geo: '', // source: 'Газета', // }, // { //
-tema: '', // fio: '', // geo: '', // source: '', // }, // { // tema: 'вагон', //
-fio: 'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // { // tema:
-'самолет', // fio: 'Иван Иванов', // geo: 'Москва', // source: 'Газета', // },
-// { // tema: 'рукопись', // fio: 'Иван Пакетин', // geo: 'Рязань', // source:
-'источник', // }, // { // tema: 'вагон', // fio: 'Иван Сусанин', // geo:
-'Казань', // source: 'Медуза', // }, // { // tema: '', // fio: '', // geo: '',
-// source: 'Газета', // }, // { // tema: '', // fio: '', // geo: '', // source:
-'', // }, // { // tema: 'вагон', // fio: 'Иван Сусанин', // geo: 'Казань', //
-source: 'Медуза', // }, // { // tema: 'самолет', // fio: 'Иван Иванов', // geo:
-'Москва', // source: 'Газета', // }, // { // tema: 'рукопись', // fio: 'Иван
-Пакетин', // geo: 'Рязань', // source: 'источник', // }, // { // tema: 'вагон',
-// fio: 'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // { //
-tema: '', // fio: '', // geo: '', // source: 'Газета', // }, // { // tema: '',
-// fio: '', // geo: '', // source: '', // }, // { // tema: 'вагон', // fio:
-'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // { // tema:
-'самолет', // fio: 'Иван Иванов', // geo: 'Москва', // source: 'Газета', // },
-// { // tema: 'рукопись', // fio: 'Иван Пакетин', // geo: 'Рязань', // source:
-'источник', // }, // { // tema: 'вагон', // fio: 'Иван Сусанин', // geo:
-'Казань', // source: 'Медуза', // }, // { // tema: '', // fio: '', // geo: '',
-// source: 'Газета', // }, // { // tema: '', // fio: '', // geo: '', // source:
-'', // }, // { // tema: 'вагон', // fio: 'Иван Сусанин', // geo: 'Казань', //
-source: 'Медуза', // }, // { // tema: 'самолет', // fio: 'Иван Иванов', // geo:
-'Москва', // source: 'Газета', // }, // { // tema: 'рукопись', // fio: 'Иван
-Пакетин', // geo: 'Рязань', // source: 'источник', // }, // { // tema: 'вагон',
-// fio: 'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // { //
-tema: '', // fio: '', // geo: '', // source: 'Газета', // }, // { // tema: '',
-// fio: '', // geo: '', // source: '', // }, // { // tema: 'вагон', // fio:
-'Иван Сусанин', // geo: 'Казань', // source: 'Медуза', // }, // ],

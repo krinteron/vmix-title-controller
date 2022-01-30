@@ -41,9 +41,9 @@ class StateMachine {
   }
 }
 
-const state = (inputCount, ...funcs) => {
+const state = (overlayInputCount, ...funcs) => {
   const result = {};
-  for (let i = 1; i <= inputCount; i++) {
+  for (let i = 1; i <= overlayInputCount; i++) {
     result[i] = new StateMachine(i, ...funcs);
   }
   return result;
