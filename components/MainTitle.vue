@@ -152,6 +152,7 @@ export default {
       this.sendToDB();
     },
 
+    // ____________________ЗАПРЕТ_ВЫДЕЛЕНИЯ_ТЕКСТА___________________
     selectText(event) {
       event.preventDefault();
       const id = event.target.id;
@@ -161,6 +162,7 @@ export default {
       }
     },
 
+    // ____________________STATUS_POLLING__________________
     async getVmixState() {
       await this.$axios.get('/status').then(({ data }) => {
         const { inputs, overlays, activeTitles } = data;
@@ -176,54 +178,52 @@ export default {
       clearInterval(this.intervalID);
     },
 
-    async run({ event, type, value }) {
-      if (!value) return;
-      const textValues = value.split('#');
-      const id = event.target.id;
-      const element = document.getElementById(id);
-      if (!element.classList.contains('pointer')) return;
-      const currentInput = this.vmixState.inputs.filter(
-        (input) => input.title === this.types[type].title
-      );
-      if (!currentInput.length) return;
-      const currentInputNumber = currentInput[0].number;
-      const overlayInputNumber = this.types[type].overlayInput;
+    // ____________________ИНИЦИАЛИЗАЦИЯ_СТЕЙТ_МАШИНЫ__________________
 
-      return await this.$axios
-        .post(
-          '/api/',
-          qs.stringify({
-            Function: 'SetText',
-            Input: currentInputNumber,
-            SelectedName: 'Text1.Text',
-            Value: textValues[0],
-          })
-        )
-        .then(() => {
-          this.$axios.post(
-            '/api/',
-            qs.stringify({
-              Function: 'SetText',
-              Input: currentInputNumber,
-              SelectedName: 'Text2.Text',
-              Value: textValues[1],
-            })
-          );
-        })
-        .then(() => {
-          this.$axios.post(
-            '/api/',
-            qs.stringify({
-              Function: `OverlayInput${overlayInputNumber}`,
-              Input: currentInputNumber,
-            })
-          );
-        });
+    setMachine() {
+      const inputCount = this.vmixState.overlays.length;
+      this.stateMachine = new StateMachine(
+        inputCount,
+        this.run,
+        this.stop,
+        this.wait
+      );
     },
 
-    async stop(input) {
-      // const overlayInputNumber = this.types[type].overlayInput;
-      return await this.$axios.post(
+    // ____________________МЕТОДЫ ДЛЯ СТЕЙТ МАШИНЫ__________________
+    run(overlayInputNumber, { currentInputNumber, value }) {
+      const textValues = value.split('#');
+
+      const sendText = (index) => {
+        if (index >= textValues.length) return;
+        const options = {
+          url: '/api/',
+          method: 'post',
+          data: qs.stringify({
+            Function: 'SetText',
+            Input: currentInputNumber,
+            SelectedName: `Text${index + 1}.Text`,
+            Value: textValues[index],
+          }),
+        };
+        return this.$axios(options).then(() => {
+          sendText(index + 1);
+        });
+      };
+
+      return sendText(0).then(() => {
+        this.$axios.post(
+          '/api/',
+          qs.stringify({
+            Function: `OverlayInput${overlayInputNumber}`,
+            Input: currentInputNumber,
+          })
+        );
+      });
+    },
+
+    stop(input) {
+      return this.$axios.post(
         '/api/',
         qs.stringify({
           Function: `OverlayInput${input}Out`,
@@ -233,7 +233,7 @@ export default {
 
     wait(input) {
       let timer = 15;
-      return new Promise((resolve, reject) =>
+      return new Promise((resolve) =>
         setTimeout(
           function run(t) {
             const overlayBusy = t.vmixState.overlays[input - 1] !== '';
@@ -249,95 +249,33 @@ export default {
           this
         )
       );
-      // const timer = 10;
-      // let intervalID = 0;
-      // intervalID = () =>
-      //   setInterval(() => {
-      //     if (timer <= 0) {
-      //       clearInterval(intervalID);
-      //       return;
-      //     }
-      //     const state = this.vmixState.overlays[0];
-      //     if (!state) {
-      //       clearInterval(intervalID);
-      //     }
-      //   }, 1000);
-      // return intervalID;
-      // return setInterval(() => {}, 5000);
     },
 
-    setMachine() {
-      const inputCount = this.vmixState.overlays.length;
-      this.stateMachine = new StateMachine(
-        inputCount,
-        this.run,
-        this.stop,
-        this.wait
-      );
-    },
-
+    // ____________________ОБРАБОТЧИК ТАЙТЛОВ__________________
     sendTitle(event, type, value) {
+      if (!value) return;
       const id = event.target.id;
       const element = document.getElementById(id);
-      const input = this.types[type].overlayInput;
-      const state = this.stateMachine[input].state;
+      if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
+      const overlayInput = this.types[type].overlayInput; // Находим разрешенный номер overlay для тайтла
+      const state = this.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
+      const currentInput = this.vmixState.inputs.filter(
+        (input) => input.title === this.types[type].title
+      );
+      if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
+      const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
       if (element.classList.contains('active')) {
         element.classList.toggle('active');
         element.classList.toggle('ending');
-        return this.stateMachine[input][state]();
+        return this.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
-      return this.stateMachine[input][state]({ event, type, value });
+      element.classList.toggle('starting');
+      return this.stateMachine[overlayInput][state]({
+        currentInputNumber,
+        value,
+      });
     },
-
-    // async sendTitle(event, type, value) {
-    //   if (!value) return;
-    //   const id = event.target.id;
-    //   const element = document.getElementById(id);
-    //   if (!element.classList.contains('pointer')) return;
-
-    //   // Находим номер инпута этого тайтла в vmix
-    //   // const currentInputNumber = this.vmixState.inputs[this.types[type].title];
-    //   const currentInput = this.vmixState.inputs.filter(
-    //     (input) => input.title === this.types[type].title
-    //   );
-    //   if (!currentInput.length) return;
-    //   const currentInputNumber = currentInput[0].number;
-    //   const currentOverlay =
-    //     this.vmixState.overlays.indexOf(currentInputNumber) + 1;
-
-    //   if (
-    //     !currentOverlay &&
-    //     !this.vmixState.overlays[this.types[type].overlayInput - 1]
-    //   ) {
-    //     await this.$axios
-    //       .post(
-    //         '/api/',
-    //         qs.stringify({
-    //           Function: 'SetText',
-    //           Input: currentInputNumber,
-    //           SelectedName: 'TextBlock1.Text',
-    //           Value: value,
-    //         })
-    //       )
-    //       .then(() => {
-    //         this.$axios.post(
-    //           '/api/',
-    //           qs.stringify({
-    //             Function: `OverlayInput${this.types[type].overlayInput}`,
-    //             Input: currentInputNumber,
-    //           })
-    //         );
-    //       });
-    //   } else {
-    //     await this.$axios.post(
-    //       '/api/',
-    //       qs.stringify({
-    //         Function: `OverlayInput${this.types[type].overlayInput}Out`,
-    //       })
-    //     );
-    //   }
-    // },
 
     blur(event, type, value) {
       const id = event.target.id;
@@ -400,19 +338,20 @@ export default {
 <style scoped>
 .main-title {
   width: 800px;
-  height: 800px;
+  height: 600px;
+  font-family: 'Montserrat', Verdana !important;
+  font-size: 12px;
 }
 
 table {
   border: 1px solid rgb(128, 126, 126);
   text-align: center;
   width: 100%;
-  font-family: 'Montserrat', Verdana !important;
 }
 
 td {
   border: 1px solid rgb(128, 126, 126);
-  height: 40px !important;
+  height: 25px !important;
   width: 200px;
 }
 
@@ -421,7 +360,7 @@ th {
   background: #02a0da;
   color: white;
   width: 200px;
-  height: 40px;
+  height: 25px;
 }
 
 .scroll {
@@ -470,6 +409,17 @@ input.pointer:hover {
 }
 .ending {
   background: #c29158;
+}
+.starting {
+  background: #aae28a;
+  animation: blinker 0.4s ease-in infinite;
+  -webkit-animation: blinker 0.4s ease-in infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .burger-menu {

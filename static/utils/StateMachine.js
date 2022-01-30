@@ -9,7 +9,7 @@ class StateMachine {
   }
 
   stopped(newTitle) {
-    this.run(newTitle).then(() => {
+    this.run(this.input, newTitle).then(() => {
       this.state = 'running';
     });
   }
@@ -31,7 +31,7 @@ class StateMachine {
           this.state = 'stopped';
         } else {
           this.state = 'running';
-          this.run(newTitle);
+          this.run(this.input, newTitle);
         }
       })
       .catch((error) => {
