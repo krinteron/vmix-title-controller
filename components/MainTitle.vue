@@ -19,7 +19,6 @@
         </th>
       </thead>
     </table>
-    <!-- <div class="btn-add" @click="addRow">+</div> -->
     <div class="scroll">
       <table>
         <tr v-for="row in titles" :key="row.id">
@@ -64,6 +63,7 @@ export default {
       titles: [],
       selectedRows: [],
       intervalID: '',
+      autoCloseId: '',
       vmixState: {},
       types: {
         tema: {
@@ -319,6 +319,10 @@ export default {
       const element = document.getElementById(id);
       if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
       const overlayInput = this.types[type].overlayInput; // Находим разрешенный номер overlay для тайтла
+      let autoClose = false;
+      if (type === 'fio') {
+        autoClose = true;
+      }
       const state = this.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
       const currentInput = this.vmixState.inputs.filter(
@@ -331,10 +335,23 @@ export default {
         element.classList.toggle('ending');
         return this.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
+      if (autoClose) {
+        clearTimeout(this.autoCloseId);
+        this.autoCloseId = setTimeout(
+          (overlayInput) => {
+            this.stop(overlayInput);
+          },
+          10000,
+          overlayInput
+        );
+      } else {
+        clearTimeout(this.autoCloseId);
+      }
       element.classList.toggle('starting');
       return this.stateMachine[overlayInput][state]({
         currentInputNumber,
         value,
+        autoClose,
       });
     },
   },
@@ -343,10 +360,11 @@ export default {
 
 <style scoped>
 .main-title {
-  width: 800px;
-  height: 600px;
+  width: 32vw;
+  height: 60vh;
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
+  margin: 10px;
 }
 
 table {
@@ -391,7 +409,7 @@ th {
 
 .row-control {
   position: relative;
-  width: 40px;
+  width: 30px;
   cursor: pointer;
 }
 
@@ -411,7 +429,7 @@ input.pointer:hover {
 }
 
 .active {
-  background: #c25858;
+  background: #aae28a;
 }
 .ending {
   background: #c29158;
@@ -441,8 +459,8 @@ input.pointer:hover {
 
 .burger-menu-item {
   background: white;
-  width: 25px;
-  height: 3px;
+  width: 15px;
+  height: 2px;
 }
 
 .submenu {
@@ -450,7 +468,7 @@ input.pointer:hover {
   position: absolute;
   width: 150px;
   right: 0;
-  top: 41px;
+  top: 26px;
   font-weight: normal;
   z-index: 2;
   transform: scaleY(0);
