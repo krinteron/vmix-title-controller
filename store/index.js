@@ -90,7 +90,18 @@ const store = () =>
         state.db.components[componentId].rows = JSON.parse(
           JSON.stringify(rows)
         );
+        axios.post('/titles', { data: state.db });
+      },
+      removeColumn(state, { componentId, columnId, filteredRows }) {
+        delete state.db.components[componentId].columns[columnId];
+        state.db.components[componentId].rows = JSON.parse(
+          JSON.stringify(filteredRows)
+        );
 
+        axios.post('/titles', { data: state.db });
+      },
+      addProgram(state, { programId, newProgram }) {
+        state.db.programs[programId] = { ...newProgram };
         axios.post('/titles', { data: state.db });
       },
     },

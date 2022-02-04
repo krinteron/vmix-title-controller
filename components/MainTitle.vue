@@ -64,12 +64,22 @@
       title="Extra Large Modal"
       @ok="saveConfig(component.id)"
     >
-      <span class="modal-flex-container">
+      <transition-group tag="span" name="card" class="modal-flex-container">
         <div
           v-for="column in Object.values(component.columns)"
           :key="column.id"
           class="config-input-form"
         >
+          <div class="config-remove-btn-wrapper">
+            <div
+              class="config-remove-btn"
+              @click="removeColumn(component.id, column.id)"
+            >
+              <div class="cros-line-1"></div>
+              <div class="cros-line-2"></div>
+            </div>
+          </div>
+
           <p class="config-input-item">
             <label for="config-header">Заголовок</label>
             <b-form-input
@@ -115,12 +125,12 @@
             />
           </p>
         </div>
-      </span>
+      </transition-group>
       <b-button
         size="sm"
         class="config-input-add-btn"
-        block
         variant="primary"
+        href="#"
         @click="addColumn(component.id)"
         >Добавить столбец</b-button
       >
@@ -170,7 +180,7 @@ export default {
 
     // ____________________ДОБАВЛЕНИЕ_СТРОК___________________
 
-    addRow() {
+    async addRow() {
       const row = {
         id: uuidv4(),
         value: [],
@@ -187,6 +197,7 @@ export default {
         row,
       };
       this.$store.commit('addRow', newRow);
+      await this.$store.dispatch('getTitles');
     },
 
     // ____________________УДАЛЕНИЕ_СТРОК___________________
@@ -200,7 +211,7 @@ export default {
       this.$store.commit('removeRows', removedRows);
     },
 
-    configComponent(component) {
+    configComponent() {
       this.columns = JSON.parse(JSON.stringify(this.component.columns));
     },
 
@@ -214,9 +225,11 @@ export default {
     addColumn(componentId) {
       const columnId = uuidv4();
 
+      const salt = Object.keys(this.component.columns).length + 1;
+
       const newColumn = {
         id: columnId,
-        name: 'ЗАГОЛОВОК',
+        name: `ЗАГОЛОВОК${salt}`,
         filename: '',
         autoclose: false,
         uppercase: false,
@@ -231,14 +244,30 @@ export default {
         });
       });
 
-      console.log(newColumn, rows);
-
       this.$store.commit('addColumn', {
         componentId,
         columnId,
         newColumn,
         rows,
       });
+      this.configComponent();
+    },
+
+    removeColumn(componentId, columnId) {
+      const filteredRows = this.component.rows.map((row) => {
+        const value = row.value.filter((cell) => cell.columnId !== columnId);
+        return {
+          id: row.id,
+          value,
+        };
+      });
+
+      this.$store.commit('removeColumn', {
+        componentId,
+        columnId,
+        filteredRows,
+      });
+      this.configComponent();
     },
 
     // ____________________СОХРАНЕНИЕ_ЯЧЕЙКИ___________________
@@ -355,7 +384,7 @@ export default {
 
 <style scoped>
 .main-title {
-  width: 30vw;
+  width: 50vw;
   /* height: 60vh; */
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
@@ -371,12 +400,41 @@ export default {
   /* flex-direction: column; */
 }
 
+.modal-flex-container div {
+  transition: all 0.3s;
+}
+
+.card-enter {
+  opacity: 0;
+}
+.card-enter-to {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.card-leave-to {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+/* .card-enter-to {
+  transform: translateX(100px);
+  opacity: 0;
+}
+
+.card-leave-to {
+  transform: translateX(-100px);
+  opacity: 0;
+} */
+
 .config-input-form {
+  position: relative;
   width: 45%;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
 }
+
 .config-input-item {
   display: flex;
   box-sizing: border-box;
@@ -385,9 +443,10 @@ export default {
 
 .config-input-item-field {
   width: 70%;
-  /* height: 25px; */
+  font-size: 12px;
   border: 1px solid #ced4da;
   margin: 0 !important;
+  padding: 4px 28px 4px 8px;
 }
 
 .config-input-item .checkbox {
@@ -396,6 +455,41 @@ export default {
 
 .config-input-add-btn {
   margin-top: 15px;
+}
+
+.config-remove-btn-wrapper {
+  text-align: right;
+}
+
+.config-remove-btn {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+}
+
+.config-remove-btn:hover div {
+  background: #d00;
+  transition: 0.2s;
+}
+
+.cros-line-1 {
+  position: relative;
+  width: 20px;
+  height: 6px;
+  top: 30%;
+  background: rgb(214, 212, 212);
+  transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.cros-line-2 {
+  position: relative;
+  width: 20px;
+  height: 6px;
+  background: rgb(214, 212, 212);
+  transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
 }
 
 .scroll {

@@ -21,12 +21,18 @@
             />
           </div>
         </b-tab>
+        <template #tabs-end>
+          <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
+            <b>+</b>
+          </b-nav-item>
+        </template>
       </b-tabs>
     </div>
   </div>
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
 export default {
   data() {
     return {};
@@ -37,7 +43,17 @@ export default {
     this.$store.dispatch('startStateEvent');
     this.$store.dispatch('setStateMachine');
   },
-  methods: {},
+  methods: {
+    addProgram() {
+      const programId = uuidv4();
+      const newProgram = {
+        programName: 'New Program',
+        id: programId,
+      };
+      this.$store.commit('addProgram', { programId, newProgram });
+      this.$store.dispatch('getTitles');
+    },
+  },
 };
 </script>
 

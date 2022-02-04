@@ -98,8 +98,8 @@ const data = {
           uppercase: true,
           overlay: 2,
         },
-        '55645-24325-12353': {
-          id: '55645-24325-12353',
+        '55645-fgfgfg-12353': {
+          id: '55645-fgfgfg-12353',
           name: 'ИСТОЧНИК',
           filename: 'NEWS_source_vmix.gtzip',
           autoclose: true,
@@ -118,7 +118,7 @@ const data = {
             },
             {
               id: '5533c0fe-7472-44ce-a26b-d10bf96b32e8',
-              columnId: '55645-24325-12353',
+              columnId: '55645-fgfgfg-12353',
               value: '',
             },
           ],
@@ -133,7 +133,7 @@ const data = {
             },
             {
               id: '846efa9d-9533-414a-93ad-607ade90b2fb',
-              columnId: '55645-24325-12353',
+              columnId: '55645-fgfgfg-12353',
               value: 'TIMES',
             },
           ],
