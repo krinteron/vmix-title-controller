@@ -1,43 +1,51 @@
 <template>
   <div class="main-title">
-    <table>
-      <thead>
-        <th>tema</th>
-        <th>fio</th>
-        <th>geo</th>
-        <th>source</th>
-        <th class="row-control">
-          <div class="burger-menu">
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-          </div>
-          <ul class="submenu">
-            <li @click="addRow">add row</li>
-            <li @click="removeRow">delete row</li>
-          </ul>
-        </th>
-      </thead>
-    </table>
     <div class="scroll">
       <table>
-        <tr v-for="row in titles" :key="row.id">
-          <td v-for="title in row.value" :key="title.id">
+        <thead>
+          <th
+            v-for="column in Object.values(component.columns)"
+            :key="column.name"
+          >
+            {{ column.name }}
+          </th>
+          <th class="row-control">
+            <div class="burger-menu">
+              <div class="burger-menu-item"></div>
+              <div class="burger-menu-item"></div>
+              <div class="burger-menu-item"></div>
+            </div>
+            <ul class="submenu">
+              <li @click="addRow">add row</li>
+              <li @click="removeRow">delete row</li>
+              <li
+                v-b-modal:[`modal-xl-${component.id}`]
+                @click="configComponent(component)"
+              >
+                settings
+              </li>
+            </ul>
+          </th>
+        </thead>
+        <tr v-for="row in component.rows" :key="row.id">
+          <td v-for="cell in row.value" :key="cell.id">
             <input
-              :id="title.id"
+              :id="cell.id"
               readonly
               class="title-out pointer"
               :class="
-                vmixState.activeTitles[types[title.type].title] ===
-                  title.value && 'active'
+                $store.state.vmixState.activeTitles[
+                  component.columns[cell.columnId].filename
+                ] === cell.value && 'active'
               "
               type="text"
               autocomplete="off"
-              :value="title.value"
+              :value="cell.value"
+              @keyup="validate($event, cell.columnId)"
               @select="selectText($event)"
-              @blur="blur($event, title.type, title.value)"
-              @contextmenu="editElem($event, title.type, title.value)"
-              @dblclick="sendTitle($event, title.type, title.value)"
+              @blur="blur($event, cell)"
+              @contextmenu="editElem($event, cell)"
+              @dblclick="sendTitle($event, cell)"
             />
           </td>
           <td class="row-control" @click="selectRow(row.id)">
@@ -49,56 +57,109 @@
         </tr>
       </table>
     </div>
+    <b-modal
+      v-if="Object.keys(columns).length"
+      :id="`modal-xl-${component.id}`"
+      size="xl"
+      title="Extra Large Modal"
+      @ok="saveConfig(component.id)"
+    >
+      <span class="modal-flex-container">
+        <div
+          v-for="column in Object.values(component.columns)"
+          :key="column.id"
+          class="config-input-form"
+        >
+          <p class="config-input-item">
+            <label for="config-header">Заголовок</label>
+            <b-form-input
+              id="config-header input-small"
+              v-model="columns[column.id].name"
+              class="config-input-item-field"
+            ></b-form-input>
+          </p>
+          <p class="config-input-item">
+            <label for="config-filename">Имя файла</label>
+            <b-form-select
+              id="config-filename"
+              v-model="columns[column.id].filename"
+              :options="filenames"
+              size="sm"
+              class="mt-3 config-input-item-field"
+            ></b-form-select>
+          </p>
+          <p class="config-input-item">
+            <label for="config-overlay">Слой</label>
+            <b-form-select
+              id="config-overlay"
+              v-model="columns[column.id].overlay"
+              :options="options"
+              size="sm"
+              class="mt-3 config-input-item-field"
+            ></b-form-select>
+          </p>
+          <p class="config-input-item">
+            <label for="config-autoclose">Автозакрытие</label>
+            <input
+              id="config-autoclose"
+              v-model="columns[column.id].autoclose"
+              class="config-input-item-field checkbox"
+              type="checkbox"
+            />
+            <label for="config-uppercase">Регистр</label>
+            <input
+              id="config-uppercase"
+              v-model="columns[column.id].uppercase"
+              class="config-input-item-field checkbox"
+              type="checkbox"
+            />
+          </p>
+        </div>
+      </span>
+      <b-button
+        size="sm"
+        class="config-input-add-btn"
+        block
+        variant="primary"
+        @click="addColumn(component.id)"
+        >Добавить столбец</b-button
+      >
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
-import qs from 'qs';
-import StateMachine from '../static/utils/StateMachine';
 export default {
+  props: {
+    component: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
-      stateMachine: '',
-      titles: [],
       selectedRows: [],
-      intervalID: '',
-      autoCloseId: '',
-      vmixState: {},
-      types: {
-        tema: {
-          title: 'NEWS_theme_vmix.gtzip',
-          overlayInput: 1,
-        },
-        fio: {
-          title: 'NEWS_name_vmix.gtzip',
-          overlayInput: 1,
-        },
-        geo: {
-          title: 'NEWS_geo_vmix.gtzip',
-          overlayInput: 2,
-        },
-        source: {
-          title: 'NEWS_source_vmix.gtzip',
-          overlayInput: 2,
-        },
-      },
+      columns: {},
+      options: [
+        { value: 1, text: '1' },
+        { value: 2, text: '2' },
+        { value: 3, text: '3' },
+        { value: 4, text: '4' },
+      ],
+      filenames: [
+        { value: 'NEWS_theme_vmix.gtzip', text: 'NEWS_theme_vmix.gtzip' },
+        { value: 'NEWS_name_vmix.gtzip', text: 'NEWS_name_vmix.gtzip' },
+        { value: 'NEWS_source_vmix.gtzip', text: 'NEWS_source_vmix.gtzip' },
+        { value: 'NEWS_geo_vmix.gtzip', text: 'NEWS_geo_vmix.gtzip' },
+      ],
     };
   },
-  async beforeMount() {
-    await this.getVmixState();
-    this.importTitles();
-    this.startStateEvent();
-    this.setMachine();
-    // this.getCurrentStatus(this);
-  },
+  async beforeMount() {},
+  mounted() {},
   methods: {
-    // getCurrentStatus(t) {
-    //   const eventSource = new EventSource('/current-status');
-    //   eventSource.addEventListener('message', function (e) {
-    //     t.vmixState = JSON.parse(e.data);
-    //   });
-    // },
+    // ____________________ВЫБОР_СТРОК___________________
+
     selectRow(id) {
       if (this.selectedRows.includes(id)) {
         this.selectedRows = this.selectedRows.filter((rowId) => rowId !== id);
@@ -106,38 +167,89 @@ export default {
       }
       this.selectedRows.push(id);
     },
+
+    // ____________________ДОБАВЛЕНИЕ_СТРОК___________________
+
+    addRow() {
+      const row = {
+        id: uuidv4(),
+        value: [],
+      };
+      for (const columnId of Object.keys(this.component.columns)) {
+        row.value.push({
+          id: uuidv4(),
+          columnId,
+          value: '',
+        });
+      }
+      const newRow = {
+        componentId: this.component.id,
+        row,
+      };
+      this.$store.commit('addRow', newRow);
+    },
+
+    // ____________________УДАЛЕНИЕ_СТРОК___________________
+
     removeRow() {
       if (!this.selectedRows.length) return;
-      const newDB = this.titles.filter(({ id }) => {
-        return !this.selectedRows.includes(id);
+      const removedRows = {
+        componentId: this.component.id,
+        rowsId: this.selectedRows,
+      };
+      this.$store.commit('removeRows', removedRows);
+    },
+
+    configComponent(component) {
+      this.columns = JSON.parse(JSON.stringify(this.component.columns));
+    },
+
+    saveConfig(componentId) {
+      this.$store.commit('updateColumns', {
+        componentId,
+        columns: this.columns,
       });
-      this.titles.length = 0;
-      this.titles.push(...newDB);
-      this.sendToDB();
-    },
-    getId() {
-      return uuidv4();
     },
 
-    async importTitles() {
-      await this.$axios.get('/titles').then(({ data }) => {
-        this.titles.length = 0;
-        this.titles.push(...data.data);
+    addColumn(componentId) {
+      const columnId = uuidv4();
+
+      const newColumn = {
+        id: columnId,
+        name: 'ЗАГОЛОВОК',
+        filename: '',
+        autoclose: false,
+        uppercase: false,
+        overlay: 1,
+      };
+      const rows = JSON.parse(JSON.stringify(this.component.rows));
+      rows.forEach((row) => {
+        return row.value.push({
+          id: uuidv4(),
+          columnId,
+          value: '',
+        });
       });
-    },
 
-    // ____________________СОХРАНЕНИЕ_ТАБЛИЦЫ___________________
+      console.log(newColumn, rows);
 
-    sendToDB() {
-      this.$axios.post('/titles', { data: this.titles });
+      this.$store.commit('addColumn', {
+        componentId,
+        columnId,
+        newColumn,
+        rows,
+      });
     },
 
     // ____________________СОХРАНЕНИЕ_ЯЧЕЙКИ___________________
 
-    saveTitle({ target }) {
+    writeRows({ target }, { columnId }) {
       const id = target.id;
-      const value = target.value.toUpperCase();
-      const newDB = this.titles.map((row) => {
+      const value = target.value;
+      // if (this.component.columns[columnId].uppercase) {
+      //   value = value.toUpperCase();
+      // }
+      const rows = this.component.rows.map((row) => {
         row.value = row.value.map((cell) => {
           if (cell.id === id) {
             cell.value = value;
@@ -146,18 +258,20 @@ export default {
         });
         return row;
       });
-      this.titles.length = 0;
-      this.titles.push(...newDB);
-      this.sendToDB();
+      const newRow = {
+        componentId: this.component.id,
+        rows,
+      };
+      this.$store.commit('writeRows', newRow);
     },
 
     // ____________________СОХРАНЕНИЕ_ПРИ_ПОТЕРЕ_ФОКУСА___________________
 
-    blur(event, type, value) {
+    blur(event, cell) {
       const id = event.target.id;
       const element = document.getElementById(id);
       if (element.classList.contains('pointer')) return;
-      this.editElem(event, type, value);
+      this.editElem(event, cell);
     },
 
     // ____________________ЗАПРЕТ_ВЫДЕЛЕНИЯ_ТЕКСТА___________________
@@ -170,9 +284,18 @@ export default {
       }
     },
 
+    validate(event, columnId) {
+      const id = event.target.id;
+      const element = document.getElementById(id);
+      const uppercase = this.component.columns[columnId].uppercase;
+      if (uppercase) {
+        element.value = element.value.toUpperCase();
+      }
+    },
+
     // ____________________РЕДАКТИРОВАНИЕ_ТЕКСТА___________________
 
-    editElem(event) {
+    editElem(event, cell) {
       event.preventDefault();
       const id = event.target.id;
       const element = document.getElementById(id);
@@ -181,177 +304,49 @@ export default {
       element.classList.toggle('pointer');
       element.classList.toggle('editable');
       if (element.classList.contains('editable')) {
-        this.stopStateEvent();
+        this.$store.dispatch('stopStateEvent');
       } else {
-        this.saveTitle(event);
-        this.startStateEvent();
+        this.writeRows(event, cell);
+        this.$store.dispatch('startStateEvent');
       }
-    },
-
-    // ____________________ДОБАВЛЕНИЕ_СТРОК___________________
-
-    addRow() {
-      const newRow = () => ({
-        id: uuidv4(),
-        value: [
-          {
-            type: 'tema',
-            isActive: false,
-            id: uuidv4(),
-            value: '',
-          },
-          {
-            type: 'fio',
-            isActive: false,
-            id: uuidv4(),
-            value: '',
-          },
-          {
-            type: 'geo',
-            isActive: false,
-            id: uuidv4(),
-            value: '',
-          },
-          {
-            type: 'source',
-            isActive: false,
-            id: uuidv4(),
-            value: '',
-          },
-        ],
-      });
-      this.titles.unshift(newRow(), newRow());
-    },
-
-    // ____________________STATUS_POLLING__________________
-    async getVmixState() {
-      await this.$axios.get('/status').then(({ data }) => {
-        const { inputs, overlays, activeTitles } = data;
-        this.vmixState = { inputs, overlays, activeTitles };
-      });
-    },
-
-    startStateEvent() {
-      this.intervalID = setInterval(this.getVmixState.bind(this), 1000);
-    },
-
-    stopStateEvent() {
-      clearInterval(this.intervalID);
-    },
-
-    // ____________________ИНИЦИАЛИЗАЦИЯ_СТЕЙТ_МАШИНЫ__________________
-
-    setMachine() {
-      const inputCount = this.vmixState.overlays.length;
-      this.stateMachine = new StateMachine(
-        inputCount,
-        this.run,
-        this.stop,
-        this.wait
-      );
-    },
-
-    // ____________________МЕТОДЫ_СТЕЙТ_МАШИНЫ__________________
-    run(overlayInput, { currentInputNumber, value }) {
-      const textValues = value.split('#');
-
-      const sendText = (index) => {
-        if (index >= textValues.length) return;
-        const options = {
-          url: '/api/',
-          method: 'post',
-          data: qs.stringify({
-            Function: 'SetText',
-            Input: currentInputNumber,
-            SelectedName: `Text${index + 1}.Text`,
-            Value: textValues[index],
-          }),
-        };
-        return this.$axios(options).then(() => {
-          sendText(index + 1);
-        });
-      };
-
-      return sendText(0).then(() => {
-        this.$axios.post(
-          '/api/',
-          qs.stringify({
-            Function: `OverlayInput${overlayInput}`,
-            Input: currentInputNumber,
-          })
-        );
-      });
-    },
-
-    stop(overlayInput) {
-      return this.$axios.post(
-        '/api/',
-        qs.stringify({
-          Function: `OverlayInput${overlayInput}Out`,
-        })
-      );
-    },
-
-    wait(overlayInput) {
-      let timer = 15;
-      return new Promise((resolve) =>
-        setTimeout(
-          function run(t) {
-            const overlayBusy = t.vmixState.overlays[overlayInput - 1] !== '';
-            if (!overlayBusy) {
-              resolve();
-            }
-            if (timer-- < 0) {
-              resolve('TIME_OUT');
-            }
-            setTimeout(run, 1000, t);
-          },
-          1000,
-          this
-        )
-      );
     },
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
-    sendTitle(event, type, value) {
-      if (!value) return;
+    sendTitle(event, cell) {
+      if (!cell.value) return;
       const id = event.target.id;
       const element = document.getElementById(id);
       if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
-      const overlayInput = this.types[type].overlayInput; // Находим разрешенный номер overlay для тайтла
-      let autoClose = false;
-      if (type === 'fio') {
-        autoClose = true;
-      }
-      const state = this.stateMachine[overlayInput].state;
+      const overlayInput = this.component.columns[cell.columnId].overlay; // Находим разрешенный номер overlay для тайтла
+      const state = this.$store.state.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
-      const currentInput = this.vmixState.inputs.filter(
-        (input) => input.title === this.types[type].title
+      const currentInput = this.$store.state.vmixState.inputs.filter(
+        (input) =>
+          input.title === this.component.columns[cell.columnId].filename
       );
       if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
       const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
       if (element.classList.contains('active')) {
         element.classList.toggle('active');
         element.classList.toggle('ending');
-        return this.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
+        return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
-      if (autoClose) {
-        clearTimeout(this.autoCloseId);
-        this.autoCloseId = setTimeout(
-          (overlayInput) => {
-            this.stop(overlayInput);
-          },
-          10000,
-          overlayInput
-        );
-      } else {
-        clearTimeout(this.autoCloseId);
-      }
+      // if (this.titles.table[title.column].autoClose) {
+      //   clearTimeout(this.autoCloseId);
+      //   this.autoCloseId = setTimeout(
+      //     (overlayInput) => {
+      //       this.stop(overlayInput);
+      //     },
+      //     10000,
+      //     overlayInput
+      //   );
+      // } else {
+      //   clearTimeout(this.autoCloseId);
+      // }
       element.classList.toggle('starting');
-      return this.stateMachine[overlayInput][state]({
+      return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
-        value,
-        autoClose,
+        value: cell.value,
       });
     },
   },
@@ -360,11 +355,55 @@ export default {
 
 <style scoped>
 .main-title {
-  width: 32vw;
-  height: 60vh;
+  width: 30vw;
+  /* height: 60vh; */
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
   margin: 10px;
+}
+
+.modal-flex-container {
+  display: flex;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  /* flex-direction: column; */
+}
+
+.config-input-form {
+  width: 45%;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+}
+.config-input-item {
+  display: flex;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.config-input-item-field {
+  width: 70%;
+  /* height: 25px; */
+  border: 1px solid #ced4da;
+  margin: 0 !important;
+}
+
+.config-input-item .checkbox {
+  height: 20px;
+}
+
+.config-input-add-btn {
+  margin-top: 15px;
+}
+
+.scroll {
+  height: 100%;
+  min-height: 200px;
+  max-height: 60vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 table {
@@ -387,12 +426,6 @@ th {
   height: 25px;
 }
 
-.scroll {
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-}
-
 .pointer {
   cursor: pointer;
   -moz-user-select: -moz-none;
@@ -403,7 +436,7 @@ th {
 }
 
 .editable {
-  background: #cbd7b5;
+  background: #90c8df;
   font-style: italic;
 }
 
@@ -413,14 +446,14 @@ th {
   cursor: pointer;
 }
 
-input {
+.title-out {
   border: none;
   width: 100%;
   height: 100%;
   outline: none;
   text-align: center;
   font-weight: 500;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 }
 
 input.pointer:hover {
@@ -491,9 +524,9 @@ ul {
 
 .submenu li {
   background: #48c5f3;
-  height: 40px;
+  height: 30px;
   text-align: center;
-  line-height: 40px;
+  line-height: 30px;
   user-select: none;
 }
 

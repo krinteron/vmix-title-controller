@@ -1,16 +1,18 @@
 import 'dotenv/config';
 const express = require('express');
-const compression = require('compression')
+const compression = require('compression');
 
 const app = express();
 
 const titles = require('./routes/titles');
 const status = require('./routes/status');
+const storage = require('./routes/storage');
 
 app.use(express.json());
-app.use(compression())
+app.use(compression());
 app.use(titles);
 app.use(status);
+app.use(storage);
 
 module.exports = app;
 

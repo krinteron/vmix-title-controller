@@ -1,7 +1,7 @@
 <template>
   <b-navbar type="dark" variant="dark">
     <b-navbar-nav>
-      <b-nav-item href="#">Home</b-nav-item>
+      <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
 
       <!-- Navbar dropdowns -->
       <b-nav-item-dropdown text="Lang" right>
@@ -13,17 +13,9 @@
 
       <b-nav-item-dropdown text="User" right>
         <b-dropdown-item href="#">Account</b-dropdown-item>
-        <b-dropdown-item v-b-modal.modal-xl href="#" variant="primary">
-          Settings
-        </b-dropdown-item>
-        <b-modal id="modal-xl" size="xl" title="Extra Large Modal">
-          <div @click="console(1111)">Hello Extra Large Modal!</div>
-          <div>Hello Extra Large Modal!</div>
-          <div>Hello Extra Large Modal!</div>
-          <div>Hello Extra Large Modal!</div>
-          <div>Hello Extra Large Modal!</div>
-        </b-modal>
+        <b-dropdown-item href="#"> Settings </b-dropdown-item>
       </b-nav-item-dropdown>
+      <b-nav-item><router-link to="/config">Config</router-link></b-nav-item>
     </b-navbar-nav>
   </b-navbar>
 </template>
