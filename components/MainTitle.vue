@@ -16,8 +16,10 @@
               <div class="burger-menu-item"></div>
             </div>
             <ul class="submenu">
-              <li @click="addRow">add row</li>
-              <li @click="removeRow">delete row</li>
+              <span v-if="Object.keys(component.columns).length">
+                <li @click="addRow">add row</li>
+                <li @click="removeRow">delete row</li>
+              </span>
               <li
                 v-b-modal:[`modal-xl-${component.id}`]
                 @click="configComponent(component)"
@@ -58,13 +60,35 @@
       </table>
     </div>
     <b-modal
-      v-if="Object.keys(columns).length"
       :id="`modal-xl-${component.id}`"
       size="xl"
-      title="Extra Large Modal"
+      title="Настройки контроллера"
       @ok="saveConfig(component.id)"
     >
-      <transition-group tag="span" name="card" class="modal-flex-container">
+      <div class="config-control-btn-wrapper">
+        <b-button
+          size="sm"
+          class="config-input-add-btn"
+          variant="primary"
+          href="#"
+          @click="addColumn(component.id)"
+          >Добавить столбец</b-button
+        >
+        <b-button
+          size="sm"
+          class="config-input-add-btn"
+          variant="danger"
+          href="#"
+          @click="removeComponent(component.id)"
+          >Удалить контроллер</b-button
+        >
+      </div>
+      <transition-group
+        v-if="Object.keys(columns).length"
+        tag="span"
+        name="card"
+        class="modal-flex-container"
+      >
         <div
           v-for="column in Object.values(component.columns)"
           :key="column.id"
@@ -126,14 +150,6 @@
           </p>
         </div>
       </transition-group>
-      <b-button
-        size="sm"
-        class="config-input-add-btn"
-        variant="primary"
-        href="#"
-        @click="addColumn(component.id)"
-        >Добавить столбец</b-button
-      >
     </b-modal>
   </div>
 </template>
@@ -222,27 +238,35 @@ export default {
       });
     },
 
+    removeComponent(componentId) {
+      this.$store.commit('removeComponent', componentId);
+      this.$store.dispatch('getTitles');
+    },
+
     addColumn(componentId) {
       const columnId = uuidv4();
-
-      const salt = Object.keys(this.component.columns).length + 1;
+      const columnsCount = Object.keys(this.component.columns).length;
+      if (columnsCount >= 5) return;
 
       const newColumn = {
         id: columnId,
-        name: `ЗАГОЛОВОК${salt}`,
+        name: `ЗАГОЛОВОК${columnsCount + 1}`,
         filename: '',
         autoclose: false,
         uppercase: false,
         overlay: 1,
       };
-      const rows = JSON.parse(JSON.stringify(this.component.rows));
-      rows.forEach((row) => {
-        return row.value.push({
-          id: uuidv4(),
-          columnId,
-          value: '',
+      let rows = [];
+      if (rows.length) {
+        rows = JSON.parse(JSON.stringify(this.component.rows));
+        rows.forEach((row) => {
+          return row.value.push({
+            id: uuidv4(),
+            columnId,
+            value: '',
+          });
         });
-      });
+      }
 
       this.$store.commit('addColumn', {
         componentId,
@@ -384,11 +408,17 @@ export default {
 
 <style scoped>
 .main-title {
-  width: 50vw;
+  width: 45vw;
   /* height: 60vh; */
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
   margin: 10px;
+}
+
+.config-control-btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .modal-flex-container {
@@ -451,10 +481,6 @@ export default {
 
 .config-input-item .checkbox {
   height: 20px;
-}
-
-.config-input-add-btn {
-  margin-top: 15px;
 }
 
 .config-remove-btn-wrapper {

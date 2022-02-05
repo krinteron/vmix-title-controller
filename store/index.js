@@ -104,6 +104,27 @@ const store = () =>
         state.db.programs[programId] = { ...newProgram };
         axios.post('/titles', { data: state.db });
       },
+      removeProgram(state, programId) {
+        delete state.db.programs[programId];
+        for (const component of Object.values(state.db.components)) {
+          if (component.programId === programId) {
+            delete state.db.components[component.id];
+          }
+        }
+        axios.post('/titles', { data: state.db });
+      },
+      renameProgram(state, program) {
+        state.db.programs[program.id].programName = program.programName;
+        axios.post('/titles', { data: state.db });
+      },
+      addComponent(state, { id, component }) {
+        state.db.components[id] = { ...component };
+        axios.post('/titles', { data: state.db });
+      },
+      removeComponent(state, componentId) {
+        delete state.db.components[componentId];
+        axios.post('/titles', { data: state.db });
+      },
     },
 
     actions: {
