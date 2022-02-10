@@ -2,46 +2,51 @@
   <div class="body">
     <NavBar />
     <div class="title-controllers">
-      <b-tabs v-if="$store.state.db.programs" content-class="mt-3">
-        <b-tab
-          v-for="programId in Object.keys($store.state.db.programs)"
-          :key="programId"
-          :title="$store.state.db.programs[programId].programName"
-          active
-        >
-          <template #title>
-            <strong v-if="$store.state.db.programs[programId]">
-              {{ $store.state.db.programs[programId].programName }}
-            </strong>
-            <b-dropdown variant="outline" size="sm">
-              <b-dropdown-item-button
-                v-b-modal:[`modal-xl-${programId}`]
-                class="dropdown-item"
-                @click="configProgram(programId)"
-              >
-                Настройки
-              </b-dropdown-item-button>
-              <b-dropdown-divider></b-dropdown-divider>
-              <b-dropdown-item-button
-                class="dropdown-item"
-                @click="removeProgram(programId)"
-              >
-                Удалить
-              </b-dropdown-item-button>
-            </b-dropdown>
-          </template>
-          <div
-            v-for="component in Object.values(
-              $store.state.db.components
-            ).filter((component) => component.programId === programId)"
-            :key="component.id"
+      <b-tabs content-class="mt-3">
+        <span v-if="$store.state.db.programs">
+          <b-tab
+            v-for="programId in Object.keys($store.state.db.programs)"
+            :key="programId"
+            :title="$store.state.db.programs[programId].programName"
+            active
+            class="tab-flex-container"
           >
-            <component
-              :is="component.titlerComponentName"
-              :component="component"
-            />
-          </div>
-        </b-tab>
+            <template #title>
+              <strong v-if="$store.state.db.programs[programId]">
+                {{ $store.state.db.programs[programId].programName }}
+              </strong>
+              <b-dropdown variant="outline" size="sm">
+                <b-dropdown-item-button
+                  v-b-modal:[`modal-xl-${programId}`]
+                  class="dropdown-item"
+                  @click="configProgram(programId)"
+                >
+                  Настройки
+                </b-dropdown-item-button>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item-button
+                  class="dropdown-item"
+                  @click="removeProgram(programId)"
+                >
+                  Удалить
+                </b-dropdown-item-button>
+              </b-dropdown>
+            </template>
+            <div
+              v-for="component in Object.values(
+                $store.state.db.components
+              ).filter((component) => component.programId === programId)"
+              :key="component.id"
+              class="tab-flex-item"
+            >
+              <component
+                :is="component.titlerComponentName"
+                :component="component"
+              />
+            </div>
+          </b-tab>
+        </span>
+
         <template #tabs-end>
           <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
             <b>+</b>
@@ -115,15 +120,15 @@ export default {
       selectedComponent: '',
       componentsList: [
         { value: 'MainTitle', text: 'Таблица' },
-        { value: 'MainTitle', text: 'Диптих' },
-        { value: 'MainTitle', text: 'Триптих' },
-        { value: 'MainTitle', text: 'Квартет' },
+        { value: 'Hrip', text: 'Хрип' },
+        { value: 'Quad', text: 'Квартет' },
       ],
     };
   },
   async beforeMount() {
     await this.$store.dispatch('getVmixState');
     await this.$store.dispatch('getTitles');
+    await this.$store.dispatch('getVmixStore');
     this.$store.dispatch('startStateEvent');
     this.$store.dispatch('setStateMachine');
   },
@@ -160,6 +165,102 @@ export default {
         columns: {},
         rows: [],
       };
+      if (this.selectedComponent === 'Quad') {
+        component.resultString = '';
+        component.filename = '';
+        component.overlay = 1;
+        component.autoclose = false;
+        const data = {
+          1: {
+            id: '1',
+            firstname: '',
+            lastname: '',
+          },
+          2: {
+            id: '2',
+            firstname: '',
+            lastname: '',
+          },
+          3: {
+            id: '3',
+            firstname: '',
+            lastname: '',
+          },
+          4: {
+            id: '4',
+            firstname: '',
+            lastname: '',
+          },
+        };
+        component.columns = {
+          topLeft: { ...data },
+          topRight: { ...data },
+          bottomLeft: { ...data },
+          bottomRight: { ...data },
+        };
+      }
+      if (this.selectedComponent === 'Hrip') {
+        component.resultString = '';
+        component.filename = '';
+        component.overlay = 1;
+        component.autoclose = false;
+        component.columns = {
+          1: {
+            id: '1',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          2: {
+            id: '2',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          3: {
+            id: '3',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          4: {
+            id: '4',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          5: {
+            id: '5',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          6: {
+            id: '6',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          7: {
+            id: '7',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          8: {
+            id: '8',
+            name: '',
+            job: '',
+            photo: '',
+          },
+          9: {
+            id: '9',
+            name: '',
+            job: '',
+            photo: '',
+          },
+        };
+      }
       this.$store.commit('addComponent', { id, component });
       this.configProgram(programId);
       this.selectedComponent = '';
@@ -182,23 +283,33 @@ export default {
   height: 100vh;
 }
 
-.modal-flex-container {
+/* .modal-flex-container {
   display: flex;
   box-sizing: border-box;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 20px;
-  /* flex-direction: column; */
+ } */
+
+.tab-flex-container {
+  gap: 20px;
+}
+
+.tab-flex-item {
+  flex-shrink: 1;
 }
 
 .component-control {
   display: flex;
   gap: 20px;
-  margin-bottom: 20px;
 }
 
 .modal-flex-container div {
   transition: all 0.3s;
+}
+
+.nav-tabs {
+  height: 35px !important;
 }
 
 .component-enter {

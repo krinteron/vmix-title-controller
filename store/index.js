@@ -7,11 +7,17 @@ import StateMachine from '../static/utils/StateMachine';
 
 Vue.use(Vuex);
 
-function run(overlayInput, { currentInputNumber, value }) {
+function run(overlayInput, data) {
+  const { currentInputNumber, value, photo } = data;
   const textValues = value.split('#');
-
-  const sendText = (index) => {
-    if (index >= textValues.length + 1) return;
+  const sendText = async (index) => {
+    if (index >= textValues.length + 1) {
+      if (!photo || !photo.values.length) {
+        return;
+      } else {
+        return await sendPhoto(0);
+      }
+    }
     const options = {
       url: '/api/',
       method: 'post',
@@ -22,20 +28,44 @@ function run(overlayInput, { currentInputNumber, value }) {
         Value: textValues[index],
       }),
     };
-    return axios(options).then(() => {
-      sendText(index + 1);
-    });
+    await axios(options);
+    sendText(index + 1);
   };
 
-  return sendText(0).then(() => {
-    axios.post(
-      '/api/',
-      qs.stringify({
-        Function: `OverlayInput${overlayInput}`,
+  const sendPhoto = async (index) => {
+    const photoValues = photo.values;
+    if (index >= photoValues.length) return;
+    let filename = photo.path + photoValues[index];
+    if (!photoValues[index]) {
+      filename = '';
+    }
+    const options = {
+      url: '/api/',
+      method: 'post',
+      data: qs.stringify({
+        Function: 'SetImage',
         Input: currentInputNumber,
+        SelectedName: `Image${index + 1}.Source`,
+        Value: filename,
+      }),
+    };
+    await axios(options);
+    sendPhoto(index + 1);
+  };
+
+  return (
+    sendText(0)
+      // .then(() => sendPhoto(0))
+      .then(() => {
+        axios.post(
+          '/api/',
+          qs.stringify({
+            Function: `OverlayInput${overlayInput}`,
+            Input: currentInputNumber,
+          })
+        );
       })
-    );
-  });
+  );
 }
 
 function stop(overlayInput) {
@@ -53,8 +83,15 @@ const store = () =>
       stateMachine: '',
       intervalID: '',
       vmixState: {},
+      vmixStore: {},
       db: {},
       programs: {},
+      timers: {
+        1: '',
+        2: '',
+        3: '',
+        4: '',
+      },
     },
 
     mutations: {
@@ -62,6 +99,13 @@ const store = () =>
         state[name] = value;
       },
 
+      setTimer(state, { input, id }) {
+        state.timers[input] = id;
+      },
+      clearTimer(state, { input }) {
+        const timerId = state.timers[input];
+        clearTimeout(timerId);
+      },
       addRow(state, { componentId, row }) {
         state.db.components[componentId].rows.unshift(row);
         axios.post('/titles', { data: state.db });
@@ -125,6 +169,20 @@ const store = () =>
         delete state.db.components[componentId];
         axios.post('/titles', { data: state.db });
       },
+      writeQuadResultString(state, { componentId, resultString }) {
+        state.db.components[componentId].resultString = resultString;
+        axios.post('/titles', { data: state.db });
+      },
+      writeQuadParams(
+        state,
+        { componentId, filename, overlay, name, autoclose }
+      ) {
+        state.db.components[componentId].filename = filename;
+        state.db.components[componentId].overlay = overlay;
+        state.db.components[componentId].name = name;
+        state.db.components[componentId].autoclose = autoclose;
+        axios.post('/titles', { data: state.db });
+      },
     },
 
     actions: {
@@ -134,6 +192,15 @@ const store = () =>
         commit('setState', {
           name: 'vmixState',
           value: { inputs, overlays, activeTitles },
+        });
+      },
+
+      getVmixStore: async ({ commit }) => {
+        const data = await axios.get('/vmix-store');
+        const { titles, photo } = JSON.parse(JSON.stringify(data.data));
+        commit('setState', {
+          name: 'vmixStore',
+          value: { titles, photo },
         });
       },
 

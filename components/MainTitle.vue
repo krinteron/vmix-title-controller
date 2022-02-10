@@ -115,9 +115,10 @@
           <p class="config-input-item">
             <label for="config-filename">Имя файла</label>
             <b-form-select
+              v-if="Object.keys($store.state.vmixStore).length"
               id="config-filename"
               v-model="columns[column.id].filename"
-              :options="filenames"
+              :options="$store.state.vmixStore.titles.values"
               size="sm"
               class="mt-3 config-input-item-field"
             ></b-form-select>
@@ -172,12 +173,6 @@ export default {
         { value: 2, text: '2' },
         { value: 3, text: '3' },
         { value: 4, text: '4' },
-      ],
-      filenames: [
-        { value: 'NEWS_theme_vmix.gtzip', text: 'NEWS_theme_vmix.gtzip' },
-        { value: 'NEWS_name_vmix.gtzip', text: 'NEWS_name_vmix.gtzip' },
-        { value: 'NEWS_source_vmix.gtzip', text: 'NEWS_source_vmix.gtzip' },
-        { value: 'NEWS_geo_vmix.gtzip', text: 'NEWS_geo_vmix.gtzip' },
       ],
     };
   },
@@ -257,7 +252,7 @@ export default {
         overlay: 1,
       };
       let rows = [];
-      if (rows.length) {
+      if (this.component.rows.length) {
         rows = JSON.parse(JSON.stringify(this.component.rows));
         rows.forEach((row) => {
           return row.value.push({
@@ -384,18 +379,23 @@ export default {
         element.classList.toggle('ending');
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
-      // if (this.titles.table[title.column].autoClose) {
-      //   clearTimeout(this.autoCloseId);
-      //   this.autoCloseId = setTimeout(
-      //     (overlayInput) => {
-      //       this.stop(overlayInput);
-      //     },
-      //     10000,
-      //     overlayInput
-      //   );
-      // } else {
-      //   clearTimeout(this.autoCloseId);
-      // }
+      this.$store.commit('clearTimer', { input: overlayInput });
+
+      if (this.component.columns[cell.columnId].autoclose) {
+        const timerId = setTimeout(
+          (overlayInput) => {
+            this.$store.state.stateMachine[overlayInput].running();
+          },
+          10000,
+          overlayInput
+        );
+        const timerData = {
+          input: overlayInput,
+          id: timerId,
+        };
+        this.$store.commit('setTimer', timerData);
+      }
+
       element.classList.toggle('starting');
       return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
@@ -408,8 +408,8 @@ export default {
 
 <style scoped>
 .main-title {
-  width: 45vw;
-  /* height: 60vh; */
+  max-width: 700px;
+
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
   margin: 10px;
@@ -427,7 +427,6 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 20px;
-  /* flex-direction: column; */
 }
 
 .modal-flex-container div {
@@ -446,16 +445,6 @@ export default {
   opacity: 0;
   transition: opacity 0.5s;
 }
-
-/* .card-enter-to {
-  transform: translateX(100px);
-  opacity: 0;
-}
-
-.card-leave-to {
-  transform: translateX(-100px);
-  opacity: 0;
-} */
 
 .config-input-form {
   position: relative;

@@ -7,12 +7,14 @@ const app = express();
 const titles = require('./routes/titles');
 const status = require('./routes/status');
 const storage = require('./routes/storage');
+const vmixStore = require('./routes/vmixStore');
 
 app.use(express.json());
 app.use(compression());
 app.use(titles);
 app.use(status);
 app.use(storage);
+app.use(vmixStore);
 
 module.exports = app;
 
