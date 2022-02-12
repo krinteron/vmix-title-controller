@@ -1,128 +1,173 @@
 <template>
   <div class="body">
-    <NavBar />
-    <div class="title-controllers">
-      <b-tabs content-class="mt-3">
-        <span v-if="$store.state.db.programs">
-          <b-tab
-            v-for="programId in Object.keys($store.state.db.programs)"
-            :key="programId"
-            :title="$store.state.db.programs[programId].programName"
-            active
-            class="tab-flex-container"
-          >
-            <template #title>
-              <strong v-if="$store.state.db.programs[programId]">
-                {{ $store.state.db.programs[programId].programName }}
-              </strong>
-              <b-dropdown variant="outline" size="sm">
-                <b-dropdown-item-button
-                  v-b-modal:[`modal-xl-${programId}`]
-                  class="dropdown-item"
-                  @click="configProgram(programId)"
-                >
-                  Настройки
-                </b-dropdown-item-button>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item-button
-                  class="dropdown-item"
-                  @click="removeProgram(programId)"
-                >
-                  Удалить
-                </b-dropdown-item-button>
-              </b-dropdown>
-            </template>
-            <div
-              v-for="component in Object.values(
-                $store.state.db.components
-              ).filter((component) => component.programId === programId)"
-              :key="component.id"
-              class="tab-flex-item"
+    <div v-if="!$store.state.vmixIsOnline" class="vmix-down">
+      <b-alert show variant="danger">
+        <a href="#" class="alert-link">vmix is DOWN</a>
+      </b-alert>
+      <div>
+        <b-input-group size="sm" class="mb-3">
+          <b-form-input v-model="vmixHost"></b-form-input>
+          <b-input-group-append>
+            <b-button
+              size="sm"
+              text="Button"
+              variant="success"
+              @click="changeVmixHost"
+              >Button</b-button
             >
-              <component
-                :is="component.titlerComponentName"
-                :component="component"
-              />
-            </div>
-          </b-tab>
-        </span>
-
-        <template #tabs-end>
-          <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
-            <b>+</b>
-          </b-nav-item>
-        </template>
-      </b-tabs>
-    </div>
-    <b-modal
-      v-if="Object.keys(program).length"
-      :id="`modal-xl-${program.id}`"
-      size="xl"
-      title="Настройки программы"
-      @ok="saveConfig()"
-    >
-      <div class="input-group component-control">
-        <b-input-group prepend="Название программы" class="mt-3">
-          <b-form-input
-            id="config-header input-small"
-            v-model="program.programName"
-            class="config-input-item-field"
-          ></b-form-input>
+          </b-input-group-append>
         </b-input-group>
-        <b-form-select
-          v-model="selectedComponent"
-          class="form-control component-control-item"
-          :options="componentsList"
-        ></b-form-select>
-        <span class="input-group-btn component-control-item">
-          <b-button
-            class="config-input-add-btn"
-            variant="primary"
-            href="#"
-            @click="addComponent(program.id)"
-            >Добавить контроллер</b-button
-          >
-        </span>
       </div>
+    </div>
+    <div v-if="$store.state.vmixIsOnline" class="vmix-up">
+      <NavBar />
+      <div class="title-controllers">
+        <b-tabs content-class="mt-3">
+          <span v-if="$store.state.db.programs">
+            <b-tab
+              v-for="programId in Object.keys($store.state.db.programs)"
+              :key="programId"
+              :title="$store.state.db.programs[programId].programName"
+              active
+              class="tab-flex-container"
+            >
+              <template #title>
+                <strong v-if="$store.state.db.programs[programId]">
+                  {{ $store.state.db.programs[programId].programName }}
+                </strong>
+                <b-dropdown variant="outline" size="sm">
+                  <b-dropdown-item-button
+                    v-b-modal:[`modal-xl-${programId}`]
+                    class="dropdown-item"
+                    @click="configProgram(programId)"
+                  >
+                    Настройки
+                  </b-dropdown-item-button>
+                  <b-dropdown-divider></b-dropdown-divider>
+                  <b-dropdown-item-button
+                    class="dropdown-item"
+                    @click="removeProgram(programId)"
+                  >
+                    Удалить
+                  </b-dropdown-item-button>
+                </b-dropdown>
+              </template>
+              <div
+                v-for="componentId in $store.state.db.programs[programId].order"
+                :key="componentId"
+                class="tab-flex-item"
+              >
+                <component
+                  :is="
+                    $store.state.db.components[componentId].titlerComponentName
+                  "
+                  :component="$store.state.db.components[componentId]"
+                />
+              </div>
+            </b-tab>
+          </span>
 
-      <hr />
-
-      <transition-group
-        tag="span"
-        name="component"
-        class="modal-flex-container"
+          <template #tabs-end>
+            <b-nav-item
+              role="presentation"
+              href="#"
+              @click.prevent="addProgram"
+            >
+              <b>+</b>
+            </b-nav-item>
+          </template>
+        </b-tabs>
+      </div>
+      <b-modal
+        v-if="Object.keys(program).length"
+        :id="`modal-xl-${program.id}`"
+        size="xl"
+        title="Настройки программы"
+        @ok="saveConfig()"
       >
-        <div
-          v-for="component in components"
-          :key="component.id"
-          class="config-input-form"
-        >
-          <div class="config-remove-btn-wrapper">
-            {{ component.titlerComponentName }}
-            <div class="config-remove-btn" @click="removeComponent(component)">
-              <div class="cros-line-1"></div>
-              <div class="cros-line-2"></div>
-            </div>
-          </div>
+        <div class="input-group component-control">
+          <b-input-group prepend="Название программы" class="mt-3">
+            <b-form-input
+              id="config-header input-small"
+              v-model="program.programName"
+              class="config-input-item-field"
+            ></b-form-input>
+          </b-input-group>
+          <b-form-select
+            v-model="selectedComponent"
+            class="form-control component-control-item"
+            :options="componentsList"
+          ></b-form-select>
+          <span class="input-group-btn component-control-item">
+            <b-button
+              class="config-input-add-btn"
+              variant="primary"
+              href="#"
+              @click="addComponent(program.id)"
+              >Добавить контроллер</b-button
+            >
+          </span>
         </div>
-      </transition-group>
-    </b-modal>
+
+        <hr />
+
+        <draggable
+          v-model="orders[program.id]"
+          @end="componentMoved(program.id)"
+        >
+          <transition-group
+            tag="span"
+            name="component"
+            class="modal-flex-container"
+          >
+            <div
+              v-for="componentId in orders[program.id]"
+              :key="componentId"
+              class="config-input-form"
+            >
+              <div
+                v-if="$store.state.db.components[componentId]"
+                class="config-remove-btn-wrapper"
+              >
+                {{
+                  $store.state.db.components[componentId].titlerComponentName
+                }}
+                <div
+                  class="config-remove-btn"
+                  @click="removeComponent(program.id, componentId)"
+                >
+                  <div class="cros-line-1"></div>
+                  <div class="cros-line-2"></div>
+                </div>
+              </div>
+            </div>
+          </transition-group>
+        </draggable>
+      </b-modal>
+    </div>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
 import { v4 as uuidv4 } from 'uuid';
 export default {
+  components: {
+    draggable,
+  },
   data() {
     return {
       program: {},
+      orders: {},
       components: [],
       selectedComponent: '',
       componentsList: [
         { value: 'MainTitle', text: 'Таблица' },
         { value: 'Hrip', text: 'Хрип' },
         { value: 'Quad', text: 'Квартет' },
+        { value: 'Button', text: 'Кнопка' },
       ],
+      vmixHost: '',
     };
   },
   async beforeMount() {
@@ -131,13 +176,29 @@ export default {
     await this.$store.dispatch('getVmixStore');
     this.$store.dispatch('startStateEvent');
     this.$store.dispatch('setStateMachine');
+    this.vmixHost = this.$store.state.vmixHost;
+  },
+  updated() {
+    if (this.$store.state.vmixIsOnline) {
+      Object.values(this.$store.state.db.programs).forEach((program) => {
+        this.orders[program.id] = [...program.order];
+      });
+    }
   },
   methods: {
+    sortComponents() {},
+    componentMoved(programId) {
+      this.$store.commit('writeOrderComponents', {
+        programId,
+        newOrder: this.orders[programId],
+      });
+    },
     addProgram() {
       const programId = uuidv4();
       const newProgram = {
         programName: 'New Program',
         id: programId,
+        order: [],
       };
       this.$store.commit('addProgram', { programId, newProgram });
       this.$store.dispatch('getTitles');
@@ -261,17 +322,27 @@ export default {
           },
         };
       }
+
       this.$store.commit('addComponent', { id, component });
       this.configProgram(programId);
       this.selectedComponent = '';
+      this.orders[programId].push(id);
+      this.componentMoved(programId);
     },
-    removeComponent(component) {
-      this.$store.commit('removeComponent', component.id);
+    removeComponent(programId, componentId) {
+      this.$store.commit('removeComponent', componentId);
+      this.orders[programId] = this.orders[programId].filter(
+        (id) => id !== componentId
+      );
+      this.componentMoved(programId);
       // this.$store.dispatch('getTitles');
-      this.configProgram(component.programId);
+      this.configProgram(programId);
     },
     saveConfig() {
       this.$store.commit('renameProgram', this.program);
+    },
+    changeVmixHost() {
+      this.$store.commit('changeVmixHost', this.vmixHost);
     },
   },
 };

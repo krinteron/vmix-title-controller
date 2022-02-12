@@ -25,15 +25,14 @@ exports.get_status = async function (req, res) {
       String(data.match(/<input .*inputs>/g))
         .split('</input>')
         .forEach((input) => {
-          const textArray = String(input.match(/<text.*text>/g))
-            .split(/Text\d\.Text">/g)
+          const textData = String(input.match(/<text.*text>/g))
+            .split('</text>')
             .filter((n) => n)
             .map((item) => {
-              const id = item.indexOf('<');
-              return item.substring(0, id);
-            });
-          textArray.shift();
-          const textData = textArray.join('#');
+              const id = item.indexOf('>');
+              return item.substring(id + 1);
+            })
+            .join('#');
 
           const text = textData === 'null' ? '' : textData;
 

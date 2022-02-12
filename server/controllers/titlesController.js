@@ -62,3 +62,10 @@ exports.get_vmix_store = async function (req, res) {
   };
   res.json(data);
 };
+
+exports.set_vmix_host = function (req, res) {
+  const host = req.body.data;
+
+  fs.writeFileSync('./vmixHost.json', JSON.stringify({ host }), 'utf8');
+  res.json({});
+};

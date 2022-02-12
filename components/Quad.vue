@@ -547,15 +547,20 @@ export default {
       }
       this.show();
     },
-    writeColumns(classname) {
+    async writeColumns(classname) {
       const currentComp = document.getElementById(this.component.id);
       const currentString = currentComp.querySelector(classname);
-      currentString.checked = false;
       const componentId = this.component.id;
-      this.$store.commit('updateColumns', {
+      await this.$store.commit('updateColumns', {
         componentId,
         columns: this.columns,
       });
+      if (currentString.checked === true) {
+        const event = {
+          target: currentString,
+        };
+        this.radioHandler(event);
+      }
     },
     show() {
       this.result =
@@ -586,6 +591,7 @@ export default {
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle() {
+      this.show();
       // if (!this.result) return;
       // const element = document.querySelector('.status-badge');
       const overlayInput = this.component.overlay; // Находим разрешенный номер overlay для тайтла

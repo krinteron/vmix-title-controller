@@ -191,15 +191,20 @@ export default {
       }
       // this.show();
     },
-    writeColumns(id) {
+    async writeColumns(id) {
       const currentComp = document.getElementById(this.component.id);
       const currentString = currentComp.querySelector('.checkbox' + id);
-      currentString.checked = false;
       const componentId = this.component.id;
-      this.$store.commit('updateColumns', {
+      await this.$store.commit('updateColumns', {
         componentId,
         columns: this.columns,
       });
+      if (currentString.checked === true) {
+        const event = {
+          target: currentString,
+        };
+        this.radioHandler(event);
+      }
     },
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________

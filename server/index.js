@@ -1,20 +1,28 @@
+import fs from 'fs';
 import 'dotenv/config';
 const express = require('express');
-const compression = require('compression');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
 const titles = require('./routes/titles');
 const status = require('./routes/status');
-const storage = require('./routes/storage');
 const vmixStore = require('./routes/vmixStore');
 
+const getVmixHost = () => {
+  const vmixData = fs.readFileSync('./vmixHost.json', 'utf8');
+  const parsedData = JSON.parse(vmixData);
+  return parsedData.host;
+};
+
 app.use(express.json());
-app.use(compression());
 app.use(titles);
 app.use(status);
-app.use(storage);
 app.use(vmixStore);
+app.use(
+  '/api/',
+  createProxyMiddleware({ target: getVmixHost(), changeOrigin: true })
+);
 
 module.exports = app;
 

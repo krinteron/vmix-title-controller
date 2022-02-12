@@ -1,5 +1,7 @@
 <template>
-  <div v-if="Object.keys(columns).length" class="button-comp">
+  <div class="button-comp">
+    <b-button variant="outline-dark" class="m-2" @click="newButton">+</b-button>
+    <!-- <div v-if="Object.keys(columns).length"> -->
     <div
       v-for="buttonData in Object.values(component.columns)"
       :key="buttonData.id"
@@ -9,14 +11,14 @@
         id="dropdown-form"
         :ref="'dropdown' + buttonData.id"
         split
-        :split-variant="
+        :split-variant="buttonData.color"
+        :variant="
           (Object.keys($store.state.vmixState.activeTitles).includes(
             buttonData.filename
           ) &&
             'success') ||
-          'outline-primary'
+          'outline-secondary'
         "
-        variant="outline-primary"
         :text="columns[buttonData.id].name"
         class="m-2"
         @click="sendTitle(buttonData)"
@@ -32,6 +34,19 @@
               v-model="columns[buttonData.id].name"
               class="config-input-item-field"
             ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            label="Цвет"
+            label-for="config-color"
+            @submit.stop.prevent
+          >
+            <b-form-select
+              id="config-color"
+              v-model="columns[buttonData.id].color"
+              :options="$store.state.colors"
+              size="sm"
+              class="mt-3 config-input-item-field"
+            ></b-form-select>
           </b-form-group>
           <b-form-group
             label="Имя файла"
@@ -63,19 +78,29 @@
             class="mb-3"
             >Автозакрытие</b-form-checkbox
           >
-          <b-button
-            variant="primary"
-            size="sm"
-            @click="saveConfig(buttonData.id)"
-            >Сохранить</b-button
-          >
+          <span class="config-controls-wrapper">
+            <b-button
+              variant="danger"
+              size="sm"
+              @click="deleteButton(buttonData.id)"
+              >Delete</b-button
+            >
+            <b-button
+              variant="primary"
+              size="sm"
+              @click="saveConfig(buttonData.id)"
+              >Save</b-button
+            >
+          </span>
         </b-dropdown-form>
       </b-dropdown>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
 export default {
   props: {
     component: {
@@ -95,21 +120,37 @@ export default {
       ],
     };
   },
-  async beforeMount() {},
-  mounted() {
+  beforeMount() {
     this.columns = JSON.parse(JSON.stringify(this.component.columns));
     this.componentData = { ...this.component };
   },
+  mounted() {},
   methods: {
-    saveConfig(id) {
-      this.$refs['dropdown' + id][0].hide(true);
+    writeColumns() {
       this.$store.commit('updateColumns', {
         componentId: this.component.id,
         columns: this.columns,
       });
     },
-    console(msg) {
-      alert(msg);
+    saveConfig(id) {
+      this.$refs['dropdown' + id][0].hide(true);
+      this.writeColumns();
+    },
+    deleteButton(id) {
+      delete this.columns[id];
+      this.writeColumns();
+    },
+    newButton() {
+      const id = uuidv4();
+      this.columns[id] = {
+        id,
+        name: 'newButton',
+        color: 'secondary',
+        filename: '',
+        overlay: 4,
+        autoclose: false,
+      };
+      this.writeColumns();
     },
     sendTitle(component) {
       // if (!this.result) return;
@@ -160,8 +201,14 @@ export default {
 
 <style scoped>
 .button-comp {
-  width: 500px;
+  display: flex;
+  flex-wrap: wrap;
+  /* max-width: 500px; */
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
+}
+.config-controls-wrapper {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

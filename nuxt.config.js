@@ -1,4 +1,5 @@
 import 'dotenv/config';
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: true,
@@ -23,11 +24,11 @@ export default {
 
   serverMiddleware: [{ path: '/', handler: '~/server/index.js' }],
 
-  proxy: {
-    '/api/': {
-      target: process.env.VMIX_HOST,
-    },
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: getVmixHost(),
+  //   },
+  // },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],

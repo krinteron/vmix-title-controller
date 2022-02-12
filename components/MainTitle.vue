@@ -191,7 +191,7 @@ export default {
 
     // ____________________ДОБАВЛЕНИЕ_СТРОК___________________
 
-    async addRow() {
+    addRow() {
       const row = {
         id: uuidv4(),
         value: [],
@@ -208,7 +208,7 @@ export default {
         row,
       };
       this.$store.commit('addRow', newRow);
-      await this.$store.dispatch('getTitles');
+      // await this.$store.dispatch('getTitles');
     },
 
     // ____________________УДАЛЕНИЕ_СТРОК___________________
@@ -408,11 +408,12 @@ export default {
 
 <style scoped>
 .main-title {
+  min-width: 500px;
   max-width: 700px;
 
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px;
-  margin: 10px;
+  /* margin: 10px; */
 }
 
 .config-control-btn-wrapper {
@@ -529,10 +530,11 @@ td {
 
 th {
   border: 1px solid rgb(128, 126, 126);
-  background: #02a0da;
+  /* background: #02a0da; */
+  background-color: #007bff;
   color: white;
   width: 200px;
-  height: 25px;
+  height: 35px;
 }
 
 .pointer {

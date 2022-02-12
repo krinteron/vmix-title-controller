@@ -84,8 +84,19 @@ const store = () =>
       intervalID: '',
       vmixState: {},
       vmixStore: {},
+      vmixIsOnline: true,
+      vmixHost: '',
       db: {},
       programs: {},
+      colors: [
+        { value: 'primary', text: 'blue' },
+        { value: 'secondary', text: 'grey' },
+        { value: 'success', text: 'green' },
+        { value: 'danger', text: 'red' },
+        { value: 'warning', text: 'yellow' },
+        { value: 'info', text: 'turquoise' },
+        { value: 'dark', text: 'black' },
+      ],
       timers: {
         1: '',
         2: '',
@@ -105,6 +116,10 @@ const store = () =>
       clearTimer(state, { input }) {
         const timerId = state.timers[input];
         clearTimeout(timerId);
+      },
+      writeOrderComponents(state, { programId, newOrder }) {
+        state.db.programs[programId].order = [...newOrder];
+        axios.post('/titles', { data: state.db });
       },
       addRow(state, { componentId, row }) {
         state.db.components[componentId].rows.unshift(row);
@@ -149,12 +164,12 @@ const store = () =>
         axios.post('/titles', { data: state.db });
       },
       removeProgram(state, programId) {
-        delete state.db.programs[programId];
         for (const component of Object.values(state.db.components)) {
           if (component.programId === programId) {
             delete state.db.components[component.id];
           }
         }
+        delete state.db.programs[programId];
         axios.post('/titles', { data: state.db });
       },
       renameProgram(state, program) {
@@ -163,6 +178,7 @@ const store = () =>
       },
       addComponent(state, { id, component }) {
         state.db.components[id] = { ...component };
+        // state.db.programs[component.programId].order.push(component.id);
         axios.post('/titles', { data: state.db });
       },
       removeComponent(state, componentId) {
@@ -183,16 +199,30 @@ const store = () =>
         state.db.components[componentId].autoclose = autoclose;
         axios.post('/titles', { data: state.db });
       },
+      changeVmixHost(state, newHost) {
+        state.vmixHost = newHost;
+        axios.post('/vmix-host', { data: newHost });
+      },
     },
 
     actions: {
-      getVmixState: async ({ commit }) => {
-        const data = await axios.get('/status');
-        const { inputs, overlays, activeTitles } = data.data;
+      getVmixState: async ({ commit, state }) => {
+        const { data } = await axios.get('/status');
+        if (Object.keys(data).includes('error')) {
+          if (state.vmixIsOnline) {
+            state.vmixIsOnline = false;
+          }
+          state.vmixHost = data.error.vmixHost;
+          return;
+        }
+        const { inputs, overlays, activeTitles } = data;
         commit('setState', {
           name: 'vmixState',
           value: { inputs, overlays, activeTitles },
         });
+        if (!state.vmixIsOnline) {
+          state.vmixIsOnline = true;
+        }
       },
 
       getVmixStore: async ({ commit }) => {
