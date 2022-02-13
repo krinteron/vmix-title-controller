@@ -39,6 +39,10 @@
               v-if="Object.keys($store.state.vmixStore).length"
               id="config-filename"
               v-model="componentData.filename"
+              :disabled="
+                $store.state.vmixState.activeTitles[component.filename] ===
+                $store.state.db.components[component.id].resultString
+              "
               :options="$store.state.vmixStore.titles.values"
               size="sm"
               class="mt-3 config-input-item-field"
@@ -49,7 +53,11 @@
             <b-form-select
               id="config-overlay"
               v-model="componentData.overlay"
-              :options="overlays"
+              :disabled="
+                $store.state.vmixState.activeTitles[component.filename] ===
+                $store.state.db.components[component.id].resultString
+              "
+              :options="$store.state.vmixOverlays"
               size="sm"
               class="mt-3 config-input-item-field"
             ></b-form-select>
@@ -138,12 +146,6 @@ export default {
       topRight: '#',
       bottomLeft: '#',
       bottomRight: '#',
-      overlays: [
-        { value: 1, text: '1' },
-        { value: 2, text: '2' },
-        { value: 3, text: '3' },
-        { value: 4, text: '4' },
-      ],
     };
   },
   async beforeMount() {},
@@ -334,16 +336,6 @@ b-form-select {
   display: flex;
   flex-direction: column;
   grid-area: hrip-form;
-}
-
-.top-right {
-  grid-area: top-right;
-}
-.bottom-left {
-  grid-area: bottom-left;
-}
-.bottom-right {
-  grid-area: bottom-right;
 }
 
 .active {

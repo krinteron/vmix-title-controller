@@ -3,7 +3,13 @@ const fs = require('fs');
 const SMB2 = require('@marsaud/smb2');
 
 const smb2Client = new SMB2({
-  share: '\\\\172.16.16.240\\vmix_store',
+  share: (() => {
+    const vmixData = fs.readFileSync('./vmixHost.json', 'utf8');
+    const parsedData = JSON.parse(vmixData);
+    const hostname = new URL(parsedData.host).hostname;
+    return `\\\\${hostname}\\vmix_store`;
+  })(),
+  // share: '\\\\172.16.16.240\\vmix_store',
   domain: 'DOMAIN',
   username: 'username',
   password: 'password',

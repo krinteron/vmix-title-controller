@@ -212,6 +212,8 @@ export default {
     },
 
     async removeProgram(programId) {
+      const confirmation = confirm('Удалить программу?');
+      if (!confirmation) return;
       this.$store.commit('removeProgram', programId);
       await this.$store.dispatch('getTitles');
     },
@@ -377,10 +379,6 @@ export default {
 
 .modal-flex-container div {
   transition: all 0.3s;
-}
-
-.nav-tabs {
-  height: 35px !important;
 }
 
 .component-enter {

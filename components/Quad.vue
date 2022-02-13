@@ -38,6 +38,10 @@
               v-if="Object.keys($store.state.vmixStore).length"
               id="config-filename"
               v-model="componentData.filename"
+              :disabled="
+                $store.state.vmixState.activeTitles[component.filename] ===
+                $store.state.db.components[component.id].resultString
+              "
               :options="$store.state.vmixStore.titles.values"
               size="sm"
               class="mt-3 config-input-item-field"
@@ -48,9 +52,13 @@
             <b-form-select
               id="config-overlay"
               v-model="componentData.overlay"
-              :options="overlays"
+              :disabled="
+                $store.state.vmixState.activeTitles[component.filename] ===
+                $store.state.db.components[component.id].resultString
+              "
+              :options="$store.state.vmixOverlays"
               size="sm"
-              class="mt-3 config-input-item-field"
+              class="mt-3 config-input-item-field blocked"
             ></b-form-select>
           </b-form-group>
 
@@ -488,11 +496,7 @@ export default {
   },
   data() {
     return {
-      isActive:
-        this.$store.state.vmixState.activeTitles[this.component.filename] ===
-        this.result,
       result: '',
-      sendedResult: '',
       selectedRows: [],
       componentData: {},
       columns: {},
@@ -500,20 +504,6 @@ export default {
       topRight: '#',
       bottomLeft: '#',
       bottomRight: '#',
-      event: '',
-      filenames: [
-        { value: 'NEWS_theme_vmix.gtzip', text: 'NEWS_theme_vmix.gtzip' },
-        { value: 'NEWS_name_vmix.gtzip', text: 'NEWS_name_vmix.gtzip' },
-        { value: 'NEWS_source_vmix.gtzip', text: 'NEWS_source_vmix.gtzip' },
-        { value: 'NEWS_geo_vmix.gtzip', text: 'NEWS_geo_vmix.gtzip' },
-        { value: 'quad.gtzip', text: 'quad.gtzip' },
-      ],
-      overlays: [
-        { value: 1, text: '1' },
-        { value: 2, text: '2' },
-        { value: 3, text: '3' },
-        { value: 4, text: '4' },
-      ],
     };
   },
   async beforeMount() {},
@@ -573,22 +563,6 @@ export default {
         this.bottomRight;
     },
 
-    // configComponent() {
-    //   this.columns = JSON.parse(JSON.stringify(this.component.columns));
-    // },
-
-    // saveConfig(componentId) {
-    //   this.$store.commit('updateColumns', {
-    //     componentId,
-    //     columns: this.columns,
-    //   });
-    // },
-
-    // removeComponent(componentId) {
-    //   this.$store.commit('removeComponent', componentId);
-    //   this.$store.dispatch('getTitles');
-    // },
-
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle() {
       this.show();
@@ -602,7 +576,6 @@ export default {
       );
       if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
       const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
-      // this.sendedResult = this.result;
 
       if (
         this.$store.state.vmixState.activeTitles[this.component.filename] ===
@@ -724,146 +697,6 @@ b-form-select {
   grid-area: bottom-right;
 }
 
-/* .modal-flex-container div {
-  transition: all 0.3s;
-}
-
-.card-enter {
-  opacity: 0;
-}
-.card-enter-to {
-  opacity: 1;
-  transition: opacity 0.5s;
-}
-
-.card-leave-to {
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-
-.config-input-form {
-  position: relative;
-  width: 45%;
-  padding: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-}
-
-.config-input-item {
-  display: flex;
-  box-sizing: border-box;
-  justify-content: space-between;
-}
-
-.config-input-item-field {
-  width: 70%;
-  font-size: 12px;
-  border: 1px solid #ced4da;
-  margin: 0 !important;
-  padding: 4px 28px 4px 8px;
-}
-
-.config-input-item .checkbox {
-  height: 20px;
-}
-
-.config-remove-btn-wrapper {
-  text-align: right;
-}
-
-.config-remove-btn {
-  position: relative;
-  display: inline-block;
-  height: 20px;
-}
-
-.config-remove-btn:hover div {
-  background: #d00;
-  transition: 0.2s;
-}
-
-.cros-line-1 {
-  position: relative;
-  width: 20px;
-  height: 6px;
-  top: 30%;
-  background: rgb(214, 212, 212);
-  transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-}
-.cros-line-2 {
-  position: relative;
-  width: 20px;
-  height: 6px;
-  background: rgb(214, 212, 212);
-  transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-.scroll {
-  height: 100%;
-  min-height: 200px;
-  max-height: 60vh;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-table {
-  border: 1px solid rgb(128, 126, 126);
-  text-align: center;
-  width: 100%;
-}
-
-td {
-  border: 1px solid rgb(128, 126, 126);
-  height: 25px !important;
-  width: 200px;
-}
-
-th {
-  border: 1px solid rgb(128, 126, 126);
-  background: #02a0da;
-  color: white;
-  width: 200px;
-  height: 25px;
-}
-
-.pointer {
-  cursor: pointer;
-  -moz-user-select: -moz-none;
-  -o-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.editable {
-  background: #90c8df;
-  font-style: italic;
-}
-
-.row-control {
-  position: relative;
-  width: 30px;
-  cursor: pointer;
-}
-
-.title-out {
-  border: none;
-  width: 100%;
-  height: 100%;
-  outline: none;
-  text-align: center;
-  font-weight: 500;
-}
-
-input.pointer:hover {
-  background: #97cded;
-  transition: 0.2s;
-}
-*/
 .active {
   background: #aae28a;
 }
@@ -871,95 +704,4 @@ input.pointer:hover {
 .ending {
   background: #c29158;
 }
-/*
-.starting {
-  background: #aae28a;
-  animation: blinker 0.4s ease-in infinite;
-  -webkit-animation: blinker 0.4s ease-in infinite;
-}
-
-@keyframes blinker {
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.burger-menu {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  gap: 3px;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.burger-menu-item {
-  background: white;
-  width: 15px;
-  height: 2px;
-}
-
-.submenu {
-  opacity: 0;
-  position: absolute;
-  width: 150px;
-  right: 0;
-  top: 26px;
-  font-weight: normal;
-  z-index: 2;
-  transform: scaleY(0);
-  transform-origin: 0 0;
-  transition: 0.15s;
-}
-
-.row-control:hover .submenu {
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-.submenu li,
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-.submenu li {
-  background: #48c5f3;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  user-select: none;
-}
-
-.submenu li:hover {
-  background: #45a3c5;
-}
-
-.submenu li:active {
-  background: #357d97;
-}
-
-.select-row {
-  width: 15px;
-  height: 15px;
-  border: 2px solid rgb(165, 165, 165);
-  margin: auto;
-}
-
-.select-row-checked {
-  background: #48f3ba;
-}
-
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-thumb {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
-} */
 </style>

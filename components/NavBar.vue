@@ -20,6 +20,13 @@
     <div v-if="$store.state.vmixState.overlays" class="overlays-indicator">
       <b-badge
         pill
+        class="overlays-dasable-btn"
+        variant="danger"
+        @click="overlayOutAll"
+        >Снять всё</b-badge
+      >
+      <b-badge
+        pill
         class="overlays-indicator-btn"
         :variant="
           ($store.state.vmixState.overlays[0] && 'success') || 'secondary'
@@ -74,6 +81,12 @@ export default {
       this.$store.commit('clearTimer', { input });
       return this.$store.state.stateMachine[input].running();
     },
+    overlayOutAll() {
+      for (const i in Object.keys(this.$store.state.timers)) {
+        this.$store.commit('clearTimer', { input: i });
+      }
+      return this.$store.commit('overlayOutAll');
+    },
   },
 };
 </script>
@@ -85,6 +98,12 @@ export default {
 }
 .nav-bts {
   display: flex;
+}
+.overlays-dasable-btn {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-right: 30px;
+  cursor: pointer;
 }
 .overlays-indicator-btn {
   cursor: pointer;

@@ -74,14 +74,14 @@
           @click="addColumn(component.id)"
           >Добавить столбец</b-button
         >
-        <b-button
+        <!-- <b-button
           size="sm"
           class="config-input-add-btn"
           variant="danger"
           href="#"
-          @click="removeComponent(component.id)"
+          @click="removeComponent(component.programId, component.id)"
           >Удалить контроллер</b-button
-        >
+        > -->
       </div>
       <transition-group
         v-if="Object.keys(columns).length"
@@ -128,7 +128,7 @@
             <b-form-select
               id="config-overlay"
               v-model="columns[column.id].overlay"
-              :options="options"
+              :options="$store.state.vmixOverlays"
               size="sm"
               class="mt-3 config-input-item-field"
             ></b-form-select>
@@ -168,12 +168,6 @@ export default {
     return {
       selectedRows: [],
       columns: {},
-      options: [
-        { value: 1, text: '1' },
-        { value: 2, text: '2' },
-        { value: 3, text: '3' },
-        { value: 4, text: '4' },
-      ],
     };
   },
   async beforeMount() {},
@@ -233,10 +227,12 @@ export default {
       });
     },
 
-    removeComponent(componentId) {
-      this.$store.commit('removeComponent', componentId);
-      this.$store.dispatch('getTitles');
-    },
+    // removeComponent(programId, componentId) {
+    //   this.$store.commit('removeComponent', componentId);
+    //   this.orders[programId] = this.orders[programId].filter(
+    //     (id) => id !== componentId
+    //   );
+    // },
 
     addColumn(componentId) {
       const columnId = uuidv4();

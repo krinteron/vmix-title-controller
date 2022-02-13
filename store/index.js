@@ -88,6 +88,12 @@ const store = () =>
       vmixHost: '',
       db: {},
       programs: {},
+      vmixOverlays: [
+        { value: 1, text: '1' },
+        { value: 2, text: '2' },
+        { value: 3, text: '3' },
+        { value: 4, text: '4' },
+      ],
       colors: [
         { value: 'primary', text: 'blue' },
         { value: 'secondary', text: 'grey' },
@@ -116,6 +122,16 @@ const store = () =>
       clearTimer(state, { input }) {
         const timerId = state.timers[input];
         clearTimeout(timerId);
+      },
+      overlayOutAll() {
+        const options = {
+          url: '/api/',
+          method: 'post',
+          data: qs.stringify({
+            Function: 'OverlayInputAllOff',
+          }),
+        };
+        axios(options);
       },
       writeOrderComponents(state, { programId, newOrder }) {
         state.db.programs[programId].order = [...newOrder];

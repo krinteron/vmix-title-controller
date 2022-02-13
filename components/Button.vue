@@ -57,6 +57,11 @@
               v-if="Object.keys($store.state.vmixStore).length"
               id="config-filename"
               v-model="columns[buttonData.id].filename"
+              :disabled="
+                Object.keys($store.state.vmixState.activeTitles).includes(
+                  buttonData.filename
+                )
+              "
               :options="$store.state.vmixStore.titles.values"
               size="sm"
               class="mt-3 config-input-item-field"
@@ -67,7 +72,12 @@
             <b-form-select
               id="config-overlay"
               v-model="columns[buttonData.id].overlay"
-              :options="overlays"
+              :disabled="
+                Object.keys($store.state.vmixState.activeTitles).includes(
+                  buttonData.filename
+                )
+              "
+              :options="$store.state.vmixOverlays"
               size="sm"
               class="mt-3 config-input-item-field"
             ></b-form-select>
@@ -112,12 +122,6 @@ export default {
     return {
       selectedRows: [],
       columns: {},
-      overlays: [
-        { value: 1, text: '1' },
-        { value: 2, text: '2' },
-        { value: 3, text: '3' },
-        { value: 4, text: '4' },
-      ],
     };
   },
   beforeMount() {
