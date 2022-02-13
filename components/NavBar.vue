@@ -1,9 +1,12 @@
 <template>
   <b-navbar type="dark" variant="dark" class="nav-flex-container">
     <b-navbar-nav>
-      <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
+      <b-navbar-brand href="#">
+        <img src="/logo.png" class="d-inline-block align-top" alt="logo" />
+        vMix Title Controller
+      </b-navbar-brand>
+      <!-- <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
 
-      <!-- Navbar dropdowns -->
       <b-nav-item-dropdown text="Lang" right>
         <b-dropdown-item href="#">EN</b-dropdown-item>
         <b-dropdown-item href="#">ES</b-dropdown-item>
@@ -15,7 +18,7 @@
         <b-dropdown-item href="#">Account</b-dropdown-item>
         <b-dropdown-item href="#"> Settings </b-dropdown-item>
       </b-nav-item-dropdown>
-      <b-nav-item><router-link to="/config">Config</router-link></b-nav-item>
+      <b-nav-item><router-link to="/config">Config</router-link></b-nav-item> -->
     </b-navbar-nav>
     <div v-if="$store.state.vmixState.overlays" class="overlays-indicator">
       <b-badge
