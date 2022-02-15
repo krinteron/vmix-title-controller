@@ -1,5 +1,9 @@
 <template>
-  <div :id="component.id" class="quad-title">
+  <div
+    :id="component.id"
+    :style="{ 'grid-area': component.id }"
+    class="quad-title"
+  >
     <div v-if="Object.keys(columns).length" class="editor">
       <b-badge
         :variant="
@@ -65,6 +69,9 @@
           <b-form-checkbox v-model="componentData.autoclose" class="mb-3"
             >Автозакрытие</b-form-checkbox
           >
+          <b-form-checkbox v-model="componentData.uppercase" class="mb-3"
+            >Регистр</b-form-checkbox
+          >
           <b-button variant="primary" size="sm" @click="saveConfig"
             >Сохранить</b-button
           >
@@ -87,12 +94,14 @@
               v-model="columns.topLeft[1].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl1')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topLeft[1].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl1')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -112,12 +121,14 @@
               v-model="columns.topLeft[2].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl2')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topLeft[2].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl2')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -137,12 +148,14 @@
               v-model="columns.topLeft[3].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl3')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topLeft[3].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl3')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -162,12 +175,41 @@
               v-model="columns.topLeft[4].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl4')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topLeft[4].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tl4')"
+              @keyup="validate($event)"
+            ></b-form-input>
+          </b-input-group>
+        </p>
+        <p class="input-string">
+          <b-input-group class="mb-2">
+            <b-input-group-prepend class="quad-input" is-text>
+              <input
+                id="topLeft"
+                type="checkbox"
+                :value="component.columns.topLeft[5]"
+                class="checkbox-tl5"
+                @click="radioHandler($event)"
+              />
+            </b-input-group-prepend>
+            <b-form-input
+              id="firstname"
+              v-model="columns.topLeft[5].firstname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-tl5')"
+              @keyup="validate($event)"
+            ></b-form-input>
+            <b-form-input
+              id="lastname"
+              v-model="columns.topLeft[5].lastname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-tl5')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -189,12 +231,14 @@
               v-model="columns.topRight[1].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr1')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topRight[1].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr1')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -214,12 +258,14 @@
               v-model="columns.topRight[2].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr2')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topRight[2].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr2')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -239,12 +285,14 @@
               v-model="columns.topRight[3].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr3')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topRight[3].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr3')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -264,12 +312,41 @@
               v-model="columns.topRight[4].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr4')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.topRight[4].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-tr4')"
+              @keyup="validate($event)"
+            ></b-form-input>
+          </b-input-group>
+        </p>
+        <p class="input-string">
+          <b-input-group class="mb-2">
+            <b-input-group-prepend class="quad-input" is-text>
+              <input
+                id="topRight"
+                type="checkbox"
+                :value="component.columns.topRight[5]"
+                class="checkbox-tr5"
+                @click="radioHandler($event)"
+              />
+            </b-input-group-prepend>
+            <b-form-input
+              id="firstname"
+              v-model="columns.topRight[5].firstname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-tr5')"
+              @keyup="validate($event)"
+            ></b-form-input>
+            <b-form-input
+              id="lastname"
+              v-model="columns.topRight[5].lastname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-tr5')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -291,12 +368,14 @@
               v-model="columns.bottomLeft[1].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl1')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomLeft[1].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl1')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -316,12 +395,14 @@
               v-model="columns.bottomLeft[2].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl2')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomLeft[2].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl2')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -341,12 +422,14 @@
               v-model="columns.bottomLeft[3].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl3')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomLeft[3].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl3')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -366,12 +449,41 @@
               v-model="columns.bottomLeft[4].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl4')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomLeft[4].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-bl4')"
+              @keyup="validate($event)"
+            ></b-form-input>
+          </b-input-group>
+        </p>
+        <p class="input-string">
+          <b-input-group class="mb-2">
+            <b-input-group-prepend class="quad-input" is-text>
+              <input
+                id="bottomLeft"
+                type="checkbox"
+                :value="component.columns.bottomLeft[5]"
+                class="checkbox-bl5"
+                @click="radioHandler($event)"
+              />
+            </b-input-group-prepend>
+            <b-form-input
+              id="firstname"
+              v-model="columns.bottomLeft[5].firstname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-bl5')"
+              @keyup="validate($event)"
+            ></b-form-input>
+            <b-form-input
+              id="lastname"
+              v-model="columns.bottomLeft[5].lastname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-bl5')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -393,12 +505,14 @@
               v-model="columns.bottomRight[1].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-br1')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomRight[1].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-br1')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -418,12 +532,14 @@
               v-model="columns.bottomRight[2].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-br2')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomRight[2].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-br2')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -442,12 +558,14 @@
               v-model="columns.bottomRight[3].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-br3')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomRight[3].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-br3')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
@@ -466,21 +584,70 @@
               v-model="columns.bottomRight[4].firstname"
               class="quad-input"
               @change="writeColumns('.checkbox-br4')"
+              @keyup="validate($event)"
             ></b-form-input>
             <b-form-input
               id="lastname"
               v-model="columns.bottomRight[4].lastname"
               class="quad-input"
               @change="writeColumns('.checkbox-br4')"
+              @keyup="validate($event)"
+            ></b-form-input>
+          </b-input-group>
+        </p>
+        <p class="input-string">
+          <b-input-group class="mb-2">
+            <b-input-group-prepend class="quad-input" is-text>
+              <input
+                id="bottomRight"
+                type="checkbox"
+                :value="component.columns.bottomRight[5]"
+                class="checkbox-br5"
+                @click="radioHandler($event)"
+              />
+            </b-input-group-prepend>
+            <b-form-input
+              v-model="columns.bottomRight[5].firstname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-br5')"
+              @keyup="validate($event)"
+            ></b-form-input>
+            <b-form-input
+              id="lastname"
+              v-model="columns.bottomRight[5].lastname"
+              class="quad-input"
+              @change="writeColumns('.checkbox-br5')"
+              @keyup="validate($event)"
             ></b-form-input>
           </b-input-group>
         </p>
       </div>
-      <b-alert show variant="secondary" class="display-string">
+      <!-- <b-alert show variant="secondary" class="display-string">
         {{ result }}
-      </b-alert>
-      <b-button variant="primary" size="sm" class="show-btn" @click="sendTitle">
-        Вывести/Снять
+      </b-alert> -->
+      <b-button
+        v-if="
+          $store.state.vmixState.activeTitles[component.filename] ===
+          $store.state.db.components[component.id].resultString
+        "
+        variant="danger"
+        size="sm"
+        class="show-btn"
+        @click="sendTitle"
+      >
+        Снять
+      </b-button>
+      <b-button
+        v-if="
+          $store.state.vmixState.activeTitles[component.filename] !==
+          $store.state.db.components[component.id].resultString
+        "
+        variant="primary"
+        size="sm"
+        class="show-btn"
+        @click="sendTitle"
+      >
+        Вывести
       </b-button>
     </div>
   </div>
@@ -513,7 +680,8 @@ export default {
   },
   methods: {
     saveConfig() {
-      const { filename, overlay, name, autoclose } = this.componentData;
+      const { filename, overlay, name, autoclose, uppercase } =
+        this.componentData;
       this.$refs.dropdown.hide(true);
       this.$store.commit('writeQuadParams', {
         componentId: this.component.id,
@@ -521,7 +689,9 @@ export default {
         overlay,
         name,
         autoclose,
+        uppercase,
       });
+      this.$store.dispatch('saveDB');
     },
     radioHandler(event) {
       const id = event.target.id;
@@ -537,14 +707,20 @@ export default {
       }
       this.show();
     },
-    async writeColumns(classname) {
+    validate(event) {
+      if (this.component.uppercase) {
+        event.target.value = event.target.value.toUpperCase();
+      }
+    },
+    writeColumns(classname) {
       const currentComp = document.getElementById(this.component.id);
       const currentString = currentComp.querySelector(classname);
       const componentId = this.component.id;
-      await this.$store.commit('updateColumns', {
+      this.$store.commit('updateColumns', {
         componentId,
         columns: this.columns,
       });
+      this.$store.dispatch('saveDB');
       if (currentString.checked === true) {
         const event = {
           target: currentString,
@@ -590,6 +766,7 @@ export default {
         componentId: this.component.id,
         resultString: this.result,
       });
+      this.$store.dispatch('saveDB');
       this.$store.commit('clearTimer', { input: overlayInput });
       if (this.componentData.autoclose) {
         const timerId = setTimeout(
@@ -616,7 +793,8 @@ export default {
 
 <style scoped>
 .quad-title {
-  max-width: 600px;
+  /* min-width: 400px; */
+  /* max-width: 450px; */
 
   /* min-width: 30vw; */
   /* height: 60vh; */
@@ -639,7 +817,7 @@ input {
   padding: 2px 5px;
 }
 
-.display-string {
+/* .display-string {
   width: 100%;
   height: 20px;
   font-family: 'Montserrat', Verdana !important;
@@ -649,7 +827,7 @@ input {
   white-space: nowrap;
   overflow: hidden;
   margin: 0;
-}
+} */
 
 .editor {
   font: inherit !important;
@@ -659,10 +837,10 @@ input {
     'status-badge config-btn'
     'top-left top-right'
     'bottom-left bottom-right'
-    'display-string display-string'
+    /* 'display-string display-string' */
     'show-btn show-btn';
   /* grid-template-rows: 50% 50% 100%; */
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
 }
 
 .status-badge {

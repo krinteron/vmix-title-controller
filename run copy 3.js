@@ -1,430 +1,809 @@
 const fs = require('fs');
 const data = {
   programs: {
-    'd8a5e8c1-4903-467f-924a-8bd66aa07e66': {
-      programName: 'И так далее',
-      id: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
+    'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec': {
+      programName: 'New Program',
+      id: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
       order: [
-        'bd514ddd-a697-4a2a-ae68-a9cc534bdbcd',
-        '72809251-2375-4c73-b2ba-6be09074d1da',
-        'c5de6f5a-d9f8-4740-affe-d7cdc0214835',
-        '94eadb03-2b75-4519-9e61-2ca209b7080e',
-        '457df4d6-a3b8-4189-be1b-21c88c81c744',
+        'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+        'abed44556-ed68-470f-b8ee-776360e37370',
+        'a239ee902-be7d-4468-afdb-c3fe5484d146',
+        'a51808d74-c49f-4be4-83f3-7d2d25e3205d',
+        'a917aae19-28e2-4c8b-bb04-aa970e49c807',
       ],
+      areasOptions: {
+        row1: [
+          'abed44556-ed68-470f-b8ee-776360e37370',
+          'a51808d74-c49f-4be4-83f3-7d2d25e3205d',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+        ],
+        row2: [
+          'abed44556-ed68-470f-b8ee-776360e37370',
+          'a51808d74-c49f-4be4-83f3-7d2d25e3205d',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+        ],
+        row3: [
+          'a917aae19-28e2-4c8b-bb04-aa970e49c807',
+          'a239ee902-be7d-4468-afdb-c3fe5484d146',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+          'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+        ],
+      },
+      areas:
+        '"abed44556-ed68-470f-b8ee-776360e37370 a51808d74-c49f-4be4-83f3-7d2d25e3205d ae8c7d423-52dc-457c-a27a-a7b183bed834 ae8c7d423-52dc-457c-a27a-a7b183bed834" "abed44556-ed68-470f-b8ee-776360e37370 a51808d74-c49f-4be4-83f3-7d2d25e3205d ae8c7d423-52dc-457c-a27a-a7b183bed834 ae8c7d423-52dc-457c-a27a-a7b183bed834" "a917aae19-28e2-4c8b-bb04-aa970e49c807 a239ee902-be7d-4468-afdb-c3fe5484d146 ae8c7d423-52dc-457c-a27a-a7b183bed834 ae8c7d423-52dc-457c-a27a-a7b183bed834"',
     },
   },
   components: {
-    '94eadb03-2b75-4519-9e61-2ca209b7080e': {
-      id: '94eadb03-2b75-4519-9e61-2ca209b7080e',
-      programId: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
+    'ae8c7d423-52dc-457c-a27a-a7b183bed834': {
+      id: 'ae8c7d423-52dc-457c-a27a-a7b183bed834',
+      programId: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
+      name: 'ТАБЛИЦА',
       titlerComponentName: 'MainTitle',
       columns: {
-        'a78e7f37-7f9a-4c24-9812-ce3f8e82d774': {
-          id: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
-          name: 'ТЕМА',
-          filename: 'NEWS_theme_vmix.gtzip',
+        '4866a213-51ef-4242-8d04-c7083da1f239': {
+          id: '4866a213-51ef-4242-8d04-c7083da1f239',
+          name: '__________ТЕМА__________',
+          filename: '',
           autoclose: false,
-          uppercase: true,
+          uppercase: false,
           overlay: 1,
         },
-        '9511db28-6ab9-4a76-b788-5d0397e3fbd2': {
-          id: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-          name: 'ФИО#ДОЛЖНОСТЬ',
-          filename: 'NEWS_name_vmix.gtzip',
-          autoclose: true,
-          uppercase: true,
+        '7f89347f-5bc7-4f12-946e-17b0f0a2d89f': {
+          id: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+          name: '______________ФИО________________',
+          filename: '',
+          autoclose: false,
+          uppercase: false,
           overlay: 1,
         },
-        '7c79963f-1c82-4456-a2d1-8554fe3110ad': {
-          id: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-          name: 'ГЕО',
-          filename: 'NEWS_geo_vmix.gtzip',
+        '32552bbc-6355-4d39-9882-bda516b17730': {
+          id: '32552bbc-6355-4d39-9882-bda516b17730',
+          name: '_____ГЕО_____',
+          filename: '',
           autoclose: false,
-          uppercase: true,
-          overlay: 2,
+          uppercase: false,
+          overlay: 1,
         },
-        'a84866a3-8884-4e1f-a8ab-b8888c5bef3d': {
-          id: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+        'c1026b32-bd4a-41a5-9682-e697fdac68ad': {
+          id: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
           name: 'ИСТОЧНИК',
-          filename: 'NEWS_source_vmix.gtzip',
+          filename: '',
           autoclose: false,
-          uppercase: true,
-          overlay: 2,
+          uppercase: false,
+          overlay: 1,
         },
       },
       rows: [
         {
-          id: '15820c6a-394a-41e9-92ec-46fed5d3d3fd',
+          id: '0f0d0754-2bff-4d46-ae52-5bdb917760eb',
           value: [
             {
-              id: '3baa8c2c-3b58-4cc8-992f-4f53bed04cfa',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: '5c72bfe7-33b0-40c9-a231-1577d043ff15',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: 'e987bd58-3c13-465a-8115-91a20295e91b',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-              value: 'МОРЖ САМАРОВИЧ#РЫБАК',
-            },
-            {
-              id: 'c75981a0-3aa3-4548-9dd5-cf8894daff5a',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: '1dde2421-d955-4de3-96a6-ce6010823ac1',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: 'dae8427a-e164-4d92-bb47-694f4f29b6b0',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '0f1c965e-9933-4a5a-b0d0-1fbbc6ad1a59',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'd35776cb-9f31-4d67-865c-6daf37a3acab',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: '70e56bde-966f-4065-b2f0-37734b37a0ac',
+          id: 'd329f8a8-ad93-4331-831e-ffd99abf4dec',
           value: [
             {
-              id: '3fae69f8-8c33-489d-983a-d609e50d3c47',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: 'ef042a96-89cb-45e4-922b-05703b6befb3',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: '65f24824-31ff-4e42-8066-875df10bc0aa',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: 'be1c6f6f-6a30-47f6-8e1f-93fc119e45bb',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '8df24914-5836-4d2a-8ab3-9526ee81d2e2',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-              value: 'ЛЕС',
+              id: '10803b89-ab58-4735-bcf5-7b16c781d31b',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
             },
             {
-              id: '1aa69b6c-92dd-4a07-84b8-a61d975e285c',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '751ae31a-cb4d-433f-8877-5cdf4c68a209',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: 'f0ba2084-a29f-4e88-9ec3-66dd5af15c04',
+          id: '43719aa3-c3d0-4fd2-acb1-64e08842c50d',
           value: [
             {
-              id: 'dbcef9f5-09f8-4bca-aee9-6a55e149d3fb',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
-              value: 'ДОЖДЬ СЕГОДНЯ',
-            },
-            {
-              id: '72135422-3e48-4cab-b3f7-46c72f564477',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: 'fe10d5e4-a101-423e-9f3a-7f8eb80db1bf',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: '098afb0a-4ddc-4573-b873-6e24afda6ebd',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: '6e0fbf2e-3877-4627-bca5-dfd4a64d8f14',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '84100c3f-451b-4502-92c1-10a9ab33653a',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
-              value: 'СОСЕДКА',
-            },
-          ],
-        },
-        {
-          id: '632b610e-be4a-49aa-befa-ec05bf65e850',
-          value: [
-            {
-              id: '02f984c7-7704-476c-9fe9-0345c1770e4b',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: '1e68680d-f303-4046-ab03-627d3702a511',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
               value: '',
             },
             {
-              id: 'fae13a43-939a-4487-95a8-5a11b4412c12',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-              value: 'КИТ КАРПОВ#СМЕСИТЕЛЬ',
-            },
-            {
-              id: '5abc1f23-ee7f-42cc-a57b-13c785a4464d',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-              value: '',
-            },
-            {
-              id: '9a762811-f811-4bdc-bd9a-a41c14adef66',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '6a8b8e60-4866-4982-b805-57d7149be909',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: '12edbcdf-8d44-49aa-9723-6c1c1df5e3d7',
+          id: '4ad6d6ba-61db-4ac3-a9ad-b62ba885ebc0',
           value: [
             {
-              id: 'd95e759a-264d-4468-9631-c569fb482bfa',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: 'e0ca0c1c-d95c-4bd6-8a3e-1fd8453f3bea',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: '03a5f827-b755-41c7-8321-901bcd404867',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: '78f90dbb-f51c-485a-856e-0fe69e18500f',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '0645f965-28fd-473d-bf15-fb312d682a6c',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: 'af478ac8-fa09-4709-8d7f-c42968bf1cf6',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
               value: '',
             },
             {
-              id: 'd491f549-2fc5-482f-bd17-48ce3bd33013',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
-              value: 'DW',
-            },
-          ],
-        },
-        {
-          id: 'b947a43f-8cb6-4ea1-9555-98204dfba66d',
-          value: [
-            {
-              id: '759cdfe0-93af-4a16-ae2e-347f86423e47',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
-              value: '',
-            },
-            {
-              id: '2294fd1e-18bf-4330-a62d-b7feca931870',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-              value: '',
-            },
-            {
-              id: '30463882-02b3-4ee7-98d2-4160881625de',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-              value: 'МАРС',
-            },
-            {
-              id: '95132e93-1844-4a96-bdc6-84c4195e9b9e',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '11c0518a-e125-4806-b5d6-e53adeec32bd',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: '7ba74ea0-ce7c-432f-8976-a8fdd0ca873d',
+          id: '3b76c806-9461-41ba-ab7a-b186d1d76960',
           value: [
             {
-              id: '54635f04-9d09-4a6f-852b-324dc6e1e5d5',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
-              value: 'ПОЖАР НА МАРСЕ',
-            },
-            {
-              id: '622cdfff-3871-4348-92a2-48707813f3ca',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: '6a976990-044e-496e-8d8c-9a7b84870a41',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: 'fa620a6f-73b0-4614-9c35-a1247b94e22d',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: '0f50acff-130f-4342-a5fd-1f970c39d446',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '9bb50960-b165-4a4c-8a5e-ee5c8db8f958',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: 'b8d518ff-dcb6-4d61-8121-d66713773b1e',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'dca618fd-67e3-41a3-afa6-7f47bb6404e2',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: 'd3079ff5-bf74-4f85-846d-6e058f1b4200',
+          id: '40b906b4-a54a-46e4-be1a-7eb49d9b58a8',
           value: [
             {
-              id: 'd395725d-88f4-4873-a987-57db1cec142c',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: 'd0659896-f860-436b-988e-f75e73c78132',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: 'e8f6cb8d-7b89-4385-b3b5-c7a2c057f9ae',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-              value: 'АНТОН ДУЛЬНЫЙ#ОХОТНИК',
-            },
-            {
-              id: '46e859e6-a0a3-4876-bdd9-9bad580c69d3',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: 'f890f8e1-f87e-4717-afcc-855b62f23f17',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: 'e828f5c7-1f99-4781-b32b-11234c8788f7',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '0a4910da-bc88-4302-b7ed-13fa77269022',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '8f4ab3ab-ec9a-42ae-a57b-39ae149878f7',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: '24f7dfd3-a7c7-433f-8c60-d3b8811f9a99',
+          id: 'b1f3f4c6-a656-441f-a8f9-a9dab1c722fe',
           value: [
             {
-              id: 'b9701141-6396-442c-8553-5c8ebba65e02',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: 'f17adf76-54b4-493e-9d88-a8664a43a361',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: 'eb10b94b-39c8-425a-8e2b-10f4b1b35a66',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: '40963a10-a071-4f02-86ff-2fc20bfd3698',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '3188bc44-b47b-48bc-b23b-94ef81804a19',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-              value: 'ПЕТРОВКА 38',
+              id: '0914bb8c-70b7-4fc9-b3b7-20d19966d314',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
             },
             {
-              id: '01e06a5d-a579-41fd-ade9-645c1a22bdf5',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '51c7c246-6f3f-45be-b2f7-4925e64ad17b',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: 'fdb75ec2-0b4f-44de-9891-0cf90b3e5f12',
+          id: 'edad48d4-a592-48fa-89ec-b39171607756',
           value: [
             {
-              id: '69d9d950-3740-4579-bd47-c2dc48645848',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
-              value: 'ВАКХАНАЛИЯ',
-            },
-            {
-              id: '77b1af04-b4c1-4d8f-875f-6266eccfba81',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: '3b76fc5c-6652-408f-b865-3e15c525b634',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: 'bb0696a6-2322-4b12-af8b-a1eb9b108752',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: '5f2f26fe-9100-4351-b7be-f6c5b43f7a05',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '79d60bd9-b276-4299-9824-9962cffd85db',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
-              value: 'NYTIMES',
-            },
-          ],
-        },
-        {
-          id: '703e8ff5-f452-4bfb-abc0-93e295e3f992',
-          value: [
-            {
-              id: '425c998e-f199-4968-9d97-d41b6bec0687',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: '4371fd57-ec4c-416d-81cf-ee62c49c3a62',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
               value: '',
             },
             {
-              id: '0fb10533-003e-4610-9ee6-d8997638e13d',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
-              value: '',
-            },
-            {
-              id: '5a744853-846f-4fc5-ba30-090b72deb7e0',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
-              value: '',
-            },
-            {
-              id: '18e38d01-7c46-4397-bdf8-a47d91b69a46',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '505dd376-b7a4-4e9d-b041-effd039aad1a',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
         {
-          id: '73687321-eb4e-4890-9d3e-4f52920f1fab',
+          id: 'ad0bf321-b527-4fea-807e-982f986d8f1b',
           value: [
             {
-              id: '39971dcc-7dd1-4abc-86bc-8d8e491c9a6b',
-              columnId: 'a78e7f37-7f9a-4c24-9812-ce3f8e82d774',
+              id: '7b115986-117a-4a5f-b31b-9259567dc173',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
               value: '',
             },
             {
-              id: '3eb582c9-0af4-46eb-ad5e-9d0a3df6dfc1',
-              columnId: '9511db28-6ab9-4a76-b788-5d0397e3fbd2',
+              id: 'c0fc7c36-575a-485b-a8cd-1b08c37db70a',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
               value: '',
             },
             {
-              id: '20f1318f-38fa-4486-a23a-e86a71e31cc1',
-              columnId: '7c79963f-1c82-4456-a2d1-8554fe3110ad',
+              id: '68a1646c-acef-4b98-a4cf-93609cee8eff',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
               value: '',
             },
             {
-              id: 'f85475a6-d2fc-4e22-9e6d-68a05e4e61ba',
-              columnId: 'a84866a3-8884-4e1f-a8ab-b8888c5bef3d',
+              id: '06df96fe-2187-4fc5-b9cf-d79c2577a1ff',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'b0852a2e-cea2-4b2b-a19c-3e1cba271c15',
+          value: [
+            {
+              id: '2dd9d0f9-7945-46aa-8f73-da97fc0774bd',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '606ea95a-575d-4b28-a245-f54bfa2f46b5',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '56542ba2-083a-41c3-96ef-9a046e59b799',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'b7e66008-5edd-428e-9e82-da069efba50e',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '96015868-1fa3-447e-bb6f-85cd6116bcfa',
+          value: [
+            {
+              id: 'b38b820c-f1a3-477e-95a8-632907c8e4f2',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '3faab647-9447-4928-9ff7-25ced1853c38',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '086b5205-6255-4401-bf41-721e97d9c8a5',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'fca634e1-c795-4ef8-b03c-bf857d2e2ce6',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'b2ad65d9-a688-4dfc-9f19-c65e86659815',
+          value: [
+            {
+              id: '9f34d9cd-ee84-460a-a406-b89f832a775d',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '161d01d5-4220-44ae-98f5-e148ba2a5e72',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: 'a3d18584-35a0-4e05-ad8f-66788b24fb28',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '0223d953-40c7-4ab1-9ef6-616f7fb3e98b',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '3b145bac-5443-4d3a-9ac4-b0b5dc1e372b',
+          value: [
+            {
+              id: 'c0f9e911-a86b-422b-8ae9-92b255097801',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '6bf02f67-1578-4736-83f4-5658ed5b9322',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '84dd0a46-e029-4a3c-b8e6-ecf483b168c1',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '84c31f92-fde1-4b5a-9c27-c56c1a060c09',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'cd8779c8-f133-4a63-a3e9-443e0f853ef6',
+          value: [
+            {
+              id: '47570047-6099-43c1-9edf-ff81b9d5978b',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '388266f3-546d-459f-aa60-54d9381a2394',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '4dfea4c3-4916-414e-a9a5-15b89df9f249',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '8aee8154-9933-46e2-92e3-d98a4659afe7',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'c1824eeb-753c-418c-b8b4-2a0e26609810',
+          value: [
+            {
+              id: 'ca52c27e-9261-46c2-868a-bcc1488bde6e',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '64414b79-78b8-4aa5-825c-f580d5a0316a',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '8ae96c6e-347a-476a-9208-4c0194b1dce1',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '5f2d6f29-c442-479c-a381-1e75783c1d0a',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '775011ae-9732-4776-ae7d-550498851dc0',
+          value: [
+            {
+              id: 'c11a331d-17c8-4cf9-bf41-44accf6f1bf2',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '6cb7a179-44c6-442e-90b2-b149cdec1edf',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '4235fcc5-1364-4788-89c9-48454c723222',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '06dadf53-b802-4585-a7d7-66e320ae69f3',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '2ec84db4-c5b4-4712-8612-4ff884445190',
+          value: [
+            {
+              id: '35ed1223-5837-454c-b17f-f2b49e6a27d7',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: 'db59c629-81ac-42af-9c40-c858fe7d6ed8',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '24ee78d4-2978-4346-b326-ecd79f8e7002',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '317da9c2-b15b-491c-9268-01c243043ac4',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '24e42972-68e8-4f6b-ab41-35558c5c8e17',
+          value: [
+            {
+              id: '44e2d3f9-e8f6-4646-92ae-5b6324a9735a',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '68f35ef0-07a1-4bc8-a505-7fb5972ca03d',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '0528bfd1-a43e-4063-a8ef-6f814e86e720',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'd99c3f72-5092-4979-8afd-98b9ef357b05',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'a1d9ec3e-55e7-4329-882e-e6008c95b73e',
+          value: [
+            {
+              id: '194ccf3c-8499-48f5-8288-d4255466f63c',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '5daaffd5-4d4a-4eb0-ac40-58153425a55f',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '22d4f682-7160-44cd-acde-484f06987877',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '835fb7a5-b38a-431f-8639-b179b836f3fb',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '4a0e0fa8-9d67-4937-be53-5c22a3645795',
+          value: [
+            {
+              id: 'b14dffae-acb5-4758-955f-44c0f7e888cc',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: 'ff2bf755-9927-47cf-ba00-7310ba545cc8',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '626e596a-f309-4a2a-b3da-a18e3531ebb1',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '9c933923-9ffd-4517-a99e-42101f3a8232',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '29f4a5ac-77aa-484b-a9dd-4a5f258c468e',
+          value: [
+            {
+              id: 'e93ddcce-dacc-4b0d-b3a3-7d8221d2a84d',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '61402f47-4e95-45dd-be49-bdd22b1c9c50',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: 'a177cdf9-806f-4257-ba9b-a50ad4301337',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'd8ba0d46-a69f-4809-9fad-ec50eb0ec72d',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'a11ffe13-9a40-438f-8f8c-8d10135bae11',
+          value: [
+            {
+              id: '475b1cbc-87e1-48ed-8ba3-15cd862cfe92',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '51d1eb54-7e4a-4d76-9b05-2929625daa7c',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '3619bf29-4ed7-4b07-a2de-82a92f0d1f7c',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '9c06b6af-0dbe-4dba-a325-aea488a23572',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: 'f6be3e9b-364b-4b4a-81c8-161bbb2e1d11',
+          value: [
+            {
+              id: 'dbe8c624-4777-450b-8338-db8e0783b5e6',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: '9ef1dcaa-3aa8-491e-90e0-b6aa84664f03',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: 'f5096eb5-b7cb-4383-9b26-b7ac1037e880',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: 'ce1b34ef-f84d-4fd4-bf5e-e1086a802d6b',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '60fc915d-6966-4fbf-9401-748caff5107c',
+          value: [
+            {
+              id: 'b055a02d-042d-4d65-8c56-1c684dd488dd',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: 'e2bc5409-ed7a-4b3f-9cbb-54ea12cdd667',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: 'd43948e7-4a8b-40fc-b203-3744bb80341d',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '2f432474-6575-469f-9127-94cf2aa17ca5',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
+              value: '',
+            },
+          ],
+        },
+        {
+          id: '2b696849-21e6-4eeb-b011-fe8ecc6432c1',
+          value: [
+            {
+              id: 'acfb25e5-9143-4559-a748-62f6c3156a3d',
+              columnId: '4866a213-51ef-4242-8d04-c7083da1f239',
+              value: '',
+            },
+            {
+              id: 'a9df0b18-b5da-4553-9253-d8f73f865ce2',
+              columnId: '7f89347f-5bc7-4f12-946e-17b0f0a2d89f',
+              value: '',
+            },
+            {
+              id: '9339cd3e-a5c4-4dce-aef9-0a183e9d41f3',
+              columnId: '32552bbc-6355-4d39-9882-bda516b17730',
+              value: '',
+            },
+            {
+              id: '96ff412b-fed2-4d88-affe-9429cbea3928',
+              columnId: 'c1026b32-bd4a-41a5-9682-e697fdac68ad',
               value: '',
             },
           ],
         },
       ],
     },
-    '72809251-2375-4c73-b2ba-6be09074d1da': {
-      id: '72809251-2375-4c73-b2ba-6be09074d1da',
-      programId: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
-      titlerComponentName: 'Hrip',
+    'abed44556-ed68-470f-b8ee-776360e37370': {
+      id: 'abed44556-ed68-470f-b8ee-776360e37370',
+      programId: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
+      name: 'КНОПКИ',
+      titlerComponentName: 'Button',
       columns: {
-        1: {
-          id: '1',
-          name: '',
-          job: '',
-          photo: '',
+        '5a1d2495-fd24-4092-bd87-654970951186': {
+          id: '5a1d2495-fd24-4092-bd87-654970951186',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        2: {
-          id: '2',
-          name: 'Антон Петров',
-          job: 'Слесарь',
-          photo: 'Babushkin_andrey.png',
+        '0dfad4cf-b3a2-4bf6-8d96-0e9b52b9376e': {
+          id: '0dfad4cf-b3a2-4bf6-8d96-0e9b52b9376e',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        3: {
-          id: '3',
-          name: '',
-          job: '',
-          photo: '',
+        '45580802-1654-4a9a-8c37-30003b65043e': {
+          id: '45580802-1654-4a9a-8c37-30003b65043e',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        4: {
-          id: '4',
-          name: 'Григорий Соколов',
-          job: 'Выживатель',
-          photo: 'Pashkin_Mikhail.png',
+        '62b9b8ef-de59-48d8-905d-c485027f0106': {
+          id: '62b9b8ef-de59-48d8-905d-c485027f0106',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        5: {
-          id: '5',
-          name: '',
-          job: '',
-          photo: '',
+        '20aecd2c-3b31-48ff-a2fe-d65b7bb1f440': {
+          id: '20aecd2c-3b31-48ff-a2fe-d65b7bb1f440',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        6: {
-          id: '6',
-          name: '',
-          job: '',
-          photo: '',
+        '8cdb15c8-02ff-43d2-af8c-df3dff473799': {
+          id: '8cdb15c8-02ff-43d2-af8c-df3dff473799',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        7: {
-          id: '7',
-          name: 'Марина Иванова',
-          job: 'Преподаватель',
-          photo: 'Belyasheva.png',
+        '0dd724ee-3770-4b15-ad43-2662c2ba9a2f': {
+          id: '0dd724ee-3770-4b15-ad43-2662c2ba9a2f',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        8: {
-          id: '8',
-          name: '',
-          job: '',
-          photo: '',
+        '5ed5490c-f3d9-4211-a8f4-70068a2fbb2e': {
+          id: '5ed5490c-f3d9-4211-a8f4-70068a2fbb2e',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
-        9: {
-          id: '9',
-          name: '',
-          job: '',
-          photo: '',
+        '821d353a-7d15-470e-8758-010569f35d20': {
+          id: '821d353a-7d15-470e-8758-010569f35d20',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
+        },
+        '4060bb26-ff92-4bcd-9579-d4a2b2e2afaa': {
+          id: '4060bb26-ff92-4bcd-9579-d4a2b2e2afaa',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
+        },
+        '8ebc68db-6850-4999-8b31-07ab13d8364d': {
+          id: '8ebc68db-6850-4999-8b31-07ab13d8364d',
+          name: 'newButton',
+          color: 'secondary',
+          filename: '',
+          overlay: 4,
+          autoclose: false,
         },
       },
       rows: [],
-      resultString: '',
-      filename: 'NEWS_hrip_vmix.gtzip',
-      overlay: 1,
-      autoclose: false,
-      name: 'ХРИП',
     },
-    'c5de6f5a-d9f8-4740-affe-d7cdc0214835': {
-      id: 'c5de6f5a-d9f8-4740-affe-d7cdc0214835',
-      programId: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
+    'a239ee902-be7d-4468-afdb-c3fe5484d146': {
+      id: 'a239ee902-be7d-4468-afdb-c3fe5484d146',
+      programId: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
+      name: '4 ОКНА',
       titlerComponentName: 'Quad',
       columns: {
         topLeft: {
@@ -435,8 +814,8 @@ const data = {
           },
           2: {
             id: '2',
-            firstname: 'Максим Петров',
-            lastname: 'Токарь',
+            firstname: 'Максим',
+            lastname: 'Хворостов',
           },
           3: {
             id: '3',
@@ -445,6 +824,11 @@ const data = {
           },
           4: {
             id: '4',
+            firstname: 'Аппарат',
+            lastname: 'Шнурович',
+          },
+          5: {
+            id: '5',
             firstname: '',
             lastname: '',
           },
@@ -452,21 +836,26 @@ const data = {
         topRight: {
           1: {
             id: '1',
-            firstname: '',
-            lastname: '',
+            firstname: 'Рецидивист',
+            lastname: 'Ночной',
           },
           2: {
             id: '2',
-            firstname: 'Егор Агапкин',
-            lastname: 'Футболист',
-          },
-          3: {
-            id: '3',
             firstname: '',
             lastname: '',
           },
+          3: {
+            id: '3',
+            firstname: 'MOTOROLA',
+            lastname: 'Токарь',
+          },
           4: {
             id: '4',
+            firstname: '',
+            lastname: '',
+          },
+          5: {
+            id: '5',
             firstname: '',
             lastname: '',
           },
@@ -484,11 +873,16 @@ const data = {
           },
           3: {
             id: '3',
-            firstname: 'Василий Кашин',
-            lastname: 'Журналист',
+            firstname: 'Галоша',
+            lastname: 'Петровна',
           },
           4: {
             id: '4',
+            firstname: '',
+            lastname: '',
+          },
+          5: {
+            id: '5',
             firstname: '',
             lastname: '',
           },
@@ -496,13 +890,13 @@ const data = {
         bottomRight: {
           1: {
             id: '1',
-            firstname: 'Евгений Егошин',
-            lastname: 'Истопник',
+            firstname: '',
+            lastname: '',
           },
           2: {
             id: '2',
-            firstname: '',
-            lastname: '',
+            firstname: 'Молчание',
+            lastname: 'Травы',
           },
           3: {
             id: '3',
@@ -514,454 +908,213 @@ const data = {
             firstname: '',
             lastname: '',
           },
+          5: {
+            id: '5',
+            firstname: '',
+            lastname: '',
+          },
+        },
+      },
+      rows: [],
+      resultString: 'Максим#Хворостов#MOTOROLA#Токарь###Молчание#Травы',
+      filename: 'NEWS_okna4_vmix.gtzip',
+      overlay: 1,
+      autoclose: false,
+      uppercase: true,
+    },
+    'a51808d74-c49f-4be4-83f3-7d2d25e3205d': {
+      id: 'a51808d74-c49f-4be4-83f3-7d2d25e3205d',
+      programId: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
+      name: 'ХРИП',
+      titlerComponentName: 'Hrip',
+      uppercase: true,
+      columns: {
+        1: {
+          id: '1',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        2: {
+          id: '2',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        3: {
+          id: '3',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        4: {
+          id: '4',
+          name: ' CVBVCBC',
+          job: 'cvbvcb',
+          photo: '',
+        },
+        5: {
+          id: '5',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        6: {
+          id: '6',
+          name: '',
+          job: 'DFSH',
+          photo: '',
+        },
+        7: {
+          id: '7',
+          name: 'FG',
+          job: 'FGG',
+          photo: '',
+        },
+        8: {
+          id: '8',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        9: {
+          id: '9',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        10: {
+          id: '10',
+          name: '',
+          job: '',
+          photo: '',
+        },
+        11: {
+          id: '11',
+          name: '',
+          job: '',
+          photo: '',
         },
       },
       rows: [],
       resultString: '',
-      filename: 'NEWS_okna4_vmix.gtzip',
+      filename: '',
       overlay: 1,
-      autoclose: true,
-      name: '4 ОКНА',
+      autoclose: false,
     },
-    'bd514ddd-a697-4a2a-ae68-a9cc534bdbcd': {
-      id: 'bd514ddd-a697-4a2a-ae68-a9cc534bdbcd',
-      programId: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
-      titlerComponentName: 'Button',
-      columns: {
-        '14bdb45f-0418-4bdd-965b-fd242a42b070': {
-          id: '14bdb45f-0418-4bdd-965b-fd242a42b070',
-          name: 'Промо1',
-          color: 'secondary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        'ab168886-1014-4204-93f7-64f4be0d4ac0': {
-          id: 'ab168886-1014-4204-93f7-64f4be0d4ac0',
-          name: 'Промо2',
-          color: 'secondary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        'aeeae437-7dc7-435b-b974-a90f2538cde5': {
-          id: 'aeeae437-7dc7-435b-b974-a90f2538cde5',
-          name: 'Промо3',
-          color: 'secondary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '3b866837-090c-4761-8f07-ee97ab083c37': {
-          id: '3b866837-090c-4761-8f07-ee97ab083c37',
-          name: 'Промо4',
-          color: 'secondary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        'eb147666-9c7d-4d9a-b4be-ade7d39b9c15': {
-          id: 'eb147666-9c7d-4d9a-b4be-ade7d39b9c15',
-          name: 'Баннер1',
-          color: 'primary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        'bf7ab12e-6bf5-49a8-997c-323e28c140f9': {
-          id: 'bf7ab12e-6bf5-49a8-997c-323e28c140f9',
-          name: 'Баннер2',
-          color: 'primary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        'a8e1e1a1-0f68-42af-a4ba-7d5c4e9285c6': {
-          id: 'a8e1e1a1-0f68-42af-a4ba-7d5c4e9285c6',
-          name: 'Баннер3',
-          color: 'primary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '09994388-07f5-4f87-963a-32c1ce0ad59e': {
-          id: '09994388-07f5-4f87-963a-32c1ce0ad59e',
-          name: 'Instagram',
-          color: 'warning',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '3b7b45b6-427c-4501-bcc5-e70d7a36d1e7': {
-          id: '3b7b45b6-427c-4501-bcc5-e70d7a36d1e7',
-          name: 'Telegram',
-          color: 'primary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '5a0bbdb4-4ec0-4c0f-a60a-e50d986ca521': {
-          id: '5a0bbdb4-4ec0-4c0f-a60a-e50d986ca521',
-          name: 'Reddit',
-          color: 'danger',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '371e486a-4924-454f-b81a-0d82b0b9dca2': {
-          id: '371e486a-4924-454f-b81a-0d82b0b9dca2',
-          name: 'Twitter',
-          color: 'info',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-        '43f1eba1-6483-42ed-92aa-2156145f8486': {
-          id: '43f1eba1-6483-42ed-92aa-2156145f8486',
-          name: 'newButton',
-          color: 'secondary',
-          filename: '',
-          overlay: 4,
-          autoclose: false,
-        },
-      },
-      rows: [],
-    },
-    '457df4d6-a3b8-4189-be1b-21c88c81c744': {
-      id: '457df4d6-a3b8-4189-be1b-21c88c81c744',
-      programId: 'd8a5e8c1-4903-467f-924a-8bd66aa07e66',
+    'a917aae19-28e2-4c8b-bb04-aa970e49c807': {
+      id: 'a917aae19-28e2-4c8b-bb04-aa970e49c807',
+      programId: 'd3fe50f3-79a1-4c08-baf0-3ea2907d6fec',
+      name: 'ТАБЛИЦА',
       titlerComponentName: 'MainTitle',
+      uppercase: true,
       columns: {
-        '02278f1f-bac6-4877-8e89-8bd73630a9c5': {
-          id: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
+        '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d': {
+          id: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
           name: 'ИНОАГЕНТ',
           filename: 'NEWS_inoagent_smi_vmix.gtzip',
           autoclose: true,
           uppercase: true,
-          overlay: 2,
-        },
-        'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7': {
-          id: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-          name: 'НКО',
-          filename: 'NEWS_inoagent_nko_vmix.gtzip',
-          autoclose: true,
-          uppercase: true,
-          overlay: 2,
-        },
-        '8cebe871-cced-4df9-8bb8-42875db43445': {
-          id: '8cebe871-cced-4df9-8bb8-42875db43445',
-          name: 'ОБШЧ',
-          filename: 'NEWS_inoagent_obsch_vmix.gtzip',
-          autoclose: true,
-          uppercase: true,
-          overlay: 2,
-        },
-        'e99e7f68-3f7e-450b-a8df-908880a7ef95': {
-          id: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
-          name: 'ЭКСТРЕМИСТ',
-          filename: 'NEWS_extrimist_vmix.gtzip',
-          autoclose: true,
-          uppercase: true,
-          overlay: 2,
+          overlay: 1,
         },
       },
       rows: [
         {
-          id: 'c7c36be8-d820-4a8a-ae46-03f2b8b225bb',
+          id: '9f218ebe-6042-4a82-9f39-abf753f44e07',
           value: [
             {
-              id: 'e2815904-4ad9-45b5-972a-1d39082b47f5',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '13300b94-a247-4d23-a5cf-58d4cffa5b04',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '39ac2394-977e-4503-b11f-19dadc1912a7',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '9a8c7b85-c065-4248-8c49-e4e179a29e5e',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '6cf64d29-c4f5-4486-970a-333aeba22718',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: 'a7c73b3d-ab8a-4382-a854-87c69b9e5cd1',
+          id: '70a8bd86-c60e-49cc-bc90-98e6c12f8e02',
           value: [
             {
-              id: '7c976315-77c7-41da-ae4b-3ee04328bf0c',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '108f3870-6ae3-45ec-adfe-bed5408efc19',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '85285894-e120-4392-b664-1305ab2fd8e1',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: 'a26d6bfc-a9f8-475f-a586-e20c83aa7c24',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: 'd969b669-3772-45bd-bde0-dfe29622cbd8',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: '422d4492-085a-4383-af24-af5c0b952235',
+          id: 'ef8ad583-81d8-4931-a304-89d22e831d72',
           value: [
             {
-              id: 'e639d65e-6a5a-4f0e-bd56-13cf970efee2',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
+              id: '316e8628-c4b4-4756-a014-5be565baa474',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: 'ДОЖДЬ',
             },
+          ],
+        },
+        {
+          id: 'c60bda1a-1e3d-4f3a-922c-d65ac936ea5d',
+          value: [
             {
-              id: 'c7f3d965-db31-415a-be36-c730f449af3d',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '88d948e6-d0c4-4f63-a3af-6c5f11382997',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: 'b44c7203-f117-45b6-b10c-292eeb869565',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '076c9248-6498-45e8-aff6-c6e110d1b494',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: '141a79c4-f7ec-4496-8f42-6cdb585ecf70',
+          id: 'cd12e5b2-1828-456b-ab3b-dd7bfa23080b',
           value: [
             {
-              id: 'b2e511f9-b121-4824-aab8-7c0fe06a2503',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '5af45b8d-29fa-457c-9713-8a6cfdd696a1',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: 'КОМПАНИЯ',
-            },
-            {
-              id: 'b40ba706-b18a-4f2e-a707-e648b5ef1e65',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: 'a77f9f7d-4e8a-4855-820c-221921dde8a1',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '0fc66eab-f3ae-4a93-8f21-6fcd062538c8',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: 'c1b630b8-d991-41af-984a-3df1508b90ea',
+          id: '7c6496f7-e86c-41bf-a216-edd4d2b28554',
           value: [
             {
-              id: '430a62d2-3746-4111-8a91-e7a96218a74f',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: 'fafcd775-c5cf-4682-8d86-b6813c3da254',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '1ed557e5-361d-4b31-8aab-de65b184ae0d',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '86476da6-4dad-4402-bcff-bc5ff973cbf1',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
-              value: 'НАВАЛЬНЫЙ',
-            },
-          ],
-        },
-        {
-          id: '1dae0045-309a-48d1-ba99-de00304f3e8c',
-          value: [
-            {
-              id: '0728588a-bd94-4b0e-bbe2-f71d5d5a529b',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: 'МЕДУЗА',
-            },
-            {
-              id: 'a9810be5-deab-4423-9f78-6a00b2c65be6',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '52e0f0d1-3aab-4432-92ae-437a74b85ca2',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '84775860-2589-4091-940f-683e4cf43b26',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: 'ea6d7bf0-123d-4bdd-a87a-c3b7ee43bb00',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: 'b8b86571-3868-4739-b73b-40d809f5ea26',
+          id: '28130c4e-dac2-46ad-a82f-4709958c5d38',
           value: [
             {
-              id: '0a14dfee-c48e-4889-9206-669df9d96870',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: 'b531bbec-f1c2-43d5-a159-cbcc933868f7',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '870e1b80-1875-4cc8-85ae-ca87650dbfca',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '450dff59-7611-4062-9548-6cee8737f504',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '159797f5-7508-4b22-8794-d50b807a9f24',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: '15b4b85f-2f73-48e8-b97d-6974ff8dc76d',
+          id: 'b21888e4-578f-41d5-bef9-01e12f511e4b',
           value: [
             {
-              id: 'ae9094b8-1ea5-41cd-a958-a6f356a104df',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '6d054849-ad51-4bcf-a731-e09acd93f9a8',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '98c2e2fd-e657-4708-9689-d9b15d2313a8',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: 'ДРУГАЯ КОМПАНИЯ',
-            },
-            {
-              id: 'b3243309-d7b2-41a3-a2b3-42345ff4293e',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '7a129a5d-bd60-4cc7-b60d-87de0e51fcc7',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: 'bccd3b9f-ed59-4110-bd84-b987a1516a49',
+          id: 'c8f194c3-f716-4c16-b056-8339db09bf87',
           value: [
             {
-              id: '57e6ff68-a062-40ef-9dbf-d1ec13b0a205',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: 'aea4d238-580a-4346-a0fe-288d59da73d9',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '982466a6-ad1f-43a8-b826-611b2c925d28',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '7c1613b2-f053-4ee5-8d67-fa048a1691e5',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '91abd509-5c22-4282-b109-09bf9fe7b0e3',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],
         },
         {
-          id: 'e41d4fd4-cf1d-4012-8d97-3118a91c8c21',
+          id: '194b083e-f2f7-4d74-bed7-ec3c56a6a245',
           value: [
             {
-              id: '71810062-1bcf-420a-b60d-49f7672494fc',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: 'befc4afe-de0b-4c77-93e2-05af17b394e6',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '5739b571-3345-4467-8f10-531cc7892555',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '75aaae99-e6c2-4800-8f8b-65548cfd48bb',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
-              value: 'ДРУГ НАВАЛЬНОГО',
-            },
-          ],
-        },
-        {
-          id: '0fed2d48-786d-45db-885f-e35772201720',
-          value: [
-            {
-              id: 'e1429bfa-f248-480e-a840-26b5e6c8e393',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '7a3b5291-b176-443e-b8b6-36c82919d65d',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '10b9aa23-fc5d-4090-bd79-c774f9edca0d',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '20ae3826-557a-4704-a764-296ce51eba59',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
-              value: '',
-            },
-          ],
-        },
-        {
-          id: '6fe32049-03f8-4601-8c03-dbf244e5c268',
-          value: [
-            {
-              id: '7b4cbea5-5763-46ee-aa94-d7494b7c2d7a',
-              columnId: '02278f1f-bac6-4877-8e89-8bd73630a9c5',
-              value: '',
-            },
-            {
-              id: '3f5a95bf-fd63-4ad7-a7a5-935bba7736ca',
-              columnId: 'adc8ec7f-a251-4bb5-a4cd-85e64ebbeee7',
-              value: '',
-            },
-            {
-              id: '8a1acdfe-1c51-4a6d-8480-a7020822268e',
-              columnId: '8cebe871-cced-4df9-8bb8-42875db43445',
-              value: '',
-            },
-            {
-              id: '4f85a881-c030-4381-a43d-5ec7e61e6a82',
-              columnId: 'e99e7f68-3f7e-450b-a8df-908880a7ef95',
+              id: '3c385485-a38b-440f-97a9-c1eb038f984d',
+              columnId: '6e39cb0a-c2a9-4c0c-8985-07bbd38fa61d',
               value: '',
             },
           ],

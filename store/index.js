@@ -84,6 +84,7 @@ const store = () =>
       intervalID: '',
       vmixState: {},
       vmixStore: {},
+      editMode: false,
       vmixIsOnline: true,
       vmixHost: '',
       db: {},
@@ -135,28 +136,23 @@ const store = () =>
       },
       writeOrderComponents(state, { programId, newOrder }) {
         state.db.programs[programId].order = [...newOrder];
-        axios.post('/titles', { data: state.db });
       },
       addRow(state, { componentId, row }) {
         state.db.components[componentId].rows.unshift(row);
-        axios.post('/titles', { data: state.db });
       },
       removeRows(state, { componentId, rowsId }) {
         const rows = state.db.components[componentId].rows;
         state.db.components[componentId].rows = rows.filter(
           (row) => !rowsId.includes(row.id)
         );
-        axios.post('/titles', { data: state.db });
       },
       writeRows(state, { componentId, rows }) {
         state.db.components[componentId].rows = rows;
-        axios.post('/titles', { data: state.db });
       },
       updateColumns(state, { componentId, columns }) {
         state.db.components[componentId].columns = JSON.parse(
           JSON.stringify(columns)
         );
-        axios.post('/titles', { data: state.db });
       },
       addColumn(state, { componentId, columnId, newColumn, rows }) {
         state.db.components[componentId].columns[columnId] = JSON.parse(
@@ -165,63 +161,73 @@ const store = () =>
         state.db.components[componentId].rows = JSON.parse(
           JSON.stringify(rows)
         );
-        axios.post('/titles', { data: state.db });
       },
       removeColumn(state, { componentId, columnId, filteredRows }) {
-        delete state.db.components[componentId].columns[columnId];
-        state.db.components[componentId].rows = JSON.parse(
-          JSON.stringify(filteredRows)
-        );
+        const components = { ...state.db.components };
+        delete components[componentId].columns[columnId];
 
-        axios.post('/titles', { data: state.db });
+        components[componentId].rows = filteredRows;
+        state.db.components = components;
       },
       addProgram(state, { programId, newProgram }) {
-        state.db.programs[programId] = { ...newProgram };
-        axios.post('/titles', { data: state.db });
+        const programs = { ...state.db.programs };
+        programs[programId] = { ...newProgram };
+        state.db.programs = programs;
       },
       removeProgram(state, programId) {
-        for (const component of Object.values(state.db.components)) {
-          if (component.programId === programId) {
-            delete state.db.components[component.id];
+        const programs = { ...state.db.programs };
+        delete programs[programId];
+        const components = { ...state.db.components };
+        for (const component in components) {
+          if (components[component].programId === programId) {
+            delete components[component];
           }
         }
-        delete state.db.programs[programId];
-        axios.post('/titles', { data: state.db });
+        state.db.programs = programs;
+        state.db.components = components;
       },
-      renameProgram(state, program) {
+      updateProgram(state, program) {
         state.db.programs[program.id].programName = program.programName;
-        axios.post('/titles', { data: state.db });
+        state.db.programs[program.id].areas = program.areas;
+        state.db.programs[program.id].areasOptions = program.areasOptions;
       },
-      addComponent(state, { id, component }) {
-        state.db.components[id] = { ...component };
-        // state.db.programs[component.programId].order.push(component.id);
-        axios.post('/titles', { data: state.db });
+      addComponent(state, { component }) {
+        state.db.components[component.id] = JSON.parse(
+          JSON.stringify(component)
+        );
+        state.db.programs[component.programId].order.push(component.id);
       },
-      removeComponent(state, componentId) {
-        delete state.db.components[componentId];
-        axios.post('/titles', { data: state.db });
+      removeComponent(state, { program, componentId }) {
+        const components = { ...state.db.components };
+        delete components[componentId];
+        state.db.components = components;
+        state.db.programs[program.id] = { ...program };
       },
       writeQuadResultString(state, { componentId, resultString }) {
         state.db.components[componentId].resultString = resultString;
-        axios.post('/titles', { data: state.db });
       },
       writeQuadParams(
         state,
-        { componentId, filename, overlay, name, autoclose }
+        { componentId, filename, overlay, name, autoclose, uppercase }
       ) {
         state.db.components[componentId].filename = filename;
         state.db.components[componentId].overlay = overlay;
         state.db.components[componentId].name = name;
         state.db.components[componentId].autoclose = autoclose;
-        axios.post('/titles', { data: state.db });
+        state.db.components[componentId].uppercase = uppercase;
       },
       changeVmixHost(state, newHost) {
         state.vmixHost = newHost;
-        axios.post('/vmix-host', { data: newHost });
       },
     },
 
     actions: {
+      saveDB: ({ state }) => {
+        axios.post('/titles', { data: state.db }).then((res) => {
+          return res;
+        });
+      },
+
       getVmixState: async ({ commit, state }) => {
         const { data } = await axios.get('/status');
         if (Object.keys(data).includes('error')) {

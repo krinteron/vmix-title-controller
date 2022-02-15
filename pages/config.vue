@@ -1,151 +1,60 @@
 <template>
-  <div class="body">
-    <NavBar />
-    <div>
-      <div class="programs-controller">
-        <form
-          v-for="program in Object.keys($store.state.titles)"
-          :key="$store.state.titles[program]"
-          action=""
-        >
-          <label label="Имя программы:" for="nested-street">
-            <input
-              id="nested-street"
-              v-model="$store.state.titles[program].programName"
-            />
-          </label>
-
-          <div
-            v-for="titler in Object.keys($store.state.titles[program].titlers)"
-            :key="titler"
-          >
-            <label label="Компонент:" label-for="nested-city">
-              <b-form-input
-                id="nested-city"
-                v-model="
-                  $store.state.titles[program].titlers[titler]
-                    .titlerComponentName
-                "
-              ></b-form-input>
-            </label>
-            <div
-              v-for="param in Object.keys(
-                $store.state.titles[program].titlers[titler].dataOrder
-              )"
-              :key="param"
-            >
-              <b-form-group
-                label="Заголовок:"
-                label-for="nested-state"
-                label-cols-sm="3"
-                label-align-sm="right"
-              >
-                <b-form-input
-                  id="nested-state"
-                  v-model="
-                    $store.state.titles[program].titlers[titler].dataOrder[
-                      param
-                    ].name
-                  "
-                ></b-form-input>
-              </b-form-group>
-              <b-form-group
-                label="Имя файла:"
-                label-for="nested-state"
-                label-cols-sm="3"
-                label-align-sm="right"
-              >
-                <b-form-input
-                  id="nested-state"
-                  v-model="
-                    $store.state.titles[program].titlers[titler].dataOrder[
-                      param
-                    ].titleName
-                  "
-                ></b-form-input>
-              </b-form-group>
-              <b-form-group
-                label="Автозакрытие:"
-                label-for="nested-state"
-                label-cols-sm="3"
-                label-align-sm="right"
-              >
-                <b-form-input
-                  id="nested-state"
-                  v-model="
-                    $store.state.titles[program].titlers[titler].dataOrder[
-                      param
-                    ].autoClose
-                  "
-                ></b-form-input>
-              </b-form-group>
-              <b-form-group
-                label="РЕГИСТР:"
-                label-for="nested-state"
-                label-cols-sm="3"
-                label-align-sm="right"
-              >
-                <b-form-input
-                  id="nested-state"
-                  v-model="
-                    $store.state.titles[program].titlers[titler].dataOrder[
-                      param
-                    ].upperCase
-                  "
-                ></b-form-input>
-              </b-form-group>
-              <b-form-group
-                label="Инпут:"
-                label-for="nested-state"
-                label-cols-sm="3"
-                label-align-sm="right"
-              >
-                <b-form-input
-                  id="nested-state"
-                  v-model="
-                    $store.state.titles[program].titlers[titler].dataOrder[
-                      param
-                    ].overlayInput
-                  "
-                ></b-form-input>
-              </b-form-group>
-            </div>
-          </div>
-          <!-- 
-            <b-form-group
-              label="State:"
-              label-for="nested-state"
-              label-cols-sm="3"
-              label-align-sm="right"
-            >
-              <b-form-input id="nested-state"></b-form-input>
-            </b-form-group>
-
-            <b-form-group
-              label="Country:"
-              label-for="nested-country"
-              label-cols-sm="3"
-              label-align-sm="right"
-            >
-              <b-form-input id="nested-country"></b-form-input>
-            </b-form-group>
-
-            <b-form-group
-              v-slot="{ ariaDescribedby }"
-              label="Ship via:"
-              label-cols-sm="3"
-              label-align-sm="right"
-              class="mb-0"
-            >
-              <b-form-radio-group
-                class="pt-2"
-                :options="['Air', 'Courier', 'Mail']"
-                :aria-describedby="ariaDescribedby"
-              ></b-form-radio-group>
-            </b-form-group> -->
-        </form>
-      </div>
-    </div>
+  <div v-if="$store.state.db.components" class="body">
+    <component
+      :is="
+        $store.state.db.components['94eadb03-2b75-4519-9e61-2ca209b7080e']
+          .titlerComponentName
+      "
+      :key="e"
+      class="tab-flex-item table1"
+      :component="
+        $store.state.db.components['94eadb03-2b75-4519-9e61-2ca209b7080e']
+      "
+    />
+    <component
+      :is="
+        $store.state.db.components['bd514ddd-a697-4a2a-ae68-a9cc534bdbcd']
+          .titlerComponentName
+      "
+      :key="e"
+      class="tab-flex-item button"
+      :component="
+        $store.state.db.components['bd514ddd-a697-4a2a-ae68-a9cc534bdbcd']
+      "
+    />
+    <component
+      :is="
+        $store.state.db.components['8e4de3d1-eb0d-438c-8296-b07376974c0a']
+          .titlerComponentName
+      "
+      :key="e"
+      class="tab-flex-item hrip"
+      :component="
+        $store.state.db.components['8e4de3d1-eb0d-438c-8296-b07376974c0a']
+      "
+    />
+    <component
+      :is="
+        $store.state.db.components['0cf3ce11-e222-450a-a2bc-014c96c2ceb2']
+          .titlerComponentName
+      "
+      :key="e"
+      class="tab-flex-item quad"
+      :component="
+        $store.state.db.components['0cf3ce11-e222-450a-a2bc-014c96c2ceb2']
+      "
+    />
+    <component
+      :is="
+        $store.state.db.components['457df4d6-a3b8-4189-be1b-21c88c81c744']
+          .titlerComponentName
+      "
+      :key="e"
+      class="tab-flex-item table2"
+      :component="
+        $store.state.db.components['457df4d6-a3b8-4189-be1b-21c88c81c744']
+      "
+    />
   </div>
 </template>
 
@@ -172,14 +81,38 @@ export default {
 
 <style scoped>
 .body {
+  padding: 10px;
+  /* grid-template-rows: [row1-start] min-content [row1-end] min-content [third-line] auto [last-line]; */
+  /* grid-row: auto; */
+  grid-template-rows: min-content min-content 1fr;
+
+  height: calc(100vh - 10px);
+  /* grid-template-rows: min-content; */
   width: 100vw;
-  height: 100vh;
+  /* overflow: hidden; */
+  gap: 20px 30px;
+  display: grid;
+  align-items: start;
+  grid-template-areas:
+    'button button button button'
+    'hrip quad table1 table1'
+    'table2 table2 table1 table1';
 }
-.programs-controller {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 0 20px;
+.table1 {
+  grid-area: table1;
+}
+.table2 {
+  grid-area: table2;
+  align-self: start;
+}
+.button {
+  grid-area: button;
+}
+.hrip {
+  grid-area: hrip;
+}
+.quad {
+  grid-area: quad;
 }
 .tabs {
   width: 100%;

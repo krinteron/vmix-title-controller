@@ -21,69 +21,67 @@
     </div>
     <div v-if="$store.state.vmixIsOnline" class="vmix-up">
       <NavBar />
-      <b-tabs content-class="mt-3">
-        <span v-if="$store.state.db.programs">
-          <b-tab
-            v-for="programId in Object.keys($store.state.db.programs)"
-            :key="programId"
-            :title="$store.state.db.programs[programId].programName"
-            active
-          >
-            <template #title>
-              <strong v-if="$store.state.db.programs[programId]">
-                {{ $store.state.db.programs[programId].programName }}
-              </strong>
-              <b-dropdown variant="outline" class="tab-btn-dropdown">
-                <b-dropdown-item-button
-                  v-b-modal:[`modal-xl-${programId}`]
-                  class="dropdown-item"
-                  @click="configProgram(programId)"
-                >
-                  Настройки
-                </b-dropdown-item-button>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item-button
-                  class="dropdown-item"
-                  @click="removeProgram(programId)"
-                >
-                  Удалить
-                </b-dropdown-item-button>
-              </b-dropdown>
-            </template>
-            <div
+      <div class="title-controllers">
+        <b-tabs content-class="mt-3">
+          <span v-if="$store.state.db.programs">
+            <b-tab
+              v-for="programId in Object.keys($store.state.db.programs)"
               :id="`tab-${programId}`"
-              class="tab-grid-container"
-              :style="{
-                'grid-template-areas':
-                  $store.state.db.programs[programId].areas,
-              }"
+              :key="programId"
+              :title="$store.state.db.programs[programId].programName"
+              active
+              class="tab-flex-container"
             >
+              <template #title>
+                <strong v-if="$store.state.db.programs[programId]">
+                  {{ $store.state.db.programs[programId].programName }}
+                </strong>
+                <b-dropdown variant="outline" class="tab-btn-dropdown">
+                  <b-dropdown-item-button
+                    v-b-modal:[`modal-xl-${programId}`]
+                    class="dropdown-item"
+                    @click="configProgram(programId)"
+                  >
+                    Настройки
+                  </b-dropdown-item-button>
+                  <b-dropdown-divider></b-dropdown-divider>
+                  <b-dropdown-item-button
+                    class="dropdown-item"
+                    @click="removeProgram(programId)"
+                  >
+                    Удалить
+                  </b-dropdown-item-button>
+                </b-dropdown>
+              </template>
               <component
                 :is="
-                  $store.state.db.components[component.id].titlerComponentName
+                  $store.state.db.components[componentId].titlerComponentName
                 "
-                v-for="component in Object.values(
-                  $store.state.db.components
-                ).filter((component) => component.programId === programId)"
-                :key="component.id"
-                :component="component"
+                v-for="componentId in $store.state.db.programs[programId].order"
+                :key="componentId"
+                class="tab-flex-item"
+                :component="$store.state.db.components[componentId]"
               />
-            </div>
-          </b-tab>
-        </span>
+            </b-tab>
+          </span>
 
-        <template #tabs-end>
-          <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
-            <b>+</b>
-          </b-nav-item>
-        </template>
-      </b-tabs>
+          <template #tabs-end>
+            <b-nav-item
+              role="presentation"
+              href="#"
+              @click.prevent="addProgram"
+            >
+              <b>+</b>
+            </b-nav-item>
+          </template>
+        </b-tabs>
+      </div>
       <b-modal
         v-if="Object.keys(program).length"
         :id="`modal-xl-${program.id}`"
         size="xl"
         title="Настройки программы"
-        @ok="saveConfig(program)"
+        @ok="saveConfig()"
       >
         <div class="input-group component-control">
           <b-input-group prepend="Название программы" class="mt-3">
@@ -115,6 +113,7 @@
           <draggable
             v-model="orders[program.id]"
             class="areas-flex-container-item"
+            @end="componentMoved(program.id)"
           >
             <transition-group
               tag="span"
@@ -130,7 +129,9 @@
                   v-if="$store.state.db.components[componentId]"
                   class="config-remove-btn-wrapper"
                 >
-                  {{ $store.state.db.components[componentId].name }}
+                  {{
+                    $store.state.db.components[componentId].titlerComponentName
+                  }}
                   <div
                     class="config-remove-btn"
                     @click="removeComponent(program.id, componentId)"
@@ -145,13 +146,10 @@
           <div class="areas-flex-container-item">
             <b-table-simple>
               <b-tbody>
-                <b-tr
-                  v-for="row in Object.keys(program.areasOptions)"
-                  :key="row"
-                >
+                <b-tr v-for="row in Object.keys(accAreas)" :key="row">
                   <b-td>
                     <b-form-select
-                      v-model="program.areasOptions[row][0]"
+                      v-model="accAreas[row][0]"
                       :options="componentsIds"
                       size="sm"
                       class="mt-3"
@@ -159,7 +157,7 @@
                   </b-td>
                   <b-td>
                     <b-form-select
-                      v-model="program.areasOptions[row][1]"
+                      v-model="accAreas[row][1]"
                       :options="componentsIds"
                       size="sm"
                       class="mt-3"
@@ -167,7 +165,7 @@
                   </b-td>
                   <b-td>
                     <b-form-select
-                      v-model="program.areasOptions[row][2]"
+                      v-model="accAreas[row][2]"
                       :options="componentsIds"
                       size="sm"
                       class="mt-3"
@@ -175,7 +173,7 @@
                   </b-td>
                   <b-td>
                     <b-form-select
-                      v-model="program.areasOptions[row][3]"
+                      v-model="accAreas[row][3]"
                       :options="componentsIds"
                       size="sm"
                       class="mt-3"
@@ -203,16 +201,20 @@ export default {
       program: {},
       orders: {},
       components: [],
-      componentsIds: [{ value: '.', text: '' }],
-      templateAreas: {},
+      componentsIds: [{ value: '.', text: '.' }],
+      areas: '". . ." ". . ." ". . ."',
+      accAreas: {
+        row1: ['.', '.', '.', '.'],
+        row2: ['.', '.', '.', '.'],
+        row3: ['.', '.', '.', '.'],
+      },
       currentComp: '',
       selectedComponent: '',
       componentsList: [
-        { value: 'MainTitle', text: 'ТАБЛИЦА' },
-        { value: 'Hrip', text: 'ХРИП' },
-        { value: 'Duo', text: '2 ОКНА' },
-        { value: 'Quad', text: '4 ОКНА' },
-        { value: 'Button', text: 'КНОПКИ' },
+        { value: 'MainTitle', text: 'Таблица' },
+        { value: 'Hrip', text: 'Хрип' },
+        { value: 'Quad', text: 'Квартет' },
+        { value: 'Button', text: 'Кнопка' },
       ],
       vmixHost: '',
     };
@@ -227,23 +229,25 @@ export default {
   },
   updated() {
     if (this.$store.state.vmixIsOnline) {
-      for (const key in this.$store.state.db.programs) {
-        this.orders[key] = [...this.$store.state.db.programs[key].order];
-      }
+      Object.values(this.$store.state.db.programs).forEach((program) => {
+        this.orders[program.id] = [...program.order];
+      });
     }
   },
   methods: {
+    componentMoved(programId) {
+      this.$store.commit('writeOrderComponents', {
+        programId,
+        newOrder: this.orders[programId],
+      });
+      this.$store.dispatch('saveDB');
+    },
     addProgram() {
       const programId = uuidv4();
       const newProgram = {
         programName: 'New Program',
         id: programId,
         order: [],
-        areasOptions: {
-          row1: ['.', '.', '.', '.'],
-          row2: ['.', '.', '.', '.'],
-          row3: ['.', '.', '.', '.'],
-        },
       };
       this.$store.commit('addProgram', { programId, newProgram });
       this.$store.dispatch('saveDB');
@@ -255,27 +259,13 @@ export default {
       this.components = Object.values(this.$store.state.db.components).filter(
         (component) => component.programId === this.program.id
       );
-      this.rewriteIdsOptions();
-    },
-
-    rewriteIdsOptions() {
       let count = 1;
-      this.componentsIds.length = 1;
       this.components.forEach((component) => {
         this.componentsIds.push({
           value: component.id,
-          text: component.name + count++,
+          text: component.titlerComponentName + count++,
         });
       });
-    },
-
-    writeTemplateAreas(program) {
-      const areas = Object.values(program.areasOptions)
-        .map((row) => `"${row.join(' ')}"`)
-        .join(' ');
-      this.templateAreas = areas;
-      const element = document.getElementById('tab-' + program.id);
-      element.style.gridTemplateAreas = areas;
     },
 
     removeProgram(programId) {
@@ -288,38 +278,14 @@ export default {
 
     addComponent(programId) {
       if (!this.selectedComponent) return;
-      const id = 'a' + uuidv4();
+      const id = uuidv4();
       const component = {
         id,
         programId,
-        name: 'ТАБЛИЦА',
         titlerComponentName: this.selectedComponent,
-        uppercase: true,
         columns: {},
         rows: [],
       };
-      if (this.selectedComponent === 'Button') {
-        component.name = 'КНОПКИ';
-      }
-      if (this.selectedComponent === 'Duo') {
-        component.resultString = '';
-        component.filename = '';
-        component.name = '2 ОКНА';
-        component.overlay = 1;
-        component.autoclose = false;
-        for (const position of ['left', 'right']) {
-          let i = 11;
-          while (i-- > 0) {
-            const id = uuidv4();
-            component.columns[id] = {
-              id,
-              name: '',
-              position,
-              // job: '',
-            };
-          }
-        }
-      }
       if (this.selectedComponent === 'Quad') {
         component.resultString = '';
         component.filename = '';
@@ -363,7 +329,7 @@ export default {
       if (this.selectedComponent === 'Hrip') {
         component.resultString = '';
         component.filename = '';
-        component.name = 'ХРИП';
+        component.name = 'ХРИП}';
         component.overlay = 1;
         component.autoclose = false;
         component.columns = {
@@ -436,30 +402,25 @@ export default {
         };
       }
 
-      this.$store.commit('addComponent', { component });
+      this.$store.commit('addComponent', { id, component });
       this.$store.dispatch('saveDB');
       this.configProgram(programId);
       this.selectedComponent = '';
       this.orders[programId].push(id);
+      this.componentMoved(programId);
     },
     removeComponent(programId, componentId) {
-      this.program.order = this.orders[programId].filter(
+      this.$store.commit('removeComponent', componentId);
+      this.$store.dispatch('saveDB');
+      this.orders[programId] = this.orders[programId].filter(
         (id) => id !== componentId
       );
-      this.orders[programId] = [...this.program.order];
-      this.rewriteIdsOptions();
-      this.$store.commit('removeComponent', {
-        program: this.program,
-        componentId,
-      });
-      this.configProgram(programId);
-      this.$store.dispatch('saveDB');
+      // this.componentMoved(programId);
       // this.$store.dispatch('getTitles');
+      this.configProgram(programId);
     },
     saveConfig() {
-      this.writeTemplateAreas(this.program);
-      this.program.areas = this.templateAreas;
-      this.$store.commit('updateProgram', this.program);
+      this.$store.commit('renameProgram', this.program);
       this.$store.dispatch('saveDB');
     },
     changeVmixHost() {
@@ -492,14 +453,9 @@ export default {
   padding: 0 4px !important;
 }
 
-.tab-grid-container {
-  display: grid !important;
-  gap: 20px 30px;
-  grid-template-rows: min-content min-content 1fr;
-  grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr) 1fr 1fr;
-  align-items: start;
-  height: calc(100vh - 110px);
-  padding: 0 10px 20px 10px;
+.tab-flex-container {
+  gap: 20px;
+  justify-content: stretch !important;
 }
 
 .component-control {
@@ -582,13 +538,18 @@ export default {
   -webkit-transform: rotate(-45deg);
 }
 
-/* .title-controllers {
+.title-controllers {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 0 20px;
-} */
+}
 .tabs {
   width: 100%;
+}
+.tab-pane {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 </style>

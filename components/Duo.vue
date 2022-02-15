@@ -1,7 +1,7 @@
 <template>
   <div
     :id="component.id"
-    class="quad-title"
+    class="duo-title"
     :style="{ 'grid-area': component.id }"
   >
     <div v-if="Object.keys(columns).length" class="editor">
@@ -78,46 +78,85 @@
           >
         </b-dropdown-form>
       </b-dropdown>
-      <div class="hrip-form">
+      <div class="duo-form-left">
         <div
-          v-for="row in Object.values(component.columns)"
+          v-for="row in Object.values(component.columns).filter(
+            ({ position }) => position === 'left'
+          )"
           :key="row.id"
-          :class="`hrip-form${row.id}`"
+          :class="`duo-form${row.id}`"
         >
           <p class="input-string">
             <b-input-group class="mb-2">
-              <b-input-group-prepend class="hrip-input" is-text>
+              <b-input-group-prepend class="duo-input" is-text>
+                <!-- <b-form-checkbox
+                  :id="row.id"
+                  size="lg"
+                  type="checkbox"
+                  :class="'checkbox' + row.id"
+                  @click="radioHandler($event, 'left')"
+                ></b-form-checkbox> -->
                 <input
                   :id="row.id"
                   type="checkbox"
                   :class="'checkbox' + row.id"
-                  @click="radioHandler($event)"
+                  @click="radioHandler($event, 'left')"
                 />
               </b-input-group-prepend>
               <b-form-input
                 id="name"
                 v-model="columns[row.id].name"
                 autocomplete="off"
-                :class="['hrip-input', 'hrip-input' + row.id]"
+                :class="['duo-input', 'duo-input' + row.id]"
                 @keyup="validate($event)"
-                @change="writeColumns(row.id)"
+                @change="writeColumns(row.id, 'left')"
               ></b-form-input>
-              <b-form-input
+              <!-- <b-form-input
                 id="job"
                 v-model="columns[row.id].job"
                 autocomplete="off"
-                :class="['hrip-input', 'hrip-input' + row.id]"
+                :class="['duo-input', 'duo-input' + row.id]"
                 @keyup="validate($event)"
                 @change="writeColumns(row.id)"
+              ></b-form-input> -->
+            </b-input-group>
+          </p>
+        </div>
+      </div>
+      <div class="duo-form-right">
+        <div
+          v-for="row in Object.values(component.columns).filter(
+            ({ position }) => position === 'right'
+          )"
+          :key="row.id"
+          :class="`duo-form${row.id}`"
+        >
+          <p class="input-string">
+            <b-input-group class="mb-2">
+              <b-input-group-prepend class="duo-input" is-text>
+                <input
+                  :id="row.id"
+                  type="checkbox"
+                  :class="'checkbox' + row.id"
+                  @click="radioHandler($event, 'right')"
+                />
+              </b-input-group-prepend>
+              <b-form-input
+                id="name"
+                v-model="columns[row.id].name"
+                autocomplete="off"
+                :class="['duo-input', 'duo-input' + row.id]"
+                @keyup="validate($event)"
+                @change="writeColumns(row.id, 'right')"
               ></b-form-input>
-              <b-form-select
-                v-if="Object.keys($store.state.vmixStore).length"
-                id="photo"
-                v-model="columns[row.id].photo"
-                :options="$store.state.vmixStore.photo.values"
-                :class="['select-photo', 'hrip-input', 'hrip-input' + row.id]"
+              <!-- <b-form-input
+                id="job"
+                v-model="columns[row.id].job"
+                autocomplete="off"
+                :class="['duo-input', 'duo-input' + row.id]"
+                @keyup="validate($event)"
                 @change="writeColumns(row.id)"
-              ></b-form-select>
+              ></b-form-input> -->
             </b-input-group>
           </p>
         </div>
@@ -167,15 +206,12 @@ export default {
         this.$store.state.vmixState.activeTitles[this.component.filename] ===
         this.result,
       result: '',
-      photo: '',
       sendedResult: '',
       selectedRows: [],
       componentData: {},
       columns: {},
-      topLeft: '#',
-      topRight: '#',
-      bottomLeft: '#',
-      bottomRight: '#',
+      left: '#',
+      right: '#',
     };
   },
   async beforeMount() {},
@@ -198,40 +234,34 @@ export default {
       });
       this.$store.dispatch('saveDB');
     },
-    radioHandler(event) {
+    radioHandler(event, position) {
       const id = event.target.id;
-      const selector = '.hrip-input' + id;
+      const selector = `.duo-input${id}`;
       if (event.target.checked) {
         const currentComp = document.getElementById(this.component.id);
         const allCheckBox = currentComp.querySelectorAll(
-          '.editor input[type=checkbox]'
+          `.duo-form-${position} input[type=checkbox]`
         );
         allCheckBox.forEach((elem) => (elem.checked = false));
         event.target.checked = true;
-        const textNodes = [];
+        // const textNodes = [];
         currentComp.querySelectorAll(selector).forEach((elem) => {
-          textNodes.push(elem.value);
+          this[position] = elem.value;
+          // textNodes.push(elem.value);
         });
-        this.photo = {
-          path: this.$store.state.vmixStore.photo.path + '\\',
-          values: [textNodes.pop()],
-        };
-        this.result = textNodes.join('#');
+        // this[position] = textNodes.join('#');
       } else {
-        this.photo = {
-          photos: [],
-          path: '',
-        };
-        this.result = '#';
+        this[position] = '';
+        // this[position] = '#';
       }
-      // this.show();
+      this.show();
     },
     validate(event) {
       if (this.component.uppercase) {
         event.target.value = event.target.value.toUpperCase();
       }
     },
-    writeColumns(id) {
+    writeColumns(id, position) {
       const currentComp = document.getElementById(this.component.id);
       const currentString = currentComp.querySelector('.checkbox' + id);
       const componentId = this.component.id;
@@ -244,12 +274,16 @@ export default {
         const event = {
           target: currentString,
         };
-        this.radioHandler(event);
+        this.radioHandler(event, position);
       }
+    },
+    show() {
+      this.result = this.left + '#' + this.right;
     },
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle() {
+      this.show();
       // if (!this.result) return;
       // const element = document.querySelector('.status-badge');
       const overlayInput = this.component.overlay; // Находим разрешенный номер overlay для тайтла
@@ -295,7 +329,6 @@ export default {
       return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
         value: this.result,
-        photo: this.photo,
       });
     },
   },
@@ -303,11 +336,11 @@ export default {
 </script>
 
 <style scoped>
-.quad-title {
+.duo-title {
   /* max-width: 450px; */
 }
 
-.hrip-input {
+.duo-input {
   height: 25px !important;
 }
 
@@ -347,7 +380,7 @@ input {
   gap: 10px 10px;
   grid-template-areas:
     'status-badge config-btn'
-    'hrip-form hrip-form'
+    'duo-form-left duo-form-right'
     /* 'display-string display-string' */
     'show-btn show-btn';
   /* grid-template-rows: 50% 50% 100%; */
@@ -372,10 +405,15 @@ b-form-select {
   grid-area: show-btn;
 }
 
-.hrip-form {
+.duo-form-left {
   display: flex;
   flex-direction: column;
-  grid-area: hrip-form;
+  grid-area: duo-form-left;
+}
+.duo-form-right {
+  display: flex;
+  flex-direction: column;
+  grid-area: duo-form-right;
 }
 
 .active {

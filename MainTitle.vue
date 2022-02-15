@@ -1,95 +1,66 @@
 <template>
-  <b-table-simple
-    class="main"
-    sticky-header
-    :style="{ 'grid-area': component.id }"
-  >
-    <b-thead head-variant="dark">
-      <b-tr>
-        <b-th
-          v-for="column in Object.values(component.columns)"
-          :key="column.id"
-        >
-          {{ column.name }}
-        </b-th>
-        <b-th class="row-controll">
-          <b-dropdown variant="outline" class="table-btn-dropdown">
-            <b-dropdown-item-button
-              v-if="Object.keys(component.columns).length"
-              class="dropdown-item"
-              @click.native.capture.stop="addRow"
-            >
-              Вставить строку
-            </b-dropdown-item-button>
-            <b-dropdown-item-button
-              v-if="Object.keys(component.columns).length"
-              class="dropdown-item"
-              @click="removeRow"
-            >
-              Удалить выбранные
-            </b-dropdown-item-button>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button
-              v-b-modal:[`modal-xl-${component.id}`]
-              class="dropdown-item"
-              @click="configComponent(component)"
-            >
-              Настройки
-            </b-dropdown-item-button>
-          </b-dropdown>
-          <!-- <div class="burger-menu">
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-          </div>
-          <ul class="submenu">
-            <span v-if="Object.keys(component.columns).length">
-              <li @click="addRow">add row</li>
-              <li @click="removeRow">delete row</li>
-            </span>
-            <li
-              v-b-modal:[`modal-xl-${component.id}`]
-              @click="configComponent(component)"
-            >
-              settings
-            </li>
-          </ul> -->
-        </b-th>
-      </b-tr>
-    </b-thead>
-    <b-tbody>
-      <b-tr v-for="row in component.rows" :key="row.id">
-        <b-td v-for="cell in row.value" :key="cell.id">
-          <input
-            :id="cell.id"
-            readonly
-            class="title-out pointer"
-            :class="
-              $store.state.vmixState.activeTitles[
-                component.columns[cell.columnId].filename
-              ] === cell.value && 'active'
-            "
-            type="text"
-            autocomplete="off"
-            :value="cell.value"
-            @keyup="validate($event, cell.columnId)"
-            @select="selectText($event)"
-            @blur="blur($event, cell)"
-            @contextmenu="editElem($event, cell)"
-            @dblclick="sendTitle($event, cell)"
-          />
-        </b-td>
-        <b-td class="row-control" @click="selectRow(row.id)">
-          <div
-            class="select-row"
-            :class="[selectedRows.includes(row.id) && 'select-row-checked']"
-          ></div>
-        </b-td>
-      </b-tr>
-    </b-tbody>
+  <div class="main-title">
+    <div class="scroll">
+      <table>
+        <thead>
+          <th
+            v-for="column in Object.values(component.columns)"
+            :key="column.name"
+          >
+            {{ column.name }}
+          </th>
+          <th class="row-control">
+            <div class="burger-menu">
+              <div class="burger-menu-item"></div>
+              <div class="burger-menu-item"></div>
+              <div class="burger-menu-item"></div>
+            </div>
+            <ul class="submenu">
+              <span v-if="Object.keys(component.columns).length">
+                <li @click="addRow">add row</li>
+                <li @click="removeRow">delete row</li>
+              </span>
+              <li
+                v-b-modal:[`modal-xl-${component.id}`]
+                @click="configComponent(component)"
+              >
+                settings
+              </li>
+            </ul>
+          </th>
+        </thead>
+        <tr v-for="row in component.rows" :key="row.id">
+          <td v-for="cell in row.value" :key="cell.id">
+            <input
+              :id="cell.id"
+              readonly
+              class="title-out pointer"
+              :class="
+                $store.state.vmixState.activeTitles[
+                  component.columns[cell.columnId].filename
+                ] === cell.value && 'active'
+              "
+              type="text"
+              autocomplete="off"
+              :value="cell.value"
+              @keyup="validate($event, cell.columnId)"
+              @select="selectText($event)"
+              @blur="blur($event, cell)"
+              @contextmenu="editElem($event, cell)"
+              @dblclick="sendTitle($event, cell)"
+            />
+          </td>
+          <td class="row-control" @click="selectRow(row.id)">
+            <div
+              class="select-row"
+              :class="[selectedRows.includes(row.id) && 'select-row-checked']"
+            ></div>
+          </td>
+        </tr>
+      </table>
+    </div>
     <b-modal
       :id="`modal-xl-${component.id}`"
-      class="modal-config"
       size="xl"
       title="Настройки контроллера"
       @ok="saveConfig(component.id)"
@@ -103,6 +74,14 @@
           @click="addColumn(component.id)"
           >Добавить столбец</b-button
         >
+        <!-- <b-button
+          size="sm"
+          class="config-input-add-btn"
+          variant="danger"
+          href="#"
+          @click="removeComponent(component.programId, component.id)"
+          >Удалить контроллер</b-button
+        > -->
       </div>
       <transition-group
         v-if="Object.keys(columns).length"
@@ -173,7 +152,7 @@
         </div>
       </transition-group>
     </b-modal>
-  </b-table-simple>
+  </div>
 </template>
 
 <script>
@@ -268,7 +247,7 @@ export default {
         name: `ЗАГОЛОВОК${columnsCount + 1}`,
         filename: '',
         autoclose: false,
-        uppercase: true,
+        uppercase: false,
         overlay: 1,
       };
       let rows = [];
@@ -294,16 +273,13 @@ export default {
     },
 
     removeColumn(componentId, columnId) {
-      let filteredRows = this.component.rows.map((row) => {
+      const filteredRows = this.component.rows.map((row) => {
         const value = row.value.filter((cell) => cell.columnId !== columnId);
         return {
           id: row.id,
           value,
         };
       });
-      if (filteredRows.length && !filteredRows[0].value.length) {
-        filteredRows = [];
-      }
 
       this.$store.commit('removeColumn', {
         componentId,
@@ -433,11 +409,15 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  display: block;
-  min-height: 200px;
-  min-width: 100px;
+.main-title {
+  min-width: 500px;
+  max-width: 700px;
+
+  font-family: 'Montserrat', Verdana !important;
+  font-size: 12px;
+  /* margin: 10px; */
 }
+
 .config-control-btn-wrapper {
   display: flex;
   justify-content: space-between;
@@ -531,19 +511,11 @@ export default {
 }
 
 .scroll {
+  height: 100%;
+  min-height: 200px;
+  max-height: 60vh;
   width: 100%;
-  /* height: 364px; */
-  /* max-height: 60%; */
-}
-
-.b-table-sticky-header {
-  max-height: 100%;
-  font-family: 'Montserrat', Verdana !important;
-  font-size: 12px;
-}
-
-.table td {
-  padding: 0;
+  overflow-x: hidden;
 }
 
 table {
@@ -554,19 +526,17 @@ table {
 
 td {
   border: 1px solid rgb(128, 126, 126);
-  height: 30px !important;
+  height: 25px !important;
   width: 200px;
 }
 
 th {
   border: 1px solid rgb(128, 126, 126);
   /* background: #02a0da; */
-  text-align: center;
-  background-color: #6c757d !important;
-  padding: 0.6rem;
+  background-color: #007bff;
   color: white;
   width: 200px;
-  height: 34px;
+  height: 35px;
 }
 
 .pointer {
@@ -581,15 +551,6 @@ th {
 .editable {
   background: #90c8df;
   font-style: italic;
-}
-
-.row-controll {
-  padding: 4px;
-  width: 25px;
-}
-
-::v-deep .table-btn-dropdown .btn {
-  padding: 0 6px !important;
 }
 
 .row-control {
@@ -691,12 +652,23 @@ ul {
 }
 
 .select-row {
-  height: 100%;
-  border: 1px solid rgb(165, 165, 165);
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgb(165, 165, 165);
   margin: auto;
 }
 
 .select-row-checked {
   background: #48f3ba;
+}
+
+/* _____________________________ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
 }
 </style>

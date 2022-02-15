@@ -1,6 +1,8 @@
 <template>
-  <div class="button-comp">
-    <b-button variant="outline-dark" class="m-2" @click="newButton">+</b-button>
+  <div class="button-comp" :style="{ 'grid-area': component.id }">
+    <b-button variant="primary" size="sm" class="m-2" @click="newButton"
+      >+</b-button
+    >
     <!-- <div v-if="Object.keys(columns).length"> -->
     <div
       v-for="buttonData in Object.values(component.columns)"
@@ -11,6 +13,7 @@
         id="dropdown-form"
         :ref="'dropdown' + buttonData.id"
         split
+        size="sm"
         :split-variant="buttonData.color"
         :variant="
           (Object.keys($store.state.vmixState.activeTitles).includes(
@@ -135,6 +138,7 @@ export default {
         componentId: this.component.id,
         columns: this.columns,
       });
+      this.$store.dispatch('saveDB');
     },
     saveConfig(id) {
       this.$refs['dropdown' + id][0].hide(true);
