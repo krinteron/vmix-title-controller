@@ -422,10 +422,23 @@ export default {
         this.$store.commit('setTimer', timerData);
       }
 
+      let text = cell.value;
+
+      const filename = this.component.columns[cell.columnId].filename;
+      const titleTextCount = this.$store.state.vmixState.inputs
+        .filter(({ title }) => title === filename)[0]
+        .text.split('#').length;
+      const valueTextCount = cell.value.split('#').length;
+      if (valueTextCount < titleTextCount) {
+        text = cell.value + '#'.repeat(titleTextCount - valueTextCount);
+        element.value = text;
+        this.writeRows(event, cell);
+      }
+
       element.classList.toggle('starting');
       return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
-        value: cell.value,
+        value: text,
       });
     },
   },

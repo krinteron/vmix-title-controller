@@ -23,6 +23,13 @@
     <div v-if="$store.state.vmixState.overlays" class="overlays-indicator">
       <b-badge
         pill
+        class="input-remove-btn"
+        variant="danger"
+        @click="removeInputs"
+        >Очистить инпуты vMix</b-badge
+      >
+      <b-badge
+        pill
         class="overlays-dasable-btn"
         variant="danger"
         @click="overlayOutAll"
@@ -80,6 +87,9 @@ export default {
     console(value) {
       alert(value);
     },
+    removeInputs() {
+      return this.$store.dispatch('clearVmixInputs');
+    },
     overlayOut(input) {
       this.$store.commit('clearTimer', { input });
       return this.$store.state.stateMachine[input].running();
@@ -88,7 +98,7 @@ export default {
       for (const i in Object.keys(this.$store.state.timers)) {
         this.$store.commit('clearTimer', { input: i });
       }
-      return this.$store.commit('overlayOutAll');
+      return this.$store.dispatch('overlayOutAll');
     },
   },
 };

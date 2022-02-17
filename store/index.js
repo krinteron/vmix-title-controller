@@ -124,16 +124,6 @@ const store = () =>
         const timerId = state.timers[input];
         clearTimeout(timerId);
       },
-      overlayOutAll() {
-        const options = {
-          url: '/api/',
-          method: 'post',
-          data: qs.stringify({
-            Function: 'OverlayInputAllOff',
-          }),
-        };
-        axios(options);
-      },
       writeOrderComponents(state, { programId, newOrder }) {
         state.db.programs[programId].order = [...newOrder];
       },
@@ -228,6 +218,17 @@ const store = () =>
         });
       },
 
+      overlayOutAll() {
+        const options = {
+          url: '/api/',
+          method: 'post',
+          data: qs.stringify({
+            Function: 'OverlayInputAllOff',
+          }),
+        };
+        axios(options);
+      },
+
       getVmixState: async ({ commit, state }) => {
         const { data } = await axios.get('/status');
         if (Object.keys(data).includes('error')) {
@@ -264,6 +265,22 @@ const store = () =>
             value: titles,
           });
         });
+      },
+
+      clearVmixInputs: ({ state }) => {
+        let i = state.vmixState.inputs.length;
+        while (i > 0) {
+          const options = {
+            url: '/api/',
+            method: 'post',
+            data: qs.stringify({
+              Function: 'RemoveInput',
+              Input: i,
+            }),
+          };
+          axios(options);
+          i--;
+        }
       },
 
       setStateMachine: ({ commit, state }) => {

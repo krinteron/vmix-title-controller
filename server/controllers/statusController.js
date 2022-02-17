@@ -47,7 +47,9 @@ exports.get_status = async function (req, res) {
             number,
             text,
           };
-          inputs.push(result);
+          if (title) {
+            inputs.push(result);
+          }
           if (overlays.includes(number)) {
             activeTitles[title] = text;
           }

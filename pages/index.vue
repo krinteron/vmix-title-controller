@@ -29,6 +29,7 @@
             :title="$store.state.db.programs[programId].programName"
             active
           >
+            <!-- __________________Заголовки вкладок____________________ -->
             <template #title>
               <strong v-if="$store.state.db.programs[programId]">
                 {{ $store.state.db.programs[programId].programName }}
@@ -50,6 +51,7 @@
                 </b-dropdown-item-button>
               </b-dropdown>
             </template>
+            <!-- __________________Тело вкладки____________________ -->
             <div
               :id="`tab-${programId}`"
               class="tab-grid-container"
@@ -58,6 +60,7 @@
                   $store.state.db.programs[programId].areas,
               }"
             >
+              <!-- __________________Тело компонента____________________ -->
               <component
                 :is="
                   $store.state.db.components[component.id].titlerComponentName
@@ -71,13 +74,14 @@
             </div>
           </b-tab>
         </span>
-
+        <!-- __________________Добавление вкладок____________________ -->
         <template #tabs-end>
           <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
             <b>+</b>
           </b-nav-item>
         </template>
       </b-tabs>
+      <!-- __________________Модальное окно настроек вкладки____________________ -->
       <b-modal
         v-if="Object.keys(program).length"
         :id="`modal-xl-${program.id}`"
@@ -112,10 +116,8 @@
         <hr />
 
         <div class="areas-flex-container">
-          <draggable
-            v-model="orders[program.id]"
-            class="areas-flex-container-item"
-          >
+          <!-- __________________Список компонентов____________________ -->
+          <div class="areas-flex-container-item">
             <transition-group
               tag="span"
               name="component"
@@ -141,7 +143,8 @@
                 </div>
               </div>
             </transition-group>
-          </draggable>
+          </div>
+          <!-- __________________Настройка Grid areas____________________ -->
           <div class="areas-flex-container-item">
             <b-table-simple>
               <b-tbody>
@@ -192,12 +195,8 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable';
 import { v4 as uuidv4 } from 'uuid';
 export default {
-  components: {
-    draggable,
-  },
   data() {
     return {
       program: {},
