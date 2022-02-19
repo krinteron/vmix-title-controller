@@ -13,7 +13,7 @@
               text="Button"
               variant="success"
               @click="changeVmixHost"
-              >Button</b-button
+              >Enter</b-button
             >
           </b-input-group-append>
         </b-input-group>
@@ -263,7 +263,7 @@ export default {
       this.components.forEach((component) => {
         this.componentsIds.push({
           value: component.id,
-          text: component.name + count++,
+          text: `${component.name}-[${count++}]`,
         });
       });
     },
@@ -580,13 +580,6 @@ export default {
   -ms-transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
 }
-
-/* .title-controllers {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 0 20px;
-} */
 .tabs {
   width: 100%;
 }

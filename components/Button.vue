@@ -161,8 +161,6 @@ export default {
       this.writeColumns();
     },
     sendTitle(component) {
-      // if (!this.result) return;
-      // const element = document.querySelector('.status-badge');
       const overlayInput = component.overlay; // Находим разрешенный номер overlay для тайтла
       const state = this.$store.state.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
@@ -178,8 +176,6 @@ export default {
           component.filename
         )
       ) {
-        // element.classList.toggle('active');
-        // element.classList.toggle('ending');
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       this.$store.commit('clearTimer', { input: overlayInput });

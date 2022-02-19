@@ -37,23 +37,6 @@
               Настройки
             </b-dropdown-item-button>
           </b-dropdown>
-          <!-- <div class="burger-menu">
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-            <div class="burger-menu-item"></div>
-          </div>
-          <ul class="submenu">
-            <span v-if="Object.keys(component.columns).length">
-              <li @click="addRow">add row</li>
-              <li @click="removeRow">delete row</li>
-            </span>
-            <li
-              v-b-modal:[`modal-xl-${component.id}`]
-              @click="configComponent(component)"
-            >
-              settings
-            </li>
-          </ul> -->
         </b-th>
       </b-tr>
     </b-thead>
@@ -319,9 +302,6 @@ export default {
     writeRows({ target }, { columnId }) {
       const id = target.id;
       const value = target.value;
-      // if (this.component.columns[columnId].uppercase) {
-      //   value = value.toUpperCase();
-      // }
       const rows = this.component.rows.map((row) => {
         row.value = row.value.map((cell) => {
           if (cell.id === id) {
@@ -543,12 +523,6 @@ export default {
   -webkit-transform: rotate(-45deg);
 }
 
-.scroll {
-  width: 100%;
-  /* height: 364px; */
-  /* max-height: 60%; */
-}
-
 .b-table-sticky-header {
   max-height: 100%;
   font-family: 'Montserrat', Verdana !important;
@@ -642,65 +616,6 @@ input.pointer:hover {
   50% {
     opacity: 0.7;
   }
-}
-
-.burger-menu {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  gap: 3px;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.burger-menu-item {
-  background: white;
-  width: 15px;
-  height: 2px;
-}
-
-.submenu {
-  opacity: 0;
-  position: absolute;
-  width: 150px;
-  right: 0;
-  top: 26px;
-  font-weight: normal;
-  z-index: 2;
-  transform: scaleY(0);
-  transform-origin: 0 0;
-  transition: 0.15s;
-}
-
-.row-control:hover .submenu {
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-.submenu li,
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-.submenu li {
-  background: #48c5f3;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  user-select: none;
-}
-
-.submenu li:hover {
-  background: #45a3c5;
-}
-
-.submenu li:active {
-  background: #357d97;
 }
 
 .select-row {

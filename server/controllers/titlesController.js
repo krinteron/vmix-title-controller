@@ -2,21 +2,27 @@ import 'dotenv/config';
 const fs = require('fs');
 const SMB2 = require('@marsaud/smb2');
 
+const vMixHostPath = process.env.VMIXHOST;
+const dbPath = process.env.DB;
+
+const getVmixHost = () => {
+  const vmixData = fs.readFileSync(vMixHostPath, 'utf8');
+  const parsedData = JSON.parse(vmixData);
+  return new URL(parsedData.host).hostname;
+};
+
 const smb2Client = new SMB2({
   share: (() => {
-    const vmixData = fs.readFileSync('./vmixHost.json', 'utf8');
-    const parsedData = JSON.parse(vmixData);
-    const hostname = new URL(parsedData.host).hostname;
-    return `\\\\${hostname}\\vmix_store`;
+    const hostname = getVmixHost();
+    return `\\\\${hostname}\\${process.env.VMIX_STORE}`;
   })(),
-  // share: '\\\\172.16.16.240\\vmix_store',
-  domain: 'DOMAIN',
-  username: 'username',
-  password: 'password',
+  domain: process.env.DOMAIN,
+  username: process.env.USERNAME,
+  password: process.env.PASSWORD,
 });
 
 exports.get_titles = function (req, res) {
-  const db = fs.readFileSync('./db2.json', 'utf8');
+  const db = fs.readFileSync(dbPath, 'utf8');
   let data = '';
   if (db) {
     data = JSON.parse(db);
@@ -26,17 +32,17 @@ exports.get_titles = function (req, res) {
 
 exports.post_titles = function (req, res) {
   const data = req.body.data;
-  fs.writeFileSync('./db2.json', JSON.stringify(data), 'utf8');
+  fs.writeFileSync(dbPath, JSON.stringify(data), 'utf8');
   res.json({});
 };
 
 exports.get_vmix_store = async function (req, res) {
-  const photoPath = process.env.VMIX_STORE + process.env.VMIX_PHOTO;
-  const titlesPath = process.env.VMIX_STORE + process.env.VMIX_TITLES;
+  const photoPath = process.env.VMIX_ASSETSPATH + process.env.VMIX_PHOTO;
+  const titlesPath = process.env.VMIX_ASSETSPATH + process.env.VMIX_TITLES;
   let photoNames = [];
   let titleNames = [];
   await new Promise((resolve) => {
-    smb2Client.readdir('hrip_photo', (err, files) => {
+    smb2Client.readdir(process.env.VMIX_PHOTO, (err, files) => {
       if (err) {
         console.log(err);
       }
@@ -46,7 +52,7 @@ exports.get_vmix_store = async function (req, res) {
     });
   });
   await new Promise((resolve) => {
-    smb2Client.readdir('titles', (err, files) => {
+    smb2Client.readdir(process.env.VMIX_TITLES, (err, files) => {
       if (err) {
         console.log(err);
       }
@@ -72,6 +78,6 @@ exports.get_vmix_store = async function (req, res) {
 exports.set_vmix_host = function (req, res) {
   const host = req.body.data;
 
-  fs.writeFileSync('./vmixHost.json', JSON.stringify({ host }), 'utf8');
+  fs.writeFileSync(vMixHostPath, JSON.stringify({ host }), 'utf8');
   res.json({});
 };

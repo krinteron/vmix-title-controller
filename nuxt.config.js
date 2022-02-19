@@ -1,12 +1,10 @@
-import 'dotenv/config';
-
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: true,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'vmix-title',
+    title: 'vMixControl',
     htmlAttrs: {
       lang: 'en',
     },
@@ -16,19 +14,13 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.png' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
 
   serverMiddleware: [{ path: '/', handler: '~/server/index.js' }],
-
-  // proxy: {
-  //   '/api/': {
-  //     target: getVmixHost(),
-  //   },
-  // },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],

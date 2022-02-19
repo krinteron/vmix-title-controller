@@ -742,8 +742,6 @@ export default {
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle() {
       this.show();
-      // if (!this.result) return;
-      // const element = document.querySelector('.status-badge');
       const overlayInput = this.component.overlay; // Находим разрешенный номер overlay для тайтла
       const state = this.$store.state.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
@@ -757,8 +755,6 @@ export default {
         this.$store.state.vmixState.activeTitles[this.component.filename] ===
         this.$store.state.db.components[this.component.id].resultString
       ) {
-        // element.classList.toggle('active');
-        // element.classList.toggle('ending');
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       if (!this.result.replace(/#/gi, '')) return;
@@ -793,12 +789,6 @@ export default {
 
 <style scoped>
 .quad-title {
-  /* min-width: 400px; */
-  /* max-width: 450px; */
-
-  /* min-width: 30vw; */
-  /* height: 60vh; */
-  /* margin: 10px; */
 }
 
 .quad-input {

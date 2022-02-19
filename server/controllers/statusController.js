@@ -1,9 +1,11 @@
+import 'dotenv/config';
 import fs from 'fs';
 import axios from 'axios';
-require('dotenv').config({ debug: true, override: true });
+
+const vMixHostPath = process.env.VMIXHOST;
 
 exports.get_status = async function (req, res) {
-  const vmixData = fs.readFileSync('./vmixHost.json', 'utf8');
+  const vmixData = fs.readFileSync(vMixHostPath, 'utf8');
   const parsedData = JSON.parse(vmixData);
   const vmixHost = parsedData.host;
   const host = vmixHost + '/api/';
@@ -58,7 +60,7 @@ exports.get_status = async function (req, res) {
       res.json({ inputs, overlays, activeTitles });
     });
   } catch (e) {
-    const vmixData = fs.readFileSync('./vmixHost.json', 'utf8');
+    const vmixData = fs.readFileSync(vMixHostPath, 'utf8');
     const parsedData = JSON.parse(vmixData);
     const vmixHost = parsedData.host;
     const error = {

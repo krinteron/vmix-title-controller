@@ -5,29 +5,15 @@
         <img src="/logo.png" class="d-inline-block align-top" alt="logo" />
         vMix Title Controller
       </b-navbar-brand>
-      <!-- <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
-
-      <b-nav-item-dropdown text="Lang" right>
-        <b-dropdown-item href="#">EN</b-dropdown-item>
-        <b-dropdown-item href="#">ES</b-dropdown-item>
-        <b-dropdown-item href="#">RU</b-dropdown-item>
-        <b-dropdown-item href="#">FA</b-dropdown-item>
-      </b-nav-item-dropdown>
-
-      <b-nav-item-dropdown text="User" right>
-        <b-dropdown-item href="#">Account</b-dropdown-item>
-        <b-dropdown-item href="#"> Settings </b-dropdown-item>
-      </b-nav-item-dropdown>
-      <b-nav-item><router-link to="/config">Config</router-link></b-nav-item> -->
     </b-navbar-nav>
     <div v-if="$store.state.vmixState.overlays" class="overlays-indicator">
-      <b-badge
+      <!-- <b-badge
         pill
         class="input-remove-btn"
         variant="danger"
         @click="removeInputs"
         >Очистить инпуты vMix</b-badge
-      >
+      > -->
       <b-badge
         pill
         class="overlays-dasable-btn"
@@ -87,9 +73,9 @@ export default {
     console(value) {
       alert(value);
     },
-    removeInputs() {
-      return this.$store.dispatch('clearVmixInputs');
-    },
+    // removeInputs() {
+    //   return this.$store.dispatch('clearVmixInputs');
+    // },
     overlayOut(input) {
       this.$store.commit('clearTimer', { input });
       return this.$store.state.stateMachine[input].running();

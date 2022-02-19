@@ -3,7 +3,7 @@ import Vuex, { Store } from 'vuex';
 import axios from 'axios';
 import qs from 'qs';
 
-import StateMachine from '../static/utils/StateMachine';
+import StateMachine from './utils/StateMachine';
 
 Vue.use(Vuex);
 
@@ -53,19 +53,15 @@ function run(overlayInput, data) {
     sendPhoto(index + 1);
   };
 
-  return (
-    sendText(0)
-      // .then(() => sendPhoto(0))
-      .then(() => {
-        axios.post(
-          '/api/',
-          qs.stringify({
-            Function: `OverlayInput${overlayInput}`,
-            Input: currentInputNumber,
-          })
-        );
+  return sendText(0).then(() => {
+    axios.post(
+      '/api/',
+      qs.stringify({
+        Function: `OverlayInput${overlayInput}`,
+        Input: currentInputNumber,
       })
-  );
+    );
+  });
 }
 
 function stop(overlayInput) {
@@ -267,21 +263,21 @@ const store = () =>
         });
       },
 
-      clearVmixInputs: ({ state }) => {
-        let i = state.vmixState.inputs.length;
-        while (i > 0) {
-          const options = {
-            url: '/api/',
-            method: 'post',
-            data: qs.stringify({
-              Function: 'RemoveInput',
-              Input: i,
-            }),
-          };
-          axios(options);
-          i--;
-        }
-      },
+      // clearVmixInputs: ({ state }) => {
+      //   let i = state.vmixState.inputs.length;
+      //   while (i > 0) {
+      //     const options = {
+      //       url: '/api/',
+      //       method: 'post',
+      //       data: qs.stringify({
+      //         Function: 'RemoveInput',
+      //         Input: i,
+      //       }),
+      //     };
+      //     axios(options);
+      //     i--;
+      //   }
+      // },
 
       setStateMachine: ({ commit, state }) => {
         // const inputCount = state.vmixState.overlays.length;

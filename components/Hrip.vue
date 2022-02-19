@@ -224,7 +224,6 @@ export default {
         };
         this.result = '#';
       }
-      // this.show();
     },
     validate(event) {
       if (this.component.uppercase) {

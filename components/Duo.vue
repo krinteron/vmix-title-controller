@@ -300,8 +300,6 @@ export default {
         this.$store.state.vmixState.activeTitles[this.component.filename] ===
         this.$store.state.db.components[this.component.id].resultString
       ) {
-        // element.classList.toggle('active');
-        // element.classList.toggle('ending');
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       if (!this.result.replace(/#/gi, '')) return;

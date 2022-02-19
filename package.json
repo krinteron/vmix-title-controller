@@ -1,11 +1,12 @@
 {
-  "name": "vmix-title",
+  "name": "vmix-title-controller",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
+    "makeDB": "node server/DB/DBmigration.js",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" .",
     "prettier": "prettier --write .",
@@ -26,9 +27,7 @@
     "nuxt": "^2.15.7",
     "qs": "^6.10.3",
     "uuid": "^8.3.2",
-    "vue-property-decorator": "^8.5.1",
-    "vue-router": "^3.5.3",
-    "vuedraggable": "^2.24.3"
+    "vue-property-decorator": "^8.5.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
