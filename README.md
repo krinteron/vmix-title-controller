@@ -1,4 +1,58 @@
-# vmix-title
+vMix Title Controller
+=====================
+Приложение для оперативного вывода титров vMix в эфир.
+
+
+## Описание
+
+Приложение включает ряд управляющих модулей титрования:
+- 4 окна
+- 2 окна
+- телефонный разговор
+- модуль с кнопками
+- универсальная таблица
+
+Доступна возможность создавать вкладки с новыми программами с уникальным расположением модулей,  
+которые можно перемещать и растягивать в настройках вкладки.  
+Приложение отслеживает статус vMix и подсвечивает активные титры и модули.
+vMix имеет 4 слоя overlay для вывода титров и каждый модули или столбец из таблица можно настройить на нужный слой.
+Титры, выходящие на уже активном слое, снимают активный титр, и выходит вслед за ним.
+Имеются опции автоматического перевода текста в верхний регистр и автоматического закрытия титра через 10 секунд.
+Для кнопок можно назначить свой цвет и название для визуального отличия.
+Для разделения текстовых блоков одного титра используется символ решетки `#`.
+
+## Настройка
+
+Компьютер с программой vMix должен иметь сетевую папку со следующей структурой:
+- vmix_store
+    - hrip_photo
+    - titles
+
+Папка `hrip_photo` предназначения для фотографий спикеров при титровании телефонного звонка.
+Папка `titles` содержит в себе файлы титров, загруженных в vMix.
+
+Файлы титров должны быть подготовлены в программе `vMix GT Title Designer` следующим образом:
+- Текстовые блоки, предназначенные для изменения, именуются так: `Text1`, `Text2`...
+- Изображения именуются соответственно: `Image1`, `Image2`...
+- Текст в титрах, который не предназначен для изменения должен быть именован другим образом,
+и не иметь переноса строк. Для длинных предложений создавайте несколько блоков текста построчно.
+
+![alt tag](https://64.media.tumblr.com/ac90d47944a4346b6f7c1554ae3f5685/2204300f6b8a81af-6a/s250x400/d71b2a296132cba3c419ede94599ba41c0b9c397.png "title naming")​   ![alt tag](https://64.media.tumblr.com/6848c259f95e19edc86cba70f1b4a138/2204300f6b8a81af-9f/s250x400/55a2dc79144af8b548b027fa90f94f46fb5e91c2.png "title naming")​
+
+Для первоначальной настройки измените в `.env` файле данные для smb подключения к сетевой папки vMix.
+Также в файле `server/DB/vmixHost.json` укажите актуальный адрес компьютера с vMix. Его можно указать и при
+подключении к серверу в браузере.
+![alt tag](https://64.media.tumblr.com/97862ebd86825aa15cdd8b5266aec1fa/2204300f6b8a81af-c8/s540x810/ca0fdacb2ca8e52a1364efa009a3c89778edfadd.png "enter vmix ip")​
+
+## Пример работы
+
+https://user-images.githubusercontent.com/24290554/154822651-c91ea091-c1f1-40f2-85c3-c3448a382e4d.mp4
+
+
+## Пример создания новой вкладки
+
+https://user-images.githubusercontent.com/24290554/154822653-93b29460-1429-48f9-afc8-fadc992dbfc2.mp4
+
 
 ## Build Setup
 
@@ -12,57 +66,3 @@ $ npm run dev
 # build for production and launch server
 $ npm run build
 $ npm run start
-
-# generate static project
-$ npm run generate
-```
-
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
-
-## Special Directories
-
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
-
-### `assets`
-
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
-
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
