@@ -1,1 +1,3 @@
-{"host":"http://172.16.16.240:8088"}
+{
+  "host": "ENTER_YOUR_VMIX_HOST"
+}
