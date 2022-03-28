@@ -230,7 +230,7 @@ export default {
         event.target.value = event.target.value.toUpperCase();
       }
     },
-    writeColumns(id) {
+    async writeColumns(id) {
       const currentComp = document.getElementById(this.component.id);
       const currentString = currentComp.querySelector('.checkbox' + id);
       const componentId = this.component.id;
@@ -238,7 +238,7 @@ export default {
         componentId,
         columns: this.columns,
       });
-      this.$store.dispatch('saveDB');
+      await this.$store.dispatch('saveDB');
       if (currentString.checked === true) {
         const event = {
           target: currentString,

@@ -103,13 +103,10 @@
             :options="componentsList"
           ></b-form-select>
           <span class="input-group-btn component-control-item">
-            <b-button
-              class="config-input-add-btn"
-              variant="primary"
-              href="#"
-              @click="addComponent(program.id)"
-              >Добавить контроллер</b-button
-            >
+            <BlueButton
+              text="Добавить контроллер"
+              @click-event="addComponent(program.id)"
+            />
           </span>
         </div>
 
@@ -196,7 +193,14 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
+import MainTitle from '../components/tableComponent/MainTitle.vue';
+import Hrip from '../components/Hrip.vue';
+import Duo from '../components/Duo.vue';
+import Quad from '../components/Quad.vue';
+import Button from '../components/Button.vue';
+import BlueButton from '../components/sharedComponents/BlueButton.vue';
 export default {
+  components: { MainTitle, Hrip, Duo, Quad, Button, BlueButton },
   data() {
     return {
       program: {},

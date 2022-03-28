@@ -21,6 +21,16 @@ const smb2Client = new SMB2({
   password: process.env.PASSWORD,
 });
 
+const checkShare = (path) => {
+  return new Promise((resolve, reject) =>
+    smb2Client.exists(path, (err, exists) => {
+      if (err) return reject(`smb connection error: ${err}`);
+      if (!exists) return reject(`path '${path}' not available`);
+      return resolve();
+    })
+  );
+};
+
 exports.get_titles = function (req, res) {
   const db = fs.readFileSync(dbPath, 'utf8');
   let data = '';
@@ -39,12 +49,18 @@ exports.post_titles = function (req, res) {
 exports.get_vmix_store = async function (req, res) {
   const photoPath = process.env.VMIX_ASSETSPATH + process.env.VMIX_PHOTO;
   const titlesPath = process.env.VMIX_ASSETSPATH + process.env.VMIX_TITLES;
+  await checkShare(process.env.VMIX_PHOTO)
+    .then(() => checkShare(process.env.VMIX_TITLES))
+    .catch((err) => {
+      res.statusCode = 503;
+      res.json({ error: err });
+    });
   let photoNames = [];
   let titleNames = [];
-  await new Promise((resolve) => {
+  await new Promise((resolve, reject) => {
     smb2Client.readdir(process.env.VMIX_PHOTO, (err, files) => {
       if (err) {
-        console.log(err);
+        return reject(err);
       }
       files.sort();
       photoNames = files;
