@@ -1,24 +1,31 @@
 <template>
   <p class="input-string">
     <b-input-group class="mb-2">
-      <b-input-group-prepend class="quad-input" is-text>
+      <b-input-group-prepend class="hrip-input" is-text>
         <input
           ref="checkbox"
-          :checked="activeString === value.id"
           type="checkbox"
+          :checked="activeString === value.id"
           @click="radioHandler"
         />
       </b-input-group-prepend>
       <b-form-input
-        v-model="data.firstname"
-        class="quad-input"
+        v-model="data.name"
+        class="hrip-input"
         @input="writeColumns"
       ></b-form-input>
       <b-form-input
-        v-model="data.lastname"
-        class="quad-input"
+        v-model="data.job"
+        class="hrip-input"
         @input="writeColumns"
       ></b-form-input>
+      <b-form-select
+        v-if="Object.keys($store.state.vmixStore).length"
+        v-model="data.photo"
+        :options="$store.state.vmixStore.photo.values"
+        class="select-photo"
+        @change="writeColumns"
+      ></b-form-select>
     </b-input-group>
   </p>
 </template>
@@ -48,18 +55,25 @@ export default {
   methods: {
     radioHandler() {
       if (this.$refs.checkbox.checked) {
-        const data = `${this.data.firstname}#${this.data.lastname}`;
+        const data = {
+          text: `${this.data.name}#${this.data.job}`,
+          photo: this.data.photo,
+        };
         this.$emit('click', this.value.id);
         this.$emit('write-result', data);
       } else {
+        const data = {
+          text: '#',
+          photo: '',
+        };
         this.$emit('click', 'null');
-        this.$emit('write-result', '#');
+        this.$emit('write-result', data);
       }
     },
     validate() {
       if (this.uppercase) {
-        this.data.firstname = this.data.firstname.toUpperCase();
-        this.data.lastname = this.data.lastname.toUpperCase();
+        this.data.name = this.data.name.toUpperCase();
+        this.data.job = this.data.job.toUpperCase();
       }
     },
     async writeColumns() {
@@ -76,17 +90,30 @@ export default {
 </script>
 
 <style scoped>
+.hrip-input {
+  height: 25px !important;
+}
+
 p,
 .input-string,
 .input-group {
   margin: 0 !important;
 }
-.quad-input {
+
+.select-photo {
+  padding: 2px 28px 2px 12px !important;
+  font-family: 'Montserrat', Verdana !important;
+  font-size: 12px !important;
   height: 25px !important;
 }
+
 input {
   font-family: 'Montserrat', Verdana !important;
   font-size: 12px !important;
   padding: 2px 5px;
+}
+
+b-form-select {
+  margin: 0 !important;
 }
 </style>

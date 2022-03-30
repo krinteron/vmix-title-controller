@@ -105,4 +105,9 @@ export default {
 ::v-deep .btn {
   padding: 0 6px !important;
 }
+input {
+  font-family: 'Montserrat', Verdana !important;
+  font-size: 12px !important;
+  padding: 2px 5px;
+}
 </style>

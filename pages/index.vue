@@ -194,7 +194,7 @@
 <script>
 import { v4 as uuidv4 } from 'uuid';
 import MainTitle from '../components/tableComponent/MainTitle.vue';
-import Hrip from '../components/Hrip.vue';
+import Hrip from '../components/phoneComponent/Hrip.vue';
 import Duo from '../components/twoColumnsConponent/Duo.vue';
 import Quad from '../components/fourColumnsComponent/Quad.vue';
 import Button from '../components/Button.vue';

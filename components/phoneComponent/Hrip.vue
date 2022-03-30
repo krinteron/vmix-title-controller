@@ -1,7 +1,7 @@
 <template>
   <div
     :id="component.id"
-    class="duo-title"
+    class="quad-title"
     :style="{ 'grid-area': component.id }"
   >
     <div v-if="Object.keys(component.columns).length" class="editor">
@@ -10,18 +10,10 @@
         :color="isActive ? 'success' : null"
       />
       <DropdownConfigComponent :component="component" :is-active="isActive" />
-      <ColumnComponent
-        v-model="left"
-        class="duo-form-left"
+      <PhoneColumnComponent
+        v-model="result"
+        class="hrip-form"
         :component="component"
-        :position="'left'"
-        @save-event="show"
-      />
-      <ColumnComponent
-        v-model="right"
-        class="duo-form-right"
-        :component="component"
-        :position="'right'"
         @save-event="show"
       />
       <RectButton
@@ -44,14 +36,14 @@
 <script>
 import BadgeComponent from '../sharedComponents/BadgeComponent.vue';
 import DropdownConfigComponent from '../sharedComponents/DropdownConfigComponent.vue';
-import ColumnComponent from '../twoColumnsConponent/components/ColumnComponent.vue';
 import RectButton from '../sharedComponents/RectButton.vue';
+import PhoneColumnComponent from './components/PhoneColumnComponent.vue';
 export default {
   components: {
     BadgeComponent,
     DropdownConfigComponent,
-    ColumnComponent,
     RectButton,
+    PhoneColumnComponent,
   },
   props: {
     component: {
@@ -62,8 +54,8 @@ export default {
   data() {
     return {
       result: '',
-      left: '',
-      right: '',
+      text: '#',
+      photo: '',
     };
   },
   computed: {
@@ -76,12 +68,15 @@ export default {
   },
   methods: {
     show() {
-      this.result = this.left + '#' + this.right;
+      this.text = this.result.text;
+      this.photo = {
+        path: this.$store.state.vmixStore.photo.path + '\\',
+        values: [this.result.photo],
+      };
     },
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle() {
-      this.show();
       // if (!this.result) return;
       // const element = document.querySelector('.status-badge');
       const overlayInput = this.component.overlay; // Находим разрешенный номер overlay для тайтла
@@ -93,13 +88,16 @@ export default {
       if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
       const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
 
-      if (this.isActive) {
+      if (
+        this.$store.state.vmixState.activeTitles[this.component.filename] ===
+        this.$store.state.db.components[this.component.id].resultString
+      ) {
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
-      if (!this.result.replace(/#/gi, '')) return;
+      if (!this.text.replace(/#/gi, '')) return;
       this.$store.commit('writeQuadResultString', {
         componentId: this.component.id,
-        resultString: this.result,
+        resultString: this.text,
       });
       this.$store.dispatch('saveDB');
       this.$store.commit('clearTimer', { input: overlayInput });
@@ -120,7 +118,8 @@ export default {
       }
       return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
-        value: this.result,
+        value: this.text,
+        photo: this.photo,
       });
     },
   },
@@ -128,15 +127,21 @@ export default {
 </script>
 
 <style scoped>
-.duo-title {
+.quad-title {
   /* max-width: 450px; */
 }
 
-.select-photo {
-  padding: 2px 28px 2px 12px !important;
+/* .display-string {
+  width: 100%;
+  height: 20px;
   font-family: 'Montserrat', Verdana !important;
-  font-size: 12px !important;
-}
+  font-size: 10px !important;
+  padding: 2px 5px;
+  grid-area: display-string;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+} */
 
 .editor {
   font: inherit !important;
@@ -144,11 +149,16 @@ export default {
   gap: 10px 10px;
   grid-template-areas:
     'status-badge config-btn'
-    'duo-form-left duo-form-right'
+    'hrip-form hrip-form'
     /* 'display-string display-string' */
     'show-btn show-btn';
   /* grid-template-rows: 50% 50% 100%; */
   grid-template-columns: 1fr 1fr;
+}
+
+.status-badge {
+  grid-area: status-badge;
+  line-height: 32px;
 }
 
 .config-btn {
@@ -156,23 +166,14 @@ export default {
   margin: 0 !important;
 }
 
+.hrip-form {
+  display: flex;
+  flex-direction: column;
+  grid-area: hrip-form;
+}
+
 .show-btn {
   grid-area: show-btn;
-}
-
-b-form-select {
-  margin: 0 !important;
-}
-
-.duo-form-left {
-  display: flex;
-  flex-direction: column;
-  grid-area: duo-form-left;
-}
-.duo-form-right {
-  display: flex;
-  flex-direction: column;
-  grid-area: duo-form-right;
 }
 
 .active {

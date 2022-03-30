@@ -11,7 +11,7 @@
       </b-input-group-prepend>
       <b-form-input
         ref="input"
-        v-model="text"
+        v-model="data"
         autocomplete="off"
         class="duo-input"
         @input="writeColumns"
@@ -44,14 +44,14 @@ export default {
   emits: ['click', 'write-result', 'save-columns'],
   data() {
     return {
-      text: this.value,
+      data: this.value,
     };
   },
   methods: {
     radioHandler() {
       if (this.$refs.checkbox.checked) {
         this.$emit('click', this.id);
-        this.$emit('write-result', this.text);
+        this.$emit('write-result', this.data);
       } else {
         this.$emit('click', 'null');
         this.$emit('write-result', '');
@@ -59,12 +59,12 @@ export default {
     },
     validate() {
       if (this.uppercase) {
-        this.text = this.text.toUpperCase();
+        this.data = this.data.toUpperCase();
       }
     },
     async writeColumns() {
       this.validate();
-      this.$emit('input', this.text);
+      this.$emit('input', this.data);
       this.$emit('save-columns');
       await this.$store.dispatch('saveDB');
       if (this.$refs.checkbox.checked) {
