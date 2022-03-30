@@ -1,10 +1,5 @@
 <template>
-  <b-button
-    class="config-input-add-btn"
-    variant="primary"
-    href="#"
-    @click="$emit('click-event')"
-  >
+  <b-button :variant="btnStyle" size="sm" @click="$emit('click')">
     {{ text }}
   </b-button>
 </template>
@@ -16,8 +11,13 @@ export default {
       type: String,
       required: true,
     },
+    btnStyle: {
+      type: String,
+      required: false,
+      default: 'primary',
+    },
   },
-  emits: ['click-event'],
+  emits: ['click'],
 };
 </script>
 

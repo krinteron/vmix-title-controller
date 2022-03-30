@@ -6,78 +6,40 @@
   >
     <div v-if="Object.keys(columns).length" class="editor">
       <b-badge
-        :variant="
-          ($store.state.vmixState.activeTitles[component.filename] ===
-            $store.state.db.components[component.id].resultString &&
-            'success') ||
-          'secondary'
-        "
+        :variant="(isActive && 'success') || 'secondary'"
         class="status-badge"
         >{{ component.name || 'header' }}</b-badge
       >
-      <b-dropdown
-        id="dropdown-form"
-        ref="dropdown"
-        text="Настройки"
-        class="m-2 config-btn"
-      >
-        <b-dropdown-form class="dropdown-body">
-          <b-form-group
-            label="Название"
-            label-for="config-header"
-            @submit.stop.prevent
-          >
-            <b-form-input
-              id="config-header"
-              v-model="componentData.name"
-              class="config-input-item-field"
-            ></b-form-input>
-          </b-form-group>
-          <b-form-group
-            label="Имя файла"
-            label-for="config-filename"
-            @submit.stop.prevent
-          >
-            <b-form-select
-              v-if="Object.keys($store.state.vmixStore).length"
-              id="config-filename"
-              v-model="componentData.filename"
-              :disabled="
-                $store.state.vmixState.activeTitles[component.filename] ===
-                $store.state.db.components[component.id].resultString
-              "
-              :options="$store.state.vmixStore.titles.values"
-              size="sm"
-              class="mt-3 config-input-item-field"
-            ></b-form-select>
-          </b-form-group>
-
-          <b-form-group label="Слой" label-for="dropdown-overlay">
-            <b-form-select
-              id="config-overlay"
-              v-model="componentData.overlay"
-              :disabled="
-                $store.state.vmixState.activeTitles[component.filename] ===
-                $store.state.db.components[component.id].resultString
-              "
-              :options="$store.state.vmixOverlays"
-              size="sm"
-              class="mt-3 config-input-item-field blocked"
-            ></b-form-select>
-          </b-form-group>
-
-          <b-form-checkbox v-model="componentData.autoclose" class="mb-3"
-            >Автозакрытие</b-form-checkbox
-          >
-          <b-form-checkbox v-model="componentData.uppercase" class="mb-3"
-            >Регистр</b-form-checkbox
-          >
-          <b-button variant="primary" size="sm" @click="saveConfig"
-            >Сохранить</b-button
-          >
-        </b-dropdown-form>
-      </b-dropdown>
-      <div class="column-1 top-left">
+      <DropdownConfigComponent :component="component" :is-active="isActive" />
+      <QuartComponent
+        v-model="topLeft"
+        class="top-left"
+        :component="component"
+        :position="'topLeft'"
+        @save-event="show"
+      />
+      <QuartComponent
+        v-model="topRight"
+        class="top-right"
+        :component="component"
+        :position="'topRight'"
+        @save-event="show"
+      />
+      <QuartComponent
+        v-model="bottomLeft"
+        class="bottom-left"
+        :component="component"
+        :position="'bottomLeft'"
+        @save-event="show"
+      />
+      <QuartComponent
+        v-model="bottomRight"
+        class="bottom-right"
+        :component="component"
+        :position="'bottomRight'"
+        @save-event="show"
+      />
+      <!-- <div class="column-1 top-left">
         <p class="input-string">
           <b-input-group class="mb-2">
             <b-input-group-prepend class="quad-input" is-text>
@@ -621,7 +583,7 @@
             ></b-form-input>
           </b-input-group>
         </p>
-      </div>
+      </div> -->
       <!-- <b-alert show variant="secondary" class="display-string">
         {{ result }}
       </b-alert> -->
@@ -654,7 +616,13 @@
 </template>
 
 <script>
+import DropdownConfigComponent from '../sharedComponents/DropdownConfigComponent.vue';
+import QuartComponent from './components/QuartComponent.vue';
 export default {
+  components: {
+    DropdownConfigComponent,
+    QuartComponent,
+  },
   props: {
     component: {
       type: Object,
@@ -665,7 +633,6 @@ export default {
     return {
       result: '',
       selectedRows: [],
-      componentData: {},
       columns: {},
       topLeft: '#',
       topRight: '#',
@@ -673,61 +640,53 @@ export default {
       bottomRight: '#',
     };
   },
-  async beforeMount() {},
-  mounted() {
+  computed: {
+    isActive() {
+      return (
+        this.$store.state.vmixState.activeTitles[this.component.filename] ===
+        this.$store.state.db.components[this.component.id].resultString
+      );
+    },
+  },
+  created() {
     this.columns = JSON.parse(JSON.stringify(this.component.columns));
-    this.componentData = { ...this.component };
   },
   methods: {
-    saveConfig() {
-      const { filename, overlay, name, autoclose, uppercase } =
-        this.componentData;
-      this.$refs.dropdown.hide(true);
-      this.$store.commit('writeQuadParams', {
-        componentId: this.component.id,
-        filename,
-        overlay,
-        name,
-        autoclose,
-        uppercase,
-      });
-      this.$store.dispatch('saveDB');
-    },
-    radioHandler(event) {
-      const id = event.target.id;
-      if (event.target.checked) {
-        const currentComp = document.getElementById(this.component.id);
-        const allCheckBox = currentComp.querySelectorAll(`#${id}`);
-        allCheckBox.forEach((elem) => (elem.checked = false));
-        event.target.checked = true;
-        this[id] =
-          event.target._value.firstname + '#' + event.target._value.lastname;
-      } else {
-        this[id] = '#';
-      }
-      this.show();
-    },
-    validate(event) {
-      if (this.component.uppercase) {
-        event.target.value = event.target.value.toUpperCase();
-      }
-    },
-    async writeColumns(classname) {
-      const currentComp = document.getElementById(this.component.id);
-      const currentString = currentComp.querySelector(classname);
-      const componentId = this.component.id;
-      this.$store.commit('updateColumns', {
-        componentId,
-        columns: this.columns,
-      });
-      await this.$store.dispatch('saveDB');
-      if (currentString.checked === true) {
-        const event = {
-          target: currentString,
-        };
-        this.radioHandler(event);
-      }
-    },
+    // radioHandler(event) {
+    //   const id = event.target.id;
+    //   if (event.target.checked) {
+    //     const currentComp = document.getElementById(this.component.id);
+    //     const allCheckBox = currentComp.querySelectorAll(`#${id}`);
+    //     allCheckBox.forEach((elem) => (elem.checked = false));
+    //     event.target.checked = true;
+    //     this[id] =
+    //       event.target._value.firstname + '#' + event.target._value.lastname;
+    //   } else {
+    //     this[id] = '#';
+    //   }
+    //   this.show();
+    // },
+    // validate(event) {
+    //   if (this.component.uppercase) {
+    //     event.target.value = event.target.value.toUpperCase();
+    //   }
+    // },
+    // async writeColumns(classname) {
+    //   const currentComp = document.getElementById(this.component.id);
+    //   const currentString = currentComp.querySelector(classname);
+    //   const componentId = this.component.id;
+    //   this.$store.commit('updateColumns', {
+    //     componentId,
+    //     columns: this.columns,
+    //   });
+    //   await this.$store.dispatch('saveDB');
+    //   if (currentString.checked === true) {
+    //     const event = {
+    //       target: currentString,
+    //     };
+    //     this.radioHandler(event);
+    //   }
+    // },
     show() {
       this.result =
         this.topLeft +
@@ -764,7 +723,7 @@ export default {
       });
       this.$store.dispatch('saveDB');
       this.$store.commit('clearTimer', { input: overlayInput });
-      if (this.componentData.autoclose) {
+      if (this.component.autoclose) {
         const timerId = setTimeout(
           (overlayInput) => {
             this.$store.state.stateMachine[overlayInput].running();
@@ -791,15 +750,15 @@ export default {
 .quad-title {
 }
 
-.quad-input {
+/* .quad-input {
   height: 25px !important;
-}
+} */
 
-p,
+/* p,
 .input-string,
 .input-group {
   margin: 0 !important;
-}
+} */
 
 input {
   font-family: 'Montserrat', Verdana !important;

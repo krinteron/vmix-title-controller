@@ -7,10 +7,7 @@
     @ok="saveConfig(component.id)"
   >
     <div class="config-control-btn-wrapper">
-      <BlueButton
-        text="Добавить столбец"
-        @click-event="addColumn(component.id)"
-      />
+      <RectButton text="Добавить столбец" @click="addColumn(component.id)" />
     </div>
     <transition-group
       v-if="Object.keys(columns).length"
@@ -76,11 +73,11 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
-import BlueButton from '../../../sharedComponents/BlueButton.vue';
+import RectButton from '../../../sharedComponents/RectButton.vue';
 import RemoveButton from './components/RemoveButton.vue';
 export default {
   components: {
-    BlueButton,
+    RectButton,
     RemoveButton,
   },
   props: {

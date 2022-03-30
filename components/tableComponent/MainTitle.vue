@@ -6,11 +6,8 @@
   >
     <b-thead head-variant="dark">
       <b-tr>
-        <b-th
-          v-for="column in Object.values(component.columns)"
-          :key="column.id"
-        >
-          {{ column.name }}
+        <b-th v-for="(value, id) in component.columns" :key="id">
+          {{ value.name }}
         </b-th>
         <b-th class="row-controll">
           <DropdownMenuComponent
@@ -71,8 +68,6 @@ export default {
       selectedRows: [],
     };
   },
-  async beforeMount() {},
-  mounted() {},
   methods: {
     // ____________________ВЫБОР_СТРОК___________________
 
@@ -104,7 +99,6 @@ export default {
       };
       this.$store.commit('addRow', newRow);
       this.$store.dispatch('saveDB');
-      // await this.$store.dispatch('getTitles');
     },
 
     // ____________________УДАЛЕНИЕ_СТРОК___________________

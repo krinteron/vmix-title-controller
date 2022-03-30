@@ -103,9 +103,9 @@
             :options="componentsList"
           ></b-form-select>
           <span class="input-group-btn component-control-item">
-            <BlueButton
+            <RectButton
               text="Добавить контроллер"
-              @click-event="addComponent(program.id)"
+              @click="addComponent(program.id)"
             />
           </span>
         </div>
@@ -195,12 +195,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import MainTitle from '../components/tableComponent/MainTitle.vue';
 import Hrip from '../components/Hrip.vue';
-import Duo from '../components/Duo.vue';
-import Quad from '../components/Quad.vue';
+import Duo from '../components/twoColumnsConponent/Duo.vue';
+import Quad from '../components/fourColumnsComponent/Quad.vue';
 import Button from '../components/Button.vue';
-import BlueButton from '../components/sharedComponents/BlueButton.vue';
+import RectButton from '../components/sharedComponents/RectButton.vue';
 export default {
-  components: { MainTitle, Hrip, Duo, Quad, Button, BlueButton },
+  components: { MainTitle, Hrip, Duo, Quad, Button, RectButton },
   data() {
     return {
       program: {},
@@ -316,7 +316,7 @@ export default {
             const id = uuidv4();
             component.columns[id] = {
               id,
-              name: '',
+              value: '',
               position,
               // job: '',
             };
