@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      result: '',
+      result: {},
       text: '#',
       photo: '',
     };
@@ -95,7 +95,7 @@ export default {
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       if (!this.text.replace(/#/gi, '')) return;
-      this.$store.commit('writeQuadResultString', {
+      this.$store.commit('writeResultString', {
         componentId: this.component.id,
         resultString: this.text,
       });

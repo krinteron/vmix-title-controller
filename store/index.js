@@ -189,10 +189,10 @@ const store = () =>
         state.db.components = components;
         state.db.programs[program.id] = { ...program };
       },
-      writeQuadResultString(state, { componentId, resultString }) {
+      writeResultString(state, { componentId, resultString }) {
         state.db.components[componentId].resultString = resultString;
       },
-      writeQuadParams(
+      writeParams(
         state,
         { componentId, filename, overlay, name, autoclose, uppercase }
       ) {

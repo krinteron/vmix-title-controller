@@ -87,17 +87,17 @@ export default {
       const overlayInput = this.component.overlay; // Находим разрешенный номер overlay для тайтла
       const state = this.$store.state.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
-      const currentInput = this.$store.state.vmixState.inputs.filter(
+      const currentInput = this.$store.state.vmixState.inputs.find(
         (input) => input.title === this.component.filename
       );
-      if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
-      const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
+      if (!currentInput) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
+      const currentInputNumber = currentInput.number; // Находим номер инпута тайтла их списка инпутов
 
       if (this.isActive) {
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       if (!this.result.replace(/#/gi, '')) return;
-      this.$store.commit('writeQuadResultString', {
+      this.$store.commit('writeResultString', {
         componentId: this.component.id,
         resultString: this.result,
       });

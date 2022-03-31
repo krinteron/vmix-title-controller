@@ -23,11 +23,7 @@
       <b-tr v-for="row in component.rows" :key="row.id">
         <b-td v-for="cell in row.value" :key="cell.id">
           <InputComponent
-            :class="
-              $store.state.vmixState.activeTitles[
-                component.columns[cell.columnId].filename
-              ] === cell.value && 'active'
-            "
+            :class="isActive(cell)"
             :cell="cell"
             :uppercase="component.columns[cell.columnId].uppercase"
             @dblclick-event="sendTitle($event, cell)"
@@ -69,6 +65,14 @@ export default {
     };
   },
   methods: {
+    isActive(cell) {
+      return (
+        this.$store.state.vmixState.activeTitles[
+          this.component.columns[cell.columnId].filename
+        ] === cell.value && 'active'
+      );
+    },
+
     // ____________________ВЫБОР_СТРОК___________________
 
     selectRow(id) {
@@ -136,22 +140,24 @@ export default {
 
     // ____________________ОБРАБОТЧИК_ТАЙТЛОВ__________________
     sendTitle(event, cell) {
-      if (!cell.value) return;
-      const id = event.target.id;
-      const element = document.getElementById(id);
-      if (!element.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
+      const { target } = event;
+      if (!cell.value) return; // Если ячейка пустая то игнорируем
+      if (!target.classList.contains('pointer')) return; // Если ячейка редактируется то игнорируем
+
       const overlayInput = this.component.columns[cell.columnId].overlay; // Находим разрешенный номер overlay для тайтла
       const state = this.$store.state.stateMachine[overlayInput].state;
       if (state === 'stopping') return;
-      const currentInput = this.$store.state.vmixState.inputs.filter(
+
+      const currentInput = this.$store.state.vmixState.inputs.find(
         (input) =>
           input.title === this.component.columns[cell.columnId].filename
       );
-      if (!currentInput.length) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
-      const currentInputNumber = currentInput[0].number; // Находим номер инпута тайтла их списка инпутов
-      if (element.classList.contains('active')) {
-        element.classList.toggle('active');
-        element.classList.toggle('ending');
+      if (!currentInput) return; // Если в инпутах VMIX нет такого тайтла то игнорируем
+
+      const currentInputNumber = currentInput.number; // Находим номер инпута тайтла их списка инпутов
+      if (target.classList.contains('active')) {
+        target.classList.toggle('active');
+        target.classList.toggle('ending');
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       this.$store.commit('clearTimer', { input: overlayInput });
@@ -173,18 +179,16 @@ export default {
 
       let text = cell.value;
 
-      const filename = this.component.columns[cell.columnId].filename;
-      const titleTextCount = this.$store.state.vmixState.inputs
-        .filter(({ title }) => title === filename)[0]
-        .text.split('#').length;
+      const titleTextCount = currentInput.text.split('#').length;
       const valueTextCount = cell.value.split('#').length;
+      // Добавляем # для перезаписи всех текстовых блоков в тайтле
       if (valueTextCount < titleTextCount) {
         text = cell.value + '#'.repeat(titleTextCount - valueTextCount);
-        element.value = text;
+        target.value = text;
         this.writeRows(event, cell);
       }
 
-      element.classList.toggle('starting');
+      target.classList.toggle('starting');
       return this.$store.state.stateMachine[overlayInput][state]({
         currentInputNumber,
         value: text,

@@ -87,7 +87,7 @@ export default {
       const { filename, overlay, name, autoclose, uppercase } =
         this.componentData;
       this.$refs.dropdown.hide(true);
-      this.$store.commit('writeQuadParams', {
+      this.$store.commit('writeParams', {
         componentId: this.component.id,
         filename,
         overlay,

@@ -122,7 +122,7 @@ export default {
         return this.$store.state.stateMachine[overlayInput][state](); // Если клик по активному тайтлу то закрываем его
       }
       if (!this.result.replace(/#/gi, '')) return;
-      this.$store.commit('writeQuadResultString', {
+      this.$store.commit('writeResultString', {
         componentId: this.component.id,
         resultString: this.result,
       });
