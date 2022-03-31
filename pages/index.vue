@@ -197,7 +197,7 @@ import MainTitle from '../components/tableComponent/MainTitle.vue';
 import Hrip from '../components/phoneComponent/Hrip.vue';
 import Duo from '../components/twoColumnsConponent/Duo.vue';
 import Quad from '../components/fourColumnsComponent/Quad.vue';
-import Button from '../components/Button.vue';
+import Button from '../components/buttonTitleComponent/Button.vue';
 import RectButton from '../components/sharedComponents/RectButton.vue';
 export default {
   components: { MainTitle, Hrip, Duo, Quad, Button, RectButton },
