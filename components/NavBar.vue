@@ -19,7 +19,7 @@
         class="overlays-dasable-btn"
         variant="danger"
         @click="overlayOutAll"
-        >Снять всё</b-badge
+        >Close overlays</b-badge
       >
       <b-badge
         pill

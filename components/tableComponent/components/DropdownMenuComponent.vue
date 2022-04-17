@@ -5,14 +5,14 @@
       class="dropdown-item"
       @click.native.capture.stop="$emit('add-row-event')"
     >
-      Вставить строку
+      Add row
     </b-dropdown-item-button>
     <b-dropdown-item-button
       v-if="haveColumns"
       class="dropdown-item"
       @click="$emit('remove-row-event')"
     >
-      Удалить выбранные
+      Delete selected
     </b-dropdown-item-button>
     <b-dropdown-divider></b-dropdown-divider>
     <b-dropdown-item-button
@@ -20,7 +20,7 @@
       class="dropdown-item"
       @click="$emit('config-component-event')"
     >
-      Настройки
+      Settings
     </b-dropdown-item-button>
   </b-dropdown>
 </template>

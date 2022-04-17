@@ -84,14 +84,14 @@
                   class="dropdown-item"
                   @click="configProgram(programId)"
                 >
-                  Настройки
+                  Settings
                 </b-dropdown-item-button>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item-button
                   class="dropdown-item"
                   @click="removeProgram(programId)"
                 >
-                  Удалить
+                  Remove
                 </b-dropdown-item-button>
               </b-dropdown>
             </template>
@@ -135,11 +135,11 @@
         v-if="Object.keys(program).length"
         :id="`modal-xl-${program.id}`"
         size="xl"
-        title="Настройки программы"
+        title="Settings"
         @ok="saveConfig(program)"
       >
         <div class="input-group component-control">
-          <b-input-group prepend="Название программы" class="mt-3">
+          <b-input-group prepend="Program name" class="mt-3">
             <b-form-input
               id="config-header input-small"
               v-model="program.programName"
@@ -152,10 +152,7 @@
             :options="componentsList"
           ></b-form-select>
           <span class="input-group-btn component-control-item">
-            <RectButton
-              text="Добавить контроллер"
-              @click="addComponent(program.id)"
-            />
+            <RectButton text="Add" @click="addComponent(program.id)" />
           </span>
         </div>
 
@@ -261,11 +258,11 @@ export default {
       currentComp: '',
       selectedComponent: '',
       componentsList: [
-        { value: 'MainTitle', text: 'ТАБЛИЦА' },
-        { value: 'Hrip', text: 'ХРИП' },
-        { value: 'Duo', text: '2 ОКНА' },
-        { value: 'Quad', text: '4 ОКНА' },
-        { value: 'Button', text: 'КНОПКИ' },
+        { value: 'MainTitle', text: 'Table' },
+        { value: 'Hrip', text: 'Phone' },
+        { value: 'Duo', text: 'TwoWindow' },
+        { value: 'Quad', text: 'FourWindow' },
+        { value: 'Button', text: 'Hotkeys' },
       ],
     };
   },
@@ -340,7 +337,7 @@ export default {
     },
 
     removeProgram(programId) {
-      const confirmation = confirm('Удалить программу?');
+      const confirmation = confirm('Delete a program?');
       if (!confirmation) return;
       this.$store.commit('removeProgram', programId);
       this.$store.dispatch('saveDB');
@@ -353,19 +350,19 @@ export default {
       const component = {
         id,
         programId,
-        name: 'ТАБЛИЦА',
+        name: 'Table',
         titlerComponentName: this.selectedComponent,
         uppercase: true,
         columns: {},
         rows: [],
       };
       if (this.selectedComponent === 'Button') {
-        component.name = 'КНОПКИ';
+        component.name = 'Hotkeys';
       }
       if (this.selectedComponent === 'Duo') {
         component.resultString = '';
         component.filename = '';
-        component.name = '2 ОКНА';
+        component.name = 'TwoWindow';
         component.overlay = 1;
         component.autoclose = false;
         for (const position of ['left', 'right']) {
@@ -384,7 +381,7 @@ export default {
       if (this.selectedComponent === 'Quad') {
         component.resultString = '';
         component.filename = '';
-        component.name = '4 ОКНА';
+        component.name = 'FourWindow';
         component.overlay = 1;
         component.autoclose = false;
         const data = {
@@ -424,7 +421,7 @@ export default {
       if (this.selectedComponent === 'Hrip') {
         component.resultString = '';
         component.filename = '';
-        component.name = 'ХРИП';
+        component.name = 'Phone';
         component.overlay = 1;
         component.autoclose = false;
         component.columns = {

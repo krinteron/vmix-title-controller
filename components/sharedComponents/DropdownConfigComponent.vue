@@ -2,12 +2,12 @@
   <b-dropdown
     id="dropdown-form"
     ref="dropdown"
-    text="Настройки"
+    text="Settings"
     class="m-2 config-btn"
   >
     <b-dropdown-form class="dropdown-body">
       <b-form-group
-        label="Название"
+        label="Title"
         label-for="config-header"
         @submit.stop.prevent
       >
@@ -19,7 +19,7 @@
         ></b-form-input>
       </b-form-group>
       <b-form-group
-        label="Имя файла"
+        label="Filename"
         label-for="config-filename"
         @submit.stop.prevent
       >
@@ -34,7 +34,7 @@
         ></b-form-select>
       </b-form-group>
 
-      <b-form-group label="Слой" label-for="dropdown-overlay">
+      <b-form-group label="Overlay" label-for="dropdown-overlay">
         <b-form-select
           id="config-overlay"
           v-model="componentData.overlay"
@@ -46,14 +46,12 @@
       </b-form-group>
 
       <b-form-checkbox v-model="componentData.autoclose" class="mb-3"
-        >Автозакрытие</b-form-checkbox
+        >Autoclose(10s)</b-form-checkbox
       >
       <b-form-checkbox v-model="componentData.uppercase" class="mb-3"
-        >Регистр</b-form-checkbox
+        >Uppercase</b-form-checkbox
       >
-      <b-button variant="primary" size="sm" @click="saveConfig"
-        >Сохранить</b-button
-      >
+      <b-button variant="primary" size="sm" @click="saveConfig">Save</b-button>
     </b-dropdown-form>
   </b-dropdown>
 </template>

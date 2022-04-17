@@ -27,14 +27,14 @@
       <RectButton
         v-if="isActive"
         class="show-btn"
-        :text="'Снять'"
+        :text="'Hide'"
         :btn-style="'danger'"
         @click="sendTitle"
       />
       <RectButton
         v-if="!isActive"
         class="show-btn"
-        :text="'Вывести'"
+        :text="'Show'"
         @click="sendTitle"
       />
     </div>

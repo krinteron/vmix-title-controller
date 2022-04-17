@@ -1,17 +1,13 @@
 <template>
   <b-dropdown-form class="dropdown-body">
-    <b-form-group
-      label="Название"
-      label-for="config-header"
-      @submit.stop.prevent
-    >
+    <b-form-group label="Title" label-for="config-header" @submit.stop.prevent>
       <b-form-input
         id="config-header"
         v-model="data.name"
         class="config-input-item-field"
       ></b-form-input>
     </b-form-group>
-    <b-form-group label="Цвет" label-for="config-color" @submit.stop.prevent>
+    <b-form-group label="Color" label-for="config-color" @submit.stop.prevent>
       <b-form-select
         id="config-color"
         v-model="data.color"
@@ -21,7 +17,7 @@
       ></b-form-select>
     </b-form-group>
     <b-form-group
-      label="Имя файла"
+      label="Filename"
       label-for="config-filename"
       @submit.stop.prevent
     >
@@ -36,7 +32,7 @@
       ></b-form-select>
     </b-form-group>
 
-    <b-form-group label="Слой" label-for="dropdown-overlay">
+    <b-form-group label="Overlay" label-for="dropdown-overlay">
       <b-form-select
         id="config-overlay"
         v-model="data.overlay"
@@ -48,7 +44,7 @@
     </b-form-group>
 
     <b-form-checkbox v-model="data.autoclose" class="mb-3"
-      >Автозакрытие</b-form-checkbox
+      >Autoclose(10s)</b-form-checkbox
     >
     <span class="config-controls-wrapper">
       <RectButton

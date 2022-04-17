@@ -3,11 +3,11 @@
     :id="`modal-xl-${component.id}`"
     class="modal-config"
     size="xl"
-    title="Настройки контроллера"
+    title="Settings"
     @ok="saveConfig(component.id)"
   >
     <div class="config-control-btn-wrapper">
-      <RectButton text="Добавить столбец" @click="addColumn(component.id)" />
+      <RectButton text="Add column" @click="addColumn(component.id)" />
     </div>
     <transition-group
       v-if="Object.keys(columns).length"
@@ -22,7 +22,7 @@
       >
         <RemoveButton @click-event="removeColumn(component.id, column.id)" />
         <p class="config-input-item">
-          <label for="config-header">Заголовок</label>
+          <label for="config-header">Title</label>
           <b-form-input
             id="config-header input-small"
             v-model="columns[column.id].name"
@@ -30,7 +30,7 @@
           ></b-form-input>
         </p>
         <p class="config-input-item">
-          <label for="config-filename">Имя файла</label>
+          <label for="config-filename">Filename</label>
           <b-form-select
             v-if="Object.keys($store.state.vmixStore).length"
             id="config-filename"
@@ -41,7 +41,7 @@
           ></b-form-select>
         </p>
         <p class="config-input-item">
-          <label for="config-overlay">Слой</label>
+          <label for="config-overlay">Overlay</label>
           <b-form-select
             id="config-overlay"
             v-model="columns[column.id].overlay"
@@ -51,14 +51,14 @@
           ></b-form-select>
         </p>
         <p class="config-input-item">
-          <label for="config-autoclose">Автозакрытие</label>
+          <label for="config-autoclose">Autoclose(10s)</label>
           <input
             id="config-autoclose"
             v-model="columns[column.id].autoclose"
             class="config-input-item-field checkbox"
             type="checkbox"
           />
-          <label for="config-uppercase">Регистр</label>
+          <label for="config-uppercase">Uppercase</label>
           <input
             id="config-uppercase"
             v-model="columns[column.id].uppercase"
@@ -113,7 +113,7 @@ export default {
 
       const newColumn = {
         id: columnId,
-        name: `ЗАГОЛОВОК${columnsCount + 1}`,
+        name: `Title${columnsCount + 1}`,
         filename: '',
         autoclose: false,
         uppercase: true,
