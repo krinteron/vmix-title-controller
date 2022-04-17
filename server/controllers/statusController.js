@@ -11,8 +11,8 @@ exports.get_status = async function (req, res) {
   const vmixHost = parsedData.host;
   const host = vmixHost + '/api/';
   try {
-    await axios.get(host).then(({ data }) => {
-      const payload = parser(data);
+    await axios.get(host).then(async ({ data }) => {
+      const payload = await parser(data);
       res.json(payload);
     });
   } catch (e) {
