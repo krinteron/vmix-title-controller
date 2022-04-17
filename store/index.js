@@ -81,7 +81,7 @@ const store = () =>
       vmixState: {},
       vmixStore: {},
       editMode: false,
-      vmixIsOnline: true,
+      errors: [],
       vmixHost: '',
       db: {},
       programs: {},
@@ -108,7 +108,30 @@ const store = () =>
       },
     },
 
+    getters: {
+      haveErrors(state) {
+        return !!state.errors.length;
+      },
+      getErrors(state) {
+        return state.errors;
+      },
+      getVmixHost(state) {
+        return state.vmixHost;
+      },
+      getVmixState(state) {
+        return state.vmixState;
+      },
+    },
+
     mutations: {
+      setError(state, error) {
+        state.errors.push(error);
+      },
+
+      setVmixHost(state, host) {
+        state.vmixHost = host;
+      },
+
       setState(state, { name, value }) {
         state[name] = value;
       },
@@ -202,16 +225,32 @@ const store = () =>
         state.db.components[componentId].autoclose = autoclose;
         state.db.components[componentId].uppercase = uppercase;
       },
-      changeVmixHost(state, newHost) {
-        state.vmixHost = newHost;
-      },
     },
 
     actions: {
+      launch: async ({ dispatch, getters }) => {
+        await dispatch('getVmixState');
+        await dispatch('getTitles');
+        await dispatch('getVmixStore');
+        if (!getters.haveErrors) {
+          dispatch('startStateEvent');
+          dispatch('setStateMachine');
+        }
+      },
+
       saveDB: ({ state }) => {
         axios.post('/titles', { data: state.db }).then((res) => {
           return res;
         });
+      },
+
+      setVmixHost({ commit }, host) {
+        commit('setVmixHost', host);
+      },
+
+      async sendVmixHost({ getters }) {
+        const host = getters.getVmixHost;
+        await axios.post('/vmix-host', { data: host });
       },
 
       overlayOutAll() {
@@ -225,32 +264,45 @@ const store = () =>
         axios(options);
       },
 
-      getVmixState: async ({ commit, state }) => {
-        const { data } = await axios.get('/status');
-        if (Object.keys(data).includes('error')) {
-          if (state.vmixIsOnline) {
-            state.vmixIsOnline = false;
-          }
-          state.vmixHost = data.error.vmixHost;
-          return;
-        }
-        const { inputs, overlays, activeTitles } = data;
-        commit('setState', {
-          name: 'vmixState',
-          value: { inputs, overlays, activeTitles },
-        });
-        if (!state.vmixIsOnline) {
-          state.vmixIsOnline = true;
-        }
+      getVmixState: ({ commit, dispatch }) => {
+        axios
+          .get('/status')
+          .then(({ data }) => {
+            const { inputs, overlays, activeTitles } = data;
+            commit('setState', {
+              name: 'vmixState',
+              value: { inputs, overlays, activeTitles },
+            });
+          })
+          .catch((err) => {
+            dispatch('stopStateEvent');
+            const { message, payload } = err.response.data.error;
+            dispatch('setVmixHost', payload);
+            commit('setError', {
+              title: 'VMIX',
+              message,
+              payload,
+            });
+          });
       },
 
-      getVmixStore: async ({ commit }) => {
-        const data = await axios.get('/vmix-store');
-        const { titles, photo } = JSON.parse(JSON.stringify(data.data));
-        commit('setState', {
-          name: 'vmixStore',
-          value: { titles, photo },
-        });
+      getVmixStore: ({ commit }) => {
+        return axios
+          .get('/vmix-store')
+          .then((response) => {
+            const { titles, photo } = response.data;
+            commit('setState', {
+              name: 'vmixStore',
+              value: { titles, photo },
+            });
+          })
+          .catch((err) => {
+            const { message } = err.response.data.error;
+            commit('setError', {
+              title: 'SMB',
+              message,
+            });
+          });
       },
 
       getTitles: async ({ commit }) => {
@@ -263,42 +315,26 @@ const store = () =>
         });
       },
 
-      // clearVmixInputs: ({ state }) => {
-      //   let i = state.vmixState.inputs.length;
-      //   while (i > 0) {
-      //     const options = {
-      //       url: '/api/',
-      //       method: 'post',
-      //       data: qs.stringify({
-      //         Function: 'RemoveInput',
-      //         Input: i,
-      //       }),
-      //     };
-      //     axios(options);
-      //     i--;
-      //   }
-      // },
-
-      setStateMachine: ({ commit, state }) => {
+      setStateMachine: ({ commit, getters }) => {
         // const inputCount = state.vmixState.overlays.length;
         const inputCount = 4;
         function wait(overlayInput) {
           let timer = 15;
           return new Promise((resolve) =>
             setTimeout(
-              function run(t) {
+              function run(vmixState) {
                 const overlayBusy =
-                  t.vmixState.overlays[overlayInput - 1] !== '';
+                  vmixState().overlays[overlayInput - 1] !== '';
                 if (!overlayBusy) {
                   resolve();
                 }
                 if (timer-- < 0) {
                   resolve('TIME_OUT');
                 }
-                setTimeout(run, 1000, t);
+                setTimeout(run, 1000, vmixState);
               },
               1000,
-              state
+              () => getters.getVmixState
             )
           );
         }

@@ -16,6 +16,7 @@ module.exports = {
     'prettier/prettier': 'error',
     'arrow-body-style': 'off',
     'prefer-arrow-callback': 'off',
-    'vue/no-v-model-argument' : 'off',
+    'vue/no-v-model-argument': 'off',
+    'prefer-promise-reject-errors': 'off',
   },
 };

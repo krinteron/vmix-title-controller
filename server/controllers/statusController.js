@@ -16,13 +16,22 @@ exports.get_status = async function (req, res) {
       res.json(payload);
     });
   } catch (e) {
+    // console.log(e);
     const vmixData = fs.readFileSync(vMixHostPath, 'utf8');
     const parsedData = JSON.parse(vmixData);
     const vmixHost = parsedData.host;
-    const error = {
-      statusCode: 503,
-      vmixHost,
-    };
-    res.json({ error });
+    res.status(503).json({
+      error: {
+        status: 503,
+        message:
+          "The vmix doesn't seem to be running, or an invalid address has been specified.",
+        payload: vmixHost,
+      },
+    });
+    // const error = {
+    //   statusCode: 503,
+    //   vmixHost,
+    // };
+    // res.json({ error });
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="body">
-    <div v-if="!$store.state.vmixIsOnline" class="vmix-down">
+    <!-- <div v-if="haveErrors" class="vmix-down">
       <b-alert show variant="danger">
         <a href="#" class="alert-link">vmix is DOWN</a>
       </b-alert>
@@ -12,14 +12,58 @@
               size="sm"
               text="Button"
               variant="success"
-              @click="changeVmixHost"
-              >Enter</b-button
+              @click="setVmixHost"
             >
+              Enter
+            </b-button>
           </b-input-group-append>
         </b-input-group>
       </div>
+    </div> -->
+    <div>
+      <b-modal
+        id="modal-lg"
+        v-model="haveErrors"
+        size="lg"
+        :no-close-on-backdrop="true"
+        no-close-on-esc
+        :hide-footer="true"
+        :hide-header="true"
+      >
+        <div>
+          <b-alert
+            v-for="error in errors"
+            :key="error.title"
+            show
+            variant="danger"
+          >
+            <h4 class="alert-heading">{{ error.title }}</h4>
+            <p>
+              {{ error.message }}
+              <b-input-group
+                v-if="error.title === 'VMIX'"
+                size="sm"
+                class="mb-3"
+              >
+                <b-form-input v-model="vmixHost"></b-form-input>
+                <b-input-group-append>
+                  <b-button
+                    size="sm"
+                    text="Button"
+                    variant="success"
+                    @click="sendVmixHost"
+                    >Enter</b-button
+                  >
+                </b-input-group-append>
+              </b-input-group>
+            </p>
+            <hr />
+            <p class="mb-0">Please fix the error and reload the page.</p>
+          </b-alert>
+        </div>
+      </b-modal>
     </div>
-    <div v-if="$store.state.vmixIsOnline" class="vmix-up">
+    <div v-if="!haveErrors" class="vmix-up">
       <NavBar />
       <b-tabs content-class="mt-3">
         <span v-if="$store.state.db.programs">
@@ -76,7 +120,12 @@
         </span>
         <!-- __________________Добавление вкладок____________________ -->
         <template #tabs-end>
-          <b-nav-item role="presentation" href="#" @click.prevent="addProgram">
+          <b-nav-item
+            role="presentation"
+            href="#"
+            class="test"
+            @click.prevent="addProgram"
+          >
             <b>+</b>
           </b-nav-item>
         </template>
@@ -203,6 +252,7 @@ export default {
   components: { MainTitle, Hrip, Duo, Quad, Button, RectButton },
   data() {
     return {
+      newVmixHost: this.vmixHost,
       program: {},
       orders: {},
       components: [],
@@ -217,22 +267,30 @@ export default {
         { value: 'Quad', text: '4 ОКНА' },
         { value: 'Button', text: 'КНОПКИ' },
       ],
-      vmixHost: '',
     };
   },
-  async beforeMount() {
-    await this.$store.dispatch('getVmixState');
-    await this.$store.dispatch('getTitles');
-    await this.$store.dispatch('getVmixStore');
-    this.$store.dispatch('startStateEvent');
-    this.$store.dispatch('setStateMachine');
-    this.vmixHost = this.$store.state.vmixHost;
+  computed: {
+    haveErrors() {
+      return this.$store.getters.haveErrors;
+    },
+    errors() {
+      return this.$store.getters.getErrors;
+    },
+    vmixHost: {
+      get() {
+        return this.$store.getters.getVmixHost;
+      },
+      set(value) {
+        this.$store.dispatch('setVmixHost', value);
+      },
+    },
+  },
+  beforeMount() {
+    this.$store.dispatch('launch');
   },
   updated() {
-    if (this.$store.state.vmixIsOnline) {
-      for (const key in this.$store.state.db.programs) {
-        this.orders[key] = [...this.$store.state.db.programs[key].order];
-      }
+    for (const key in this.$store.state.db.programs) {
+      this.orders[key] = [...this.$store.state.db.programs[key].order];
     }
   },
   methods: {
@@ -465,8 +523,11 @@ export default {
       this.$store.commit('updateProgram', this.program);
       this.$store.dispatch('saveDB');
     },
-    changeVmixHost() {
-      this.$store.commit('changeVmixHost', this.vmixHost);
+    setVmixHost() {
+      this.$store.dispatch('setVmixHost', this.vmixHost);
+    },
+    sendVmixHost() {
+      this.$store.dispatch('sendVmixHost');
       this.$store.dispatch('saveDB');
     },
   },

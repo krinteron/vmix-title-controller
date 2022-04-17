@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
     "build": "nuxt build",
-    "start": "nuxt start",
-    "makeDB": "node server/DB/DBmigration.js",
+    "lint": "npm run prettier && npm run lint:js",
+    "dev": "nuxt",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" .",
+    "makeDB": "node server/DB/DBmigration.js",
     "prettier": "prettier --write .",
-    "lint": "npm run prettier && npm run lint:js"
+    "start": "nuxt start"
   },
   "dependencies": {
     "@marsaud/smb2": "^0.18.0",

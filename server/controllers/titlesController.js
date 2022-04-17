@@ -24,8 +24,11 @@ const smb2Client = new SMB2({
 const checkShare = (path) => {
   return new Promise((resolve, reject) =>
     smb2Client.exists(path, (err, exists) => {
-      if (err) return reject(`smb connection error: ${err}`);
-      if (!exists) return reject(`path '${path}' not available`);
+      if (err)
+        return reject(
+          `SMB connection error. Check your share folder: '${process.env.VMIX_STORE}'.`
+        );
+      if (!exists) return reject(`path '${path}' is not available.`);
       return resolve();
     })
   );
@@ -52,30 +55,44 @@ exports.get_vmix_store = async function (req, res) {
   await checkShare(process.env.VMIX_PHOTO)
     .then(() => checkShare(process.env.VMIX_TITLES))
     .catch((err) => {
-      res.statusCode = 503;
-      res.json({ error: err });
+      res.status(503).json({
+        error: {
+          status: 503,
+          message: err,
+        },
+      });
     });
   let photoNames = [];
   let titleNames = [];
   await new Promise((resolve, reject) => {
     smb2Client.readdir(process.env.VMIX_PHOTO, (err, files) => {
       if (err) {
-        return reject(err);
+        return reject(process.env.VMIX_PHOTO);
       }
       files.sort();
       photoNames = files;
       resolve();
     });
-  });
-  await new Promise((resolve) => {
-    smb2Client.readdir(process.env.VMIX_TITLES, (err, files) => {
-      if (err) {
-        console.log(err);
-      }
-      titleNames = files;
-      resolve();
+  })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        smb2Client.readdir(process.env.VMIX_TITLES, (err, files) => {
+          if (err) {
+            return reject(process.env.VMIX_TITLES);
+          }
+          titleNames = files;
+          return resolve();
+        });
+      });
+    })
+    .catch((path) => {
+      res.status(503).json({
+        error: {
+          status: 503,
+          message: `Error reading files in "${path}" directory`,
+        },
+      });
     });
-  });
   const photo = {
     path: photoPath,
     values: photoNames,
