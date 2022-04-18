@@ -3,6 +3,7 @@ const { Parser } = require('xml2js');
 const xmlParser = new Parser({
   charkey: 'title',
   attrkey: 'params',
+  normalize: true,
 });
 
 export default (data) => {
@@ -28,8 +29,12 @@ export default (data) => {
         if (item.text) {
           text = item.text
             .reduce((acc, current) => {
-              const word = current.title ? current.title : '';
-              acc.push(word);
+              const { name } = current.params;
+              const startName = name.split('.')[0];
+              if (/Text\d+$/.test(startName)) {
+                const word = current.title || '';
+                acc.push(word);
+              }
               return acc;
             }, [])
             .join('#');
